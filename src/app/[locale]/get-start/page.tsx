@@ -9,15 +9,15 @@ export default function GetStart() {
   const t = useTranslations('GetStart')
 
   const plans = [
-    {
-      name: 'Mirror酱周卡',
-      price: '￥7.9',
-      itemId: '83f9d3b8cac611ef8fc352540025c377',
-      mostPopular: false,
-    },
+    // {
+    //   name: 'Mirror酱日卡',
+    //   price: '￥3.9',
+    //   itemId: '83f9d3b8cac611ef8fc352540025c377',
+    //   mostPopular: false,
+    // },
     {
       name: 'Mirror酱月卡',
-      price: '￥9.9',
+      price: '￥6.9',
       itemId: '3134f94ac9aa11ef9d725254001e7c00',
       mostPopular: false,
     },
@@ -25,13 +25,13 @@ export default function GetStart() {
       name: 'Mirror酱季卡',
       price: '￥12.9',
       itemId: '9e6c7b28c9aa11efb47452540025c377',
-      mostPopular: true,
+      mostPopular: false,
     },
     {
       name: 'Mirror酱年卡',
-      price: '￥49.9',
+      price: '￥29.9',
       itemId: '69c45576c9aa11ef9ace52540025c377',
-      mostPopular: false,
+      mostPopular: true,
     },
   ]
 

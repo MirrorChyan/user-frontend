@@ -25,13 +25,13 @@ export default function GetStart() {
       name: 'Mirror酱季卡',
       price: '￥12.9',
       itemId: '9e6c7b28c9aa11efb47452540025c377',
-      mostPopular: false,
+      mostPopular: true,
     },
     {
       name: 'Mirror酱年卡',
-      price: '￥19.9',
+      price: '￥49.9',
       itemId: '69c45576c9aa11ef9ace52540025c377',
-      mostPopular: true,
+      mostPopular: false,
     },
   ]
 

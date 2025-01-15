@@ -48,7 +48,7 @@ export default function GetStart() {
             </p>
           </div>
         </div>
-        <div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 md:max-w-2xl md:grid-cols-2 lg:max-w-4xl xl:mx-0 xl:max-w-none xl:max-w-6xl self-center">
+        <div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 md:max-w-2xl md:grid-cols-3 lg:max-w-4xl xl:mx-0 xl:max-w-none xl:max-w-6xl self-center">
           {plans.map((plan) => (
             <div
               key={plan.itemId}

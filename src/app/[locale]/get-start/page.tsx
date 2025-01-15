@@ -82,7 +82,7 @@ export default function GetStart() {
                   'mt-6 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
                 )}
               >
-                {t('becomeSponsor')}
+                {t('buyAtAfdian')}
               </a>
               {/* <ul role="list" className="mt-8 space-y-3 text-sm/6 text-gray-600">
                   {plan.features.map((feature) => (

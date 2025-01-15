@@ -32,7 +32,7 @@ export default async function ShowKey({ searchParams }: Props) {
         <div className="px-6 py-24 sm:px-6 sm:py-32 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
-              {t('thanksForSponsor')}
+              {t('thanksForBuying')}
             </h2>
             <div className="mt-6 text-pretty text-lg/8 text-gray-600">
               <p>{t('yourKey')}:&nbsp;

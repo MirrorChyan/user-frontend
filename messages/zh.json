@@ -4,7 +4,7 @@
     "description": "Mirror酱是一个App分发平台，你可以使用它来方便的获取更新",
     "getKey": "获取CDK",
     "apiDoc": "API文档",
-    "becomeSponsor": "到爱发电购买"
+    "buyAtAfdian": "到爱发电购买"
   },
   "GetKey": {
     "title": "欢迎使用Mirror酱",
@@ -12,7 +12,7 @@
     "getKey": "获取CDK"
   },
   "ShowKey": {
-    "thanksForSponsor": "感谢购买",
+    "thanksForBuying": "感谢购买",
     "yourKey": "你的CDKey",
     "invalidOrderId": "订单不存在哦",
     "orderExpired": "CDKey已过期",

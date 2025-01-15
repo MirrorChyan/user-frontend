@@ -11,34 +11,26 @@ export default function GetStart() {
   const plans = [
     {
       name: 'Mirror酱日卡',
-      price: '￥2.37',
+      price: '￥7.9',
       itemId: '83f9d3b8cac611ef8fc352540025c377',
-      description: '感谢投喂',
-      tmoji: '( •̀ ω •́ )✧',
       mostPopular: false,
     },
     {
       name: 'Mirror酱月卡',
-      price: '￥2.97',
+      price: '￥9.9',
       itemId: '3134f94ac9aa11ef9d725254001e7c00',
-      description: 'Mirror酱的零食罐头',
-      tmoji: 'o((>ω< ))o',
       mostPopular: false,
     },
     {
       name: 'Mirror酱季卡',
-      price: '￥3.87',
+      price: '￥12.9',
       itemId: '9e6c7b28c9aa11efb47452540025c377',
-      description: 'Mirror酱的午餐盒',
-      tmoji: 'o(≧▽≦)o',
       mostPopular: false,
     },
     {
       name: 'Mirror酱年卡',
-      price: '￥5.97',
+      price: '￥19.9',
       itemId: '69c45576c9aa11ef9ace52540025c377',
-      description: '老板大气',
-      tmoji: 'ヾ(≧▽≦*)o',
       mostPopular: true,
     },
   ]
@@ -85,9 +77,6 @@ export default function GetStart() {
               >
                 {plan.name}
               </h3>
-              <div className="mt-4 text-sm/6 text-gray-600 dark:text-gray-300">
-                {plan.description}<FlipWords words={[plan.tmoji, plan.tmoji]} />
-              </div>
               <p className="mt-6 flex items-baseline gap-x-1">
                 <span className="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
                   {plan.price}

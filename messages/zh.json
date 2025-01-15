@@ -1,13 +1,13 @@
 {
   "GetStart": {
-    "title": "使用MirrorChyan分发你的App",
-    "description": "MirrorChyan是一个App分发平台，你可以使用它来分发你的App。",
+    "title": "使用Mirror酱更新你的App",
+    "description": "Mirror酱是一个App分发平台，你可以使用它来方便的获取更新",
     "getKey": "获取CDK",
     "apiDoc": "API文档",
     "becomeSponsor": "到爱发电赞助"
   },
   "GetKey": {
-    "title": "欢迎使用MirrorChyan",
+    "title": "欢迎使用Mirror酱",
     "orderId": "订单号",
     "getKey": "获取CDK"
   },

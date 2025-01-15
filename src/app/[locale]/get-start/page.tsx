@@ -10,7 +10,7 @@ export default function GetStart() {
 
   const plans = [
     {
-      name: 'Mirror酱日卡',
+      name: 'Mirror酱周卡',
       price: '￥7.9',
       itemId: '83f9d3b8cac611ef8fc352540025c377',
       mostPopular: false,

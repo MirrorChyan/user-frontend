@@ -51,7 +51,7 @@ export default function GetStart() {
                 href="/get-key"
                 className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                {t('getStart')}
+                {t('getKey')}
               </Link>
               <a href="https://apifox.com/apidoc/shared-ffdc8453-597d-4ba6-bd3c-5e375c10c789/253583257e0" target="_blank" className="text-sm/6 font-semibold">
                 {t('apiDoc')}<span aria-hidden="true">&nbsp;→</span>

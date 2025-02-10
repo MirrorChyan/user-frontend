@@ -40,7 +40,7 @@ export default async function LocaleLayout({
         </Providers>
         {/* ICP备案 */}
         <div className="fixed bottom-4 w-full text-center">
-          <a href="http://beian.miit.gov.cn/" target="_blank" className="text-xs text-gray-500 dark:text-gray-400">
+          <a href="https://beian.miit.gov.cn/" target="_blank" className="text-xs text-gray-500 dark:text-gray-400">
             皖ICP备2025075166号
           </a>
         </div>

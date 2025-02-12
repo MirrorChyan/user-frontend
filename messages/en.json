@@ -23,7 +23,7 @@
     "getKey": "Query CDKey"
   },
   "ShowKey": {
-    "thanksForBuying": "Thanks for sponsoring",
+    "thanksForBuying": "Thanks for Sponsoring",
     "yourKey": "Your CDKey",
     "invalidOrderId": "Order does not exist",
     "orderExpired": "CDKey has expired",
@@ -38,7 +38,7 @@
   "Order": {
     "ProcessingOrder": "We are getting your order",
     "InputOrderId": "Manual order query",
-    "ThanksForSponsoring": "Thanks for sponsoring"
+    "ThanksForSponsoring": "Thanks for Sponsoring"
   },
   "Transmission": {
     "title": "Time Transfer",

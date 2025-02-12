@@ -7,7 +7,12 @@
     "openSource": "MirrorChyan Open Source",
     "buyAtAfdian": "Buy at AFDIAN",
     "transfer": "Order Transfer",
-    "LimitTimeOffer": "Ends in "
+    "LimitTimeOffer": "Ends in ",
+    "planTitle": {
+        "Mirror酱月卡": "Pay Monthly",
+        "Mirror酱季卡": "Pay Quarterly",
+        "Mirror酱年卡": "Pay Annually"
+    }
   },
   "GetKey": {
     "title": "Welcome to MirrorChyan",
@@ -15,7 +20,7 @@
     "getKey": "Query CDKey"
   },
   "ShowKey": {
-    "thanksForBuying": "Thanks for buying",
+    "thanksForBuying": "Thanks for sponsoring",
     "yourKey": "Your CDKey",
     "invalidOrderId": "Order does not exist",
     "orderExpired": "CDKey has expired",

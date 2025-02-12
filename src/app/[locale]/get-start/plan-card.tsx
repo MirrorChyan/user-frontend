@@ -54,16 +54,16 @@ export default function PlanCard({ plan, customOrderId }: { plan: Plan, customOr
       {plan.discount ? (
         <p className="mt-6 flex items-baseline gap-x-1 basis-full">
           <span className="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
-            ￥{plan.discount.discountPrice}
+            {plan.discount.discountPrice}
           </span>
           <span className="text-sm/6 line-through text-gray-500 dark:text-gray-400">
-            ￥{plan.price}
+            {plan.price}
           </span>
         </p>
       ) : (
         <p className="mt-6 flex items-baseline gap-x-1 basis-full">
           <span className="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
-            ￥{plan.price}
+            {plan.price}
           </span>
         </p>
       )}

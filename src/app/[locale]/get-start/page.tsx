@@ -35,15 +35,15 @@ export default async function GetStart() {
       const data = await response.json()
       const { plan, list } = data.data
       return {
-        name: plan.name,
-        price: "" + parseFloat(plan.price),
+        name: "planTitle" in t ? t(`planTitle.${plan.name}`) : plan.name,
+        price: "￥" + parseFloat(plan.price),
         planId: plan.plan_id,
         skuId: list[0].sku_id,
         mostPopular: planIds.indexOf(plan.plan_id) === planIds.length - 1,
         discount: plan.time_limit_price && {
           beginAt: plan.time_limit_price.begin_time,
           endAt: plan.time_limit_price.end_time,
-          discountPrice: plan.time_limit_price.price,
+          discountPrice: "￥" + plan.time_limit_price.price,
         }
       }
     }

@@ -7,7 +7,10 @@
     "openSource": "Mirror酱源码",
     "buyAtAfdian": "到爱发电赞助",
     "transfer": "订单转换",
-    "LimitTimeOffer": "剩余："
+    "LimitTimeOffer": "剩余：",
+    "priceSymbol": "¥",
+    "priceExchange": "1.0",
+    "priceFixed": "1"
   },
   "GetKey": {
     "title": "欢迎使用Mirror酱",

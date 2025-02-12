@@ -34,16 +34,18 @@ export default async function GetStart() {
     if (response.ok) {
       const data = await response.json()
       const { plan, list } = data.data
+      const priceExchange: number = parseFloat(t("priceExchange"))
+      const priceFixed: number = +t("priceFixed")
       return {
-        name: "planTitle" in t ? t(`planTitle.${plan.name}`) : plan.name,
-        price: "￥" + parseFloat(plan.price),
+        name: t.has("planTitle") ? t(`planTitle.${plan.name}`) : plan.name,
+        price: t("priceSymbol") + (parseFloat(plan.price) / priceExchange).toFixed(priceFixed),
         planId: plan.plan_id,
         skuId: list[0].sku_id,
         mostPopular: planIds.indexOf(plan.plan_id) === planIds.length - 1,
         discount: plan.time_limit_price && {
           beginAt: plan.time_limit_price.begin_time,
           endAt: plan.time_limit_price.end_time,
-          discountPrice: "￥" + plan.time_limit_price.price,
+          discountPrice: t("priceSymbol") + (parseFloat(plan.time_limit_price.price) / priceExchange).toFixed(priceFixed)
         }
       }
     }

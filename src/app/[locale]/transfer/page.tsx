@@ -22,6 +22,8 @@ export default function Transmission() {
   const [transfering, setTransfering] = useState(false)
 
   async function requestFromOrderId(orderId: string) {
+    setFromOrderDescription('')
+    setFromOrderIdValid(false)
     const response = await fetch(`/api/billing/order/afdian?order_id=${orderId}`)
     const { ec, msg, data } = await response.json()
     if (ec === 200) {
@@ -62,11 +64,12 @@ export default function Transmission() {
     }
     else {
       setFromOrderDescription(msg)
-      setFromOrderIdValid(false)
     }
   }
 
   async function requestToOrderId(orderId: string) {
+    setToOrderDescription('')
+    setToOrderIdValid(false)
     const response = await fetch(`/api/billing/order/afdian?order_id=${orderId}`)
     const { ec, msg, data } = await response.json()
     if (ec === 200) {
@@ -87,7 +90,6 @@ export default function Transmission() {
     }
     else {
       setToOrderDescription(msg)
-      setToOrderIdValid(false)
     }
   }
 

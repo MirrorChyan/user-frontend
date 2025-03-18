@@ -69,6 +69,7 @@
     "title": "下载 {rid} {os} {arch}",
     "cdkey": "CDK",
     "download": "下载",
+    "downloading": "下载中",
     "noCDKey": "请输入 CDK",
     "buyCDKey": "没有CDK？立即订阅",
     "disclaimer": "Mirror酱作为第三方分发平台，仅对下载加速服务收取费用，不代表 {rid} 需付费订阅。<br></br>您仍可通过 {rid} 的官方渠道进行免费下载和使用。完整说明请查阅用户协议。"

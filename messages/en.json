@@ -70,6 +70,7 @@
     "title": "Download {rid} {os} {arch}",
     "cdkey": "CDKey",
     "download": "Download",
+    "downloading": "downloading",
     "noCDKey": "No CDKey",
     "buyCDKey": "No CDKey? Subscribe Now",
     "disclaimer": "As a third-party distribution platform, MirrorChyan only charges for download acceleration services, which does not mean that {rid} requires a paid subscription.<br></br>You can still download and use it for free through {rid}'s official channels. Please refer to the User Agreement for complete instructions."

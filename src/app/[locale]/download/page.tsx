@@ -5,8 +5,6 @@ import { useTranslations } from "next-intl"
 import { Button } from "@heroui/react"
 import { Link } from "@/i18n/routing"
 import { useSearchParams } from 'next/navigation'
-import { debounce } from "lodash"
-
 export default function Download() {
   const t = useTranslations('Download');
   const searchParams = useSearchParams();
@@ -14,31 +12,36 @@ export default function Download() {
   const os = searchParams.get('os') ?? 'windows';
   const arch = searchParams.get('arch') ?? 'x64';
   const channel = searchParams.get('channel') ?? 'stable';
-  
-  const [CDKey, setCDKey] = useState('')
 
-  const downloadByCDKeyDebounced = debounce(downloadByCDK, 2000)
+  const [CDKey, setCDKey] = useState('')
+  const [loading, setLoading] = useState(false)
+
 
   async function downloadByCDK() {
-    if (!CDKey) {
-      alert(t('noCDKey'))
-      return
-    }
+    setLoading(true)
+      try {
+          if (!CDKey) {
+              alert(t('noCDKey'))
+              return
+          }
 
-    const response = await fetch(`/api/resources/${rid}/latest?os=${os}&arch=${arch}&channel=${channel}&cdk=${CDKey}&user_agent=mirrorchyan_web`)
+          const response = await fetch(`/api/resources/${rid}/latest?os=${os}&arch=${arch}&channel=${channel}&cdk=${CDKey}&user_agent=mirrorchyan_web`)
 
-    const { code, msg, data } = await response.json()
-    if (code !== 0) {
-      alert(msg)
-      return
-    }
+          const {code, msg, data} = await response.json()
+          if (code !== 0) {
+              alert(msg)
+              return
+          }
 
-    const url = data.url
-    if (!url) {
-      alert(msg)
-      return
-    }
-    window.location.href = url
+          const url = data.url
+          if (!url) {
+              alert(msg)
+              return
+          }
+          window.location.href = url
+      } finally {
+        setLoading(false)
+      }
   }
 
   return (
@@ -74,7 +77,8 @@ export default function Download() {
               </div>
             </div>
             <Button
-              onPress={downloadByCDKeyDebounced}
+              isLoading={loading}
+              onPress={downloadByCDK}
               className="mt-6 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
               {t('download')}

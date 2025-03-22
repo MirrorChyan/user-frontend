@@ -10,10 +10,10 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import ReactMarkdown from "react-markdown";
-import {useTranslations} from "next-intl";
-import {closeAll, addToast} from "@heroui/toast";
-import {useEffect, useState} from "react";
-import {ToastProps} from "@heroui/toast/dist/use-toast";
+import { useTranslations } from "next-intl";
+import { closeAll, addToast } from "@heroui/toast";
+import { useEffect, useState } from "react";
+import type { ToastProps } from "@heroui/toast/dist/use-toast";
 
 type Announcement = {
   summary: string
@@ -28,7 +28,7 @@ export default function Announcement({locale = "zh"}: { locale: "zh" | "en" }) {
 
   const getAnnouncementInfo = async () => {
     try {
-      const response = await fetch(`/requests/announcement?lang=${locale}`);
+      const response = await fetch(`/api/misc/anno?lang=${locale}`);
       const announcement = await response.json()
 
       closeAll();

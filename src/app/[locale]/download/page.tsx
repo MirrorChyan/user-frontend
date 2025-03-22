@@ -20,7 +20,6 @@ export default function Download() {
   const [CDKey, setCDKey] = useState("");
   const [loading, setLoading] = useState(false);
 
-
   async function downloadByCDK() {
     setLoading(true);
     try {
@@ -56,18 +55,13 @@ export default function Download() {
         return;
       }
 
-      const version = data.version;
-      const fileNameParts = [rid];
-      if (arch && arch.trim() !== '') fileNameParts.push(arch);
-      if (os && os.trim() !== '') fileNameParts.push(os);
-      fileNameParts.push(version);
-      const fileName = `${fileNameParts.join('-')}.zip`;
-      window.location.href = `/api/proxy-download?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(fileName)}`;
+      window.location.href = url;
 
       addToast({
         description: t("downloading"),
         color: "primary",
       });
+
     } finally {
       setLoading(false);
     }

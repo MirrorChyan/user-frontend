@@ -20,8 +20,10 @@ export default function GetKey() {
     setIsLoading(true);
 
     try {
+      // Optional: validate order ID before redirecting
       const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/afdian?order_id=${orderId}`);
-
+      const data = await response.json();
+      console.log(data);
       router.push(`/show-key?order_id=${orderId}`);
     } catch (error) {
       console.error("Error:", error);
@@ -30,7 +32,10 @@ export default function GetKey() {
   };
 
   if (isLoading) {
-    return <LoadingState />;
+    return <LoadingState
+        title={t("thanksForBuying")}
+        description={t.raw("msg.Loading")}
+    />;
   }
 
   return (

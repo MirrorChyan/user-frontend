@@ -7,6 +7,7 @@ import { Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { addToast, ToastProps } from "@heroui/toast";
 import {CLIENT_BACKEND} from "@/app/requests/misc";
+import LoadingState from "@/components/LoadingState";
 
 export default function Download() {
   const t = useTranslations("Download");
@@ -54,16 +55,47 @@ export default function Download() {
         });
         return;
       }
-      window.location.href = url;
 
-      addToast({
-        description: t("downloading"),
-        color: "primary",
+      // Create custom filename
+      const version = data.version || "";
+      const parts = [rid];
+      if (arch) parts.push(arch);
+      if (os) parts.push(os);
+      if (version) parts.push(version);
+      const filename = parts.join('-') + '.zip';
+
+      // Create temporary link and trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+
+      // Add event listener to confirm download started
+      const downloadStarted = new Promise<void>((resolve) => {
+        link.addEventListener('click', () => {
+          addToast({
+            description: t("downloading"),
+            color: "primary",
+          });
+          resolve();
+        }, { once: true });
       });
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      await downloadStarted;
 
     } finally {
       setLoading(false);
     }
+  }
+
+  if (loading) {
+    return <LoadingState
+        title={t("downloading")}
+        description={t("pleaseWait")}
+    />;
   }
 
   return (

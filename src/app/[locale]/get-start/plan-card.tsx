@@ -21,7 +21,14 @@ type Plan = {
   discount?: Discount
 }
 
-export default function PlanCard({ plan, customOrderId }: { plan: Plan, customOrderId: string }) {
+type PropsType = {
+  plan: Plan
+  customOrderId: string
+  C2URate: number
+  locale: string
+}
+
+export default function PlanCard({ plan, customOrderId, C2URate, locale }: PropsType) {
   const t = useTranslations("GetStart");
   const router = useRouter();
 
@@ -57,13 +64,19 @@ export default function PlanCard({ plan, customOrderId }: { plan: Plan, customOr
             {plan.discount.discountPrice}
           </span>
           <span className="text-sm/6 line-through text-gray-500 dark:text-gray-400">
-            {plan.price}
+            {`
+              ${locale === "en" ? "$" : "￥"}
+              ${(plan.price.split(' ').pop() * C2URate).toFixed(2)}
+            `}
           </span>
         </p>
       ) : (
         <p className="mt-6 flex items-baseline gap-x-1 basis-full">
           <span className="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
-            {plan.price}
+            {`
+              ${locale === "en" ? "$" : "￥"}
+              ${(plan.price.split(' ').pop() * C2URate).toFixed(2)}
+            `}
           </span>
         </p>
       )}

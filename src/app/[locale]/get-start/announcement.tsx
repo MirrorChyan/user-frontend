@@ -10,29 +10,61 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import ReactMarkdown from "react-markdown";
-import { useTranslations } from "next-intl";
-import { closeAll, addToast } from "@heroui/toast";
+import {useTranslations} from "next-intl";
+import {closeAll, addToast} from "@heroui/toast";
+import {useEffect, useState} from "react";
+import {ToastProps} from "@heroui/toast/dist/use-toast";
 
-export default function Announcement({ summary, details }: { summary: string, details: string }) {
+type Announcement = {
+  summary: string
+  details: string
+}
+
+export default function Announcement({locale = "zh"}: { locale: "zh" | "en" }) {
   const t = useTranslations("Component.Announcement");
   // model state
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const [announcement, setAnnouncement] = useState<Announcement>();
 
-  closeAll();
-  addToast({
-    title: <Button variant="light" onPress={onOpen}>{summary}</Button>,
-  });
+  const getAnnouncementInfo = async () => {
+    try {
+      const response = await fetch(`/requests/announcement?lang=${locale}`);
+      const announcement = await response.json()
+
+      closeAll();
+      addToast({
+        title: (
+          <div onClick={onOpen}
+               className={'cursor-pointer w-full h-full'}
+          >{t("newAnnouncement")} - {announcement.data.summary}</div>
+        ),
+        timeout: 60000,
+        classNames: {
+          base: `border-1 before:bg-primary border-primary-200 dark:border-primary-100 hover:bg-primary-100 dark:hover:bg-primary-200 transition-all duration-300`
+        },
+      } as ToastProps);
+      setAnnouncement(announcement.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  useEffect(() => {
+    getAnnouncementInfo();
+    const timer = setInterval(() => {
+      getAnnouncementInfo();
+    }, 1000 * 60);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <>
-      {/* <Button className='w-fit self-center' color='primary' onClick={onOpen}>{summary}</Button> */}
       <Modal backdrop='blur' scrollBehavior="inside" isOpen={isOpen} onClose={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">{summary}</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">{announcement?.summary}</ModalHeader>
               <ModalBody>
-                <ReactMarkdown>{details}</ReactMarkdown>
+                <ReactMarkdown>{announcement?.details}</ReactMarkdown>
               </ModalBody>
               <ModalFooter>
                 {/* <Button color="danger" variant="light" onPress={onClose}>
@@ -43,7 +75,7 @@ export default function Announcement({ summary, details }: { summary: string, de
                 </Button>
               </ModalFooter>
             </>
-          )}
+          ) as any}
         </ModalContent>
       </Modal>
     </>

@@ -36,7 +36,8 @@
     "msg": {
       "Order not found": "Order does not exist",
       "order_id is required": "Please enter the order ID",
-      "CDK already exists": "Error, please try again"
+      "CDK already exists": "Error, please try again",
+      "Loading": "Order is coming..."
     }
   },
   "Order": {

@@ -31,7 +31,8 @@
     "msg": {
       "Order not found": "订单不存在哦",
       "order_id is required": "请输入订单号",
-      "CDK already exists": "出错啦，请重试！"
+      "CDK already exists": "出错啦，请重试！",
+      "Loading": "订单信息正在赶来中..."
     }
   },
   "Order": {

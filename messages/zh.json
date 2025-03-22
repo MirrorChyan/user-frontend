@@ -16,9 +16,11 @@
   },
   "GetKey": {
     "title": "欢迎使用Mirror酱",
+    "thanksForBuying": "感谢赞助",
     "orderId": "订单号",
     "getKey": "查询CDK",
-    "queryOrderId": "查询订单号"
+    "queryOrderId": "查询订单号",
+    "Loading": "订单信息正在赶来中..."
   },
   "ShowKey": {
     "thanksForBuying": "感谢赞助",
@@ -31,8 +33,7 @@
     "msg": {
       "Order not found": "订单不存在哦",
       "order_id is required": "请输入订单号",
-      "CDK already exists": "出错啦，请重试！",
-      "Loading": "订单信息正在赶来中..."
+      "CDK already exists": "出错啦，请重试！"
     }
   },
   "Order": {
@@ -75,6 +76,7 @@
   "Download":{
     "title": "下载 {rid} {os} {arch}",
     "cdkey": "CDK",
+    "prepare": "准备下载",
     "download": "下载",
     "downloading": "下载中",
     "pleaseWait": "请稍等...",

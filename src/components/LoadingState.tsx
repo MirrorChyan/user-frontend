@@ -25,7 +25,6 @@ export default function LoadingState({ title, description }: LoadingStateProps) 
                             </div>
                         )}
 
-                        {/* Loading spinner */}
                         <div className="flex justify-center mt-8">
                             <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-500"></div>
                         </div>

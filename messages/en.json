@@ -21,9 +21,11 @@
   },
   "GetKey": {
     "title": "Welcome to MirrorChyan",
+    "thanksForBuying": "Thanks for Sponsoring",
     "orderId": "Order ID",
     "getKey": "Query CDKey",
-    "queryOrderId": "Query Order ID"
+    "queryOrderId": "Query Order ID",
+    "Loading": "Order is coming..."
   },
   "ShowKey": {
     "thanksForBuying": "Thanks for Sponsoring",
@@ -36,8 +38,7 @@
     "msg": {
       "Order not found": "Order does not exist",
       "order_id is required": "Please enter the order ID",
-      "CDK already exists": "Error, please try again",
-      "Loading": "Order is coming..."
+      "CDK already exists": "Error, please try again"
     }
   },
   "Order": {
@@ -74,6 +75,7 @@
   "Download":{
     "title": "Download {rid} {os} {arch}",
     "cdkey": "CDKey",
+    "prepare": "Prepare download",
     "download": "Download",
     "downloading": "downloading",
     "pleaseWait": "Please wait ...",

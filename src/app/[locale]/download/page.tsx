@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { useTranslations } from "next-intl";
-import { Button } from "@heroui/react";
-import { Link } from "@/i18n/routing";
-import { useSearchParams } from "next/navigation";
-import { addToast, ToastProps } from "@heroui/toast";
+import {useState} from "react";
+import {useTranslations} from "next-intl";
+import {Button} from "@heroui/react";
+import {Link} from "@/i18n/routing";
+import {useSearchParams} from "next/navigation";
+import {addToast, ToastProps} from "@heroui/toast";
 import {CLIENT_BACKEND} from "@/app/requests/misc";
 import LoadingState from "@/components/LoadingState";
 
@@ -56,36 +56,18 @@ export default function Download() {
         return;
       }
 
-      // Create custom filename
-      const version = data.version || "";
-      const parts = [rid];
-      if (arch) parts.push(arch);
-      if (os) parts.push(os);
-      if (version) parts.push(version);
-      const filename = parts.join('-') + '.zip';
+      const version = data.version;
+      const fileNameParts = [rid];
+      if (arch && arch.trim() !== '') fileNameParts.push(arch);
+      if (os && os.trim() !== '') fileNameParts.push(os);
+      fileNameParts.push(version);
+      const fileName = `${fileNameParts.join('-')}.zip`;
+      window.location.href = `/api/proxy-download?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(fileName)}`;
 
-      // Create temporary link and trigger download
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
-
-      // Add event listener to confirm download started
-      const downloadStarted = new Promise<void>((resolve) => {
-        link.addEventListener('click', () => {
-          addToast({
-            description: t("downloading"),
-            color: "primary",
-          });
-          resolve();
-        }, { once: true });
+      addToast({
+        description: t("downloading"),
+        color: "primary",
       });
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      await downloadStarted;
-
     } finally {
       setLoading(false);
     }

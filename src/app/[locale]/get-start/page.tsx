@@ -1,11 +1,11 @@
 import { getLocale } from "next-intl/server";
 
-import { getAnnouncement } from "@/app/requests/announcement";
 import { BackgroundBeamsWithCollision } from "@/components/BackgroundBeamsWithCollision";
 import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import PlanCard from "./plan-card";
 import Announcement from "./announcement";
+import {getUSDRate} from "@/app/requests/rate";
 // import { CheckIcon } from '@heroicons/react/20/solid'
 
 type Discount = {
@@ -35,6 +35,7 @@ let lastCacheTime = 0;
 export default async function GetStart() {
   const t = await getTranslations("GetStart");
   const locale = await getLocale();
+
 
   const planIds = [
     // '83f9d3b8cac611ef8fc352540025c377',
@@ -75,9 +76,11 @@ export default async function GetStart() {
 
   const plans = await Promise.all(planIds.map(getPlanInfo));
 
+  // 人民币->美元汇率 or 美元->人民币汇率
+  const C2URate = locale === "zh" ? 1 : await getUSDRate();
+
   const customOrderId = Date.now() + Math.random().toString(36).slice(2);
 
-  const announcement = await getAnnouncement(locale as "zh" | "en");
 
   return (
     <div className='relative' suppressHydrationWarning>
@@ -95,13 +98,14 @@ export default async function GetStart() {
               </p>
             </div>
           </div>
-          {announcement.ec === 200 && (
-            <Announcement summary={announcement.data.summary} details={announcement.data.details} />
-          )}
+          {/*{announcement.ec === 200 && (*/}
+          {/*  <Announcement summary={announcement.data.summary} details={announcement.data.details} />*/}
+          {/*)}*/}
+          <Announcement locale={locale as "zh" | "en"} summary={'announcement.data.summary'} details={'announcement.data.details'} />
           <div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 md:max-w-2xl md:grid-cols-3 lg:max-w-4xl xl:mx-0 xl:max-w-6xl self-center">
             {plans.map((plan) => {
               if (!plan) return null;
-              return <PlanCard key={plan.planId} plan={plan} customOrderId={customOrderId} />;
+              return <PlanCard key={plan.planId} plan={plan} customOrderId={customOrderId} C2URate={C2URate} locale={locale}/>;
             })}
           </div>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-6">

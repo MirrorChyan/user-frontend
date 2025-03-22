@@ -98,12 +98,16 @@ export default function Transmission() {
   async function handleFromOrderIdChange(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     setFromOrderId(value);
+    setFromOrderDescription('')
+    setFromOrderIdValid(false)
     requestFromOrderIdDebounced(value);
   }
 
   async function handleToOrderIdChange(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     setToOrderId(value);
+    setToOrderDescription('')
+    setToOrderIdValid(false)
     requestToOrderIdDebounced(value);
   }
 

@@ -1,4 +1,4 @@
-import {getTranslations} from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
 export type Discount = {
   beginAt: number // timestamp
@@ -80,7 +80,7 @@ export const getPlanInfo = async (planId: string, mostPopularId: string): Promis
     else {
       return null;
     }
-  }catch (error){
+  } catch (error) {
     console.error("Get Plan Info error:", error);
     return null;
   }

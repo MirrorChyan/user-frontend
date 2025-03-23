@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useTranslations } from "next-intl";
-import { Button } from "@heroui/react";
-import { Link } from "@/i18n/routing";
-import { useSearchParams } from "next/navigation";
-import { addToast, ToastProps } from "@heroui/toast";
+import {useState} from "react";
+import {useTranslations} from "next-intl";
+import {Button} from "@heroui/react";
+import {Link} from "@/i18n/routing";
+import {useSearchParams} from "next/navigation";
+import {addToast, ToastProps} from "@heroui/toast";
 import {CLIENT_BACKEND} from "@/app/requests/misc";
+import LoadingState from "@/components/LoadingState";
 
 export default function Download() {
   const t = useTranslations("Download");
@@ -18,7 +19,6 @@ export default function Download() {
 
   const [CDKey, setCDKey] = useState("");
   const [loading, setLoading] = useState(false);
-
 
   async function downloadByCDK() {
     setLoading(true);
@@ -54,6 +54,7 @@ export default function Download() {
         });
         return;
       }
+
       window.location.href = url;
 
       addToast({
@@ -64,6 +65,13 @@ export default function Download() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (loading) {
+    return <LoadingState
+        title={t("downloading")}
+        description={t("pleaseWait")}
+    />;
   }
 
   return (

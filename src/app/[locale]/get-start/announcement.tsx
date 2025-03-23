@@ -27,15 +27,15 @@ export default function Announcement({details, summary}: PropsType) {
   addToast({
       title: (
         <div onClick={onOpen}
-             className={'cursor-pointer w-full h-full'}
+             className={"cursor-pointer w-full h-full"}
         >{t("newAnnouncement")} - { summary }</div>
       ),
       timeout: 60 * 1000,
       classNames: {
-        base: `border-1 before:bg-primary border-primary-200 dark:border-primary-100 hover:bg-primary-100 dark:hover:bg-primary-200 transition-all duration-300`
+        base: "border-1 before:bg-primary border-primary-200 dark:border-primary-100 hover:bg-primary-100 dark:hover:bg-primary-200 transition-all duration-300"
       }
-    } as any
-  )
+    }
+  );
 
   return (
     <>
@@ -56,7 +56,7 @@ export default function Announcement({details, summary}: PropsType) {
                 </Button>
               </ModalFooter>
             </>
-          ) as any}
+          )}
         </ModalContent>
       </Modal>
     </>

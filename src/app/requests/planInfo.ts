@@ -33,7 +33,7 @@ export type AfdianResponse = {
 };
 
 // 缓存的信息
-let cachedPlanInfo = {};
+const cachedPlanInfo = {};
 // 缓存的更新时间
 let lastFetchTime = 0;
 // 缓存的持续时间
@@ -67,7 +67,7 @@ export const getPlanInfo = async (planId: string, mostPopularId: string): Promis
           endAt: plan.time_limit_price.end_time,
           discountPrice: t("priceSymbol") + (parseFloat(plan.time_limit_price.price) / priceExchange).toFixed(priceFixed)
         }
-      }
+      };
 
       cachedPlanInfo[planId] = responsePlan;
       lastFetchTime = now;

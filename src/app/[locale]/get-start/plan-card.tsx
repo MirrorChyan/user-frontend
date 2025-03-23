@@ -66,7 +66,7 @@ export default function PlanCard({ plan, customOrderId, C2URate, locale }: Props
           <span className="text-sm/6 line-through text-gray-500 dark:text-gray-400">
             {`
               ${locale === "en" ? "$" : "￥"}
-              ${(plan.price.split(' ').pop() * C2URate).toFixed(2)}
+              ${(plan.price.split(" ").pop() * C2URate).toFixed(2)}
             `}
           </span>
         </p>
@@ -75,7 +75,7 @@ export default function PlanCard({ plan, customOrderId, C2URate, locale }: Props
           <span className="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
             {`
               ${locale === "en" ? "$" : "￥"}
-              ${(plan.price.split(' ').pop() * C2URate).toFixed(2)}
+              ${(plan.price.split(" ").pop() * C2URate).toFixed(2)}
             `}
           </span>
         </p>

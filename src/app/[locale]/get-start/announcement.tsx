@@ -18,23 +18,23 @@ type PropsType = {
   details: string
 }
 
-export default function Announcement({details, summary}: PropsType) {
+export default function Announcement({ details, summary }: PropsType) {
   const t = useTranslations("Component.Announcement");
   // model state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   closeAll();
   addToast({
-      title: (
-        <div onClick={onOpen}
-             className={"cursor-pointer w-full h-full"}
-        >{t("newAnnouncement")} - { summary }</div>
-      ),
-      timeout: 60 * 1000,
-      classNames: {
-        base: "border-1 before:bg-primary border-primary-200 dark:border-primary-100 hover:bg-primary-100 dark:hover:bg-primary-200 transition-all duration-300"
-      }
+    title: (
+      <div onClick={onOpen}
+        className={"cursor-pointer w-full h-full"}
+      >{t("newAnnouncement")} - {summary}</div>
+    ),
+    timeout: 60 * 1000,
+    classNames: {
+      base: "border-1 before:bg-primary border-primary-200 dark:border-primary-100 hover:bg-primary-100 dark:hover:bg-primary-200 transition-all duration-300"
     }
+  }
   );
 
   return (
@@ -43,9 +43,9 @@ export default function Announcement({details, summary}: PropsType) {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">{ summary }</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">{summary}</ModalHeader>
               <ModalBody>
-                <ReactMarkdown>{ details }</ReactMarkdown>
+                <ReactMarkdown>{details}</ReactMarkdown>
               </ModalBody>
               <ModalFooter>
                 {/* <Button color="danger" variant="light" onPress={onClose}>

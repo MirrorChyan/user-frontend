@@ -48,12 +48,12 @@ export default async function GetStart() {
             </div>
           </div>
           {announcement.ec === 200 && (
-            <Announcement summary={announcement.data.summary} details={announcement.data.details}/>
+            <Announcement summary={announcement.data.summary} details={announcement.data.details} />
           )}
           <div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 md:max-w-2xl md:grid-cols-3 lg:max-w-4xl xl:mx-0 xl:max-w-6xl self-center">
             {plans.map((plan) => {
               if (!plan) return null;
-              return <PlanCard key={plan.planId} plan={plan} customOrderId={customOrderId} C2URate={C2URate} locale={locale}/>;
+              return <PlanCard key={plan.planId} plan={plan} customOrderId={customOrderId} C2URate={C2URate} locale={locale} />;
             })}
           </div>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-6">

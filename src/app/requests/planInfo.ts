@@ -27,7 +27,10 @@ export type AfdianResponse = {
         end_time: number
         price: string
       }
-    }
+    },
+    list: {
+      sku_id: string
+    }[]
   }
   msg: string
 };

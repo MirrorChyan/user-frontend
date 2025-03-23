@@ -14,7 +14,7 @@ import { useTranslations } from "next-intl";
 import { closeAll, addToast } from "@heroui/toast";
 import { useEffect, useState } from "react";
 import type { ToastProps } from "@heroui/toast/dist/use-toast";
-import {SERVER_BACKEND} from "@/app/requests/misc";
+import {CLIENT_BACKEND} from "@/app/requests/misc";
 
 type Announcement = {
   summary: string
@@ -29,7 +29,7 @@ export default function Announcement({locale = "zh"}: { locale: "zh" | "en" }) {
 
   const getAnnouncementInfo = async () => {
     try {
-      const response = await fetch(`${SERVER_BACKEND}/api/misc/anno?lang=${locale}`);
+      const response = await fetch(`${CLIENT_BACKEND}/api/misc/anno?lang=${locale}`);
       const announcement = await response.json()
 
       closeAll();

@@ -11,9 +11,9 @@
     "transfer": "Order Transfer",
     "LimitTimeOffer": "Ends in ",
     "planTitle": {
-        "Mirror酱月卡": "Monthly Plan",
-        "Mirror酱季卡": "Quarterly Plan",
-        "Mirror酱年卡": "Annual Plan"
+      "Mirror酱月卡": "Monthly Plan",
+      "Mirror酱季卡": "Quarterly Plan",
+      "Mirror酱年卡": "Annual Plan"
     },
     "priceSymbol": "$ ",
     "priceExchange": "7.25",
@@ -21,9 +21,11 @@
   },
   "GetKey": {
     "title": "Welcome to MirrorChyan",
+    "thanksForBuying": "Thanks for Sponsoring",
     "orderId": "Order ID",
     "getKey": "Query CDKey",
-    "queryOrderId": "Query Order ID"
+    "queryOrderId": "Query Order ID",
+    "loading": "Querying please wait..."
   },
   "ShowKey": {
     "thanksForBuying": "Thanks for Sponsoring",
@@ -71,11 +73,13 @@
       "close": "Close"
     }
   },
-  "Download":{
+  "Download": {
     "title": "Download {rid} {os} {arch}",
     "cdkey": "CDKey",
+    "prepare": "Prepare download",
     "download": "Download",
     "downloading": "downloading",
+    "pleaseWait": "Please wait ...",
     "noCDKey": "No CDKey",
     "buyCDKey": "No CDKey? Subscribe Now",
     "disclaimer": "As a third-party distribution platform, MirrorChyan only charges for download acceleration services, which does not mean that {rid} requires a paid subscription.<br></br>You can still download and use it for free through {rid}'s official channels. Please refer to the User Agreement for complete instructions.",
@@ -84,7 +88,6 @@
     "7002": "Please confirm that you have entered the correct CDKey",
     "7003": "Your CDKey has reached the most downloads today",
     "7004": "Current cdk cannot download this resource, please check your cdk type"
-
   },
   "Common": {
     "ok": "OK",

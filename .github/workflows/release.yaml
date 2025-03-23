@@ -2,8 +2,7 @@ name: Build and Push Docker Image
 
 on:
   push:
-    tags:
-      - '*'
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -24,20 +23,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Determine tag
-        id: tag
-        run: |
-          if [[ "${GITHUB_REF##*/}" =~ alpha|beta|rc ]]; then
-            echo "::set-output name=tag::nightly"
-          else
-            echo "::set-output name=tag::latest"
-          fi
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: .
+          file: ./Dockerfile
           push: true
-          tags: |
-            ghcr.io/mirrorchyan/user-frontend:${{ steps.tag.outputs.tag }}
-            ghcr.io/mirrorchyan/user-frontend:${{ github.ref_name }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

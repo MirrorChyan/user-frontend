@@ -7,7 +7,7 @@ type Rates = {
 };
 
 // 缓存的汇率
-let cachedRate = null;
+let cachedRate: number | null = null;
 // 缓存的汇率更新时间
 let lastFetchTime = 0;
 // 缓存的持续时间

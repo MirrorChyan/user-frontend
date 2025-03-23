@@ -36,7 +36,7 @@ export type AfdianResponse = {
 };
 
 // 缓存的信息
-const cachedPlanInfo = {};
+const cachedPlanInfo: Record<string, Plan | undefined> = {};
 // 缓存的更新时间
 let lastFetchTime = 0;
 // 缓存的持续时间
@@ -46,8 +46,8 @@ export const getPlanInfo = async (planId: string, mostPopularId: string): Promis
   const t = await getTranslations("GetStart");
   const now = Date.now();
 
-  if (now - lastFetchTime < CACHE_DURATION && cachedPlanInfo[planId]) {
-    return cachedPlanInfo[planId];
+  if(now - lastFetchTime < CACHE_DURATION && cachedPlanInfo[planId]){
+    return cachedPlanInfo[planId] || null;
   }
   try {
     const response = await fetch(`https://afdian.com/api/creator/get-plan-skus?plan_id=${planId}&is_ext=`);

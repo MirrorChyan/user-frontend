@@ -21,9 +21,7 @@ export async function getUSDRate(): Promise<number> {
     return cachedRate;
   }
   try {
-    const res: Response = await fetch(`https://api.exchangerate-api.com/v4/latest/CNY`, {
-      next: { revalidate: 24 * 60 * 60 }, // 24小时缓存 (s)
-    });
+    const res: Response = await fetch(`https://api.exchangerate-api.com/v4/latest/CNY`);
     const response: Rates = await res.json();
 
     cachedRate = response.rates.USD;

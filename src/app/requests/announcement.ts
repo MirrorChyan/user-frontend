@@ -10,7 +10,14 @@ type Announcement = {
 }
 
 // 缓存的公告
-let cachedAnnouncement = null;
+let cachedAnnouncement: Announcement = {
+  "ec": 400,
+  "msg": "",
+  "data": {
+    "summary": "",
+    "details": ""
+  }
+};
 // 缓存的公告更新时间
 let lastFetchTime = 0;
 // 缓存的持续时间

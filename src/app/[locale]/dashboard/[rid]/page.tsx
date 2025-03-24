@@ -1,13 +1,13 @@
 "use client";
 
-import {useEffect, useRef, useState} from "react";
-import {Card, Button, Skeleton} from "@heroui/react";
-import {useParams, useSearchParams} from "next/navigation";
-import {useTranslations} from "next-intl";
-import {useRouter} from "@/i18n/routing";
-import {clsx} from "clsx";
-import {debounce} from "lodash";
-import {Revenue} from "@/app/[locale]/dashboard/page";
+import { useEffect, useRef, useState } from "react";
+import { Card, Button, Skeleton } from "@heroui/react";
+import { useParams, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/routing";
+import { clsx } from "clsx";
+import { debounce } from "lodash";
+import { Revenue } from "@/app/[locale]/dashboard/page";
 
 
 export default function Dashboard() {
@@ -113,7 +113,9 @@ export default function Dashboard() {
           <Card>
             <div className="p-4 sm:p-8">
               <h3 className="text-gray-500">{t("totalAmount")}</h3>
-              <p className="text-2xl sm:text-3xl font-bold">{revenueData.length}份</p>
+              <p className="text-2xl sm:text-3xl font-bold">
+                {revenueData.reduce((acc, cur)=> acc + Number(cur.buy_count), 0)}份
+              </p>
             </div>
           </Card>
           <Card>

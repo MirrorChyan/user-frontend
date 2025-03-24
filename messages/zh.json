@@ -96,5 +96,22 @@
     "durationHours": "小时",
     "durationMinutes": "分钟",
     "durationSeconds": "秒"
+  },
+  "Dashboard": {
+    "title": "Mirror酱の营收",
+    "monthInput": "月份",
+    "rid": "RID",
+    "token": "Token",
+    "confirm": "确认",
+    "error": "～(>_<) 怎么不对呢！是不是手指抖了一下呀？",
+    "dashboardTitle": "Mirror酱 x {rid} 销售看板",
+    "totalAmount": "月销售总量",
+    "totalRevenue": "月销售总额",
+    "export": "导出csv文件",
+    "application": "Application",
+    "userAgent": "UserAgent",
+    "plan": "Plan",
+    "dailyRecord": "日销售记录",
+    "totalAmountChart": "销售总额折线图"
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import YearMonthPicker from "@/components/YearMonthPicker";
 import { useState } from "react";
@@ -28,6 +28,7 @@ export default function Dashboard() {
   const [month, setMonth] = useState<string>("");
   const [rid, setRid] = useState<string>("");
   const [token, setToken] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -43,6 +44,7 @@ export default function Dashboard() {
     if (!rid || !token) return;
 
     try {
+      setIsLoading(true);
       const response: RevenueResponse = await fetch(`${CLIENT_BACKEND}/api/billing/revenue?rid=${rid}`, {
         headers: { Authorization: token },
       }).then(res => res.json());
@@ -67,6 +69,8 @@ export default function Dashboard() {
         description: t("error"),
         color: "warning",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -89,14 +93,15 @@ export default function Dashboard() {
             />
             <Input
               label={t("token")} name="rid"
-              type="text" onChange={handleTokenChange}
+              type="password"
+              onChange={handleTokenChange}
             />
-            <button
-              type="submit"
+            <Button
+              type="submit" isLoading={isLoading}
               className="mt-6 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
               {t("confirm")}
-            </button>
+            </Button>
           </form>
         </div>
       </div>

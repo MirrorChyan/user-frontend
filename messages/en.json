@@ -96,5 +96,22 @@
     "durationHours": "hours",
     "durationMinutes": "minutes",
     "durationSeconds": "seconds"
+  },
+  "Dashboard": {
+    "title": "MirrorChyan Revenue",
+    "monthInput": "Month",
+    "rid": "RID",
+    "token": "Token",
+    "confirm": "Confirm",
+    "error": "Please confirm that you have entered the correct content",
+    "dashboardTitle": "MirrorChyan {rid} Sales Bulletin Board",
+    "totalAmount": "Total Monthly Amount",
+    "totalRevenue": "Total Monthly Revenue",
+    "export": "Export CSV file",
+    "application": "Application",
+    "userAgent": "User Agent",
+    "plan": "Plan",
+    "dailyRecord": "Daily sales record",
+    "totalAmountChart": "Line chart of total sales"
   }
 }

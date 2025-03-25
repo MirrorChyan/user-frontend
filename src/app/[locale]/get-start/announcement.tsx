@@ -13,19 +13,32 @@ import ReactMarkdown from "react-markdown";
 import { useTranslations } from "next-intl";
 import { closeAll, addToast } from "@heroui/toast";
 
-export default function Announcement({ summary, details }: { summary: string, details: string }) {
+type PropsType = {
+  summary: string
+  details: string
+}
+
+export default function Announcement({ details, summary }: PropsType) {
   const t = useTranslations("Component.Announcement");
   // model state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   closeAll();
   addToast({
-    title: <Button variant="light" onPress={onOpen}>{summary}</Button>,
-  });
+    title: (
+      <div onClick={onOpen}
+        className={"cursor-pointer w-full h-full"}
+      >{t("newAnnouncement")} - {summary}</div>
+    ),
+    timeout: 60 * 1000,
+    classNames: {
+      base: "border-1 before:bg-primary border-primary-200 dark:border-primary-100 hover:bg-primary-100 dark:hover:bg-primary-200 transition-all duration-300"
+    }
+  }
+  );
 
   return (
     <>
-      {/* <Button className='w-fit self-center' color='primary' onClick={onOpen}>{summary}</Button> */}
       <Modal backdrop='blur' scrollBehavior="inside" isOpen={isOpen} onClose={onOpenChange}>
         <ModalContent>
           {(onClose) => (

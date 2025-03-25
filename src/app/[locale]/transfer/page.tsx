@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 import { Button, Input } from "@heroui/react";
 import { debounce } from "lodash";
 import moment from "moment";
@@ -92,18 +92,22 @@ export default function Transmission() {
     }
   }
 
-  const requestFromOrderIdDebounced = debounce(requestFromOrderId, 2000);
-  const requestToOrderIdDebounced = debounce(requestToOrderId, 2000);
+  const requestFromOrderIdDebounced = useCallback(debounce(requestFromOrderId, 2000), []);
+  const requestToOrderIdDebounced = useCallback(debounce(requestToOrderId, 2000), []);
 
   async function handleFromOrderIdChange(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     setFromOrderId(value);
+    setFromOrderDescription('')
+    setFromOrderIdValid(false)
     requestFromOrderIdDebounced(value);
   }
 
   async function handleToOrderIdChange(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     setToOrderId(value);
+    setToOrderDescription('')
+    setToOrderIdValid(false)
     requestToOrderIdDebounced(value);
   }
 

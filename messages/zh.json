@@ -11,7 +11,9 @@
     "transfer": "订单转换",
     "LimitTimeOffer": "剩余：",
     "priceSymbol": "¥ ",
-    "priceFixed": "1"
+    "priceFixed": "1",
+    "more": "更多",
+    "hide": "收起"
   },
   "GetKey": {
     "title": "欢迎使用Mirror酱",

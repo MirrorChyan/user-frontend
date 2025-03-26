@@ -16,7 +16,9 @@
       "Mirror酱年卡": "Annual Plan"
     },
     "priceSymbol": "$ ",
-    "priceFixed": "2"
+    "priceFixed": "2",
+    "more": "More",
+    "hide": "Hide"
   },
   "GetKey": {
     "title": "Welcome to MirrorChyan",

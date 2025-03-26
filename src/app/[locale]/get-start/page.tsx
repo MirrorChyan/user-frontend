@@ -51,7 +51,7 @@ export default async function GetStart({ searchParams }: { searchParams: Promise
             <Announcement summary={announcement.data.summary} details={announcement.data.details} />
           )}
           <Plans morePlans={morePlans} homePlans={homePlans} customOrderId={customOrderId} C2URate={C2URate} />
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-6">
+          <div className="mt-12 md:mt-10 flex flex-wrap items-center justify-center gap-6">
             <Link
               href="/get-key"
               className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

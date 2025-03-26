@@ -28,8 +28,6 @@ export async function getAnnouncement(lang: "zh" | "en"): Promise<Announcement> 
     const res = await fetch(`${SERVER_BACKEND}/api/misc/anno?lang=${lang}`);
     const response = await res.json();
 
-    console.log("request ", response)
-
     announcementCache[lang] = response;
     lastFetchTime = now;
 

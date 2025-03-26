@@ -10,7 +10,15 @@ type Announcement = {
 }
 
 // 缓存的公告
-let cachedAnnouncement: Announcement = {
+let zhCachedAnnouncement: Announcement = {
+  "ec": 400,
+  "msg": "",
+  "data": {
+    "summary": "",
+    "details": ""
+  }
+};
+let enCachedAnnouncement: Announcement = {
   "ec": 400,
   "msg": "",
   "data": {
@@ -27,14 +35,21 @@ export async function getAnnouncement(lang: "zh" | "en"): Promise<Announcement> 
   // Use absolute URL with origin to work properly in server components
   const now = Date.now();
 
-  if (now - lastFetchTime < CACHE_DURATION && cachedAnnouncement) {
-    return cachedAnnouncement;
+  if (now - lastFetchTime < CACHE_DURATION && lang === "zh" && zhCachedAnnouncement) {
+    return zhCachedAnnouncement;
+  }
+  if (now - lastFetchTime < CACHE_DURATION && lang === "en" && enCachedAnnouncement) {
+    return enCachedAnnouncement;
   }
   try {
     const res = await fetch(`${SERVER_BACKEND}/api/misc/anno?lang=${lang}`);
     const response = await res.json();
 
-    cachedAnnouncement = response;
+    if (lang === "zh") {
+      zhCachedAnnouncement = response;
+    } else {
+      enCachedAnnouncement = response;
+    }
     lastFetchTime = now;
 
     return response;

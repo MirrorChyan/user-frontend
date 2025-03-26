@@ -71,7 +71,7 @@ export default function PlanCard({ plan, customOrderId, C2URate }: PropsType) {
         {planName}
       </h3>
       {plan.discount ? (
-        <p className="mt-6 flex items-baseline gap-x-1 basis-full">
+        <p className="mt-6 flex items-baseline gap-x-1 basis-full text-nowrap">
           <span className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
             {`
               ${t("priceSymbol")}
@@ -86,7 +86,7 @@ export default function PlanCard({ plan, customOrderId, C2URate }: PropsType) {
           </span>
         </p>
       ) : (
-        <p className="mt-6 flex items-baseline gap-x-1 basis-full">
+        <p className="mt-6 flex items-baseline gap-x-1 basis-full text-nowrap">
           <span className="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
             {`
               ${t("priceSymbol")}

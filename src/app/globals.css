@@ -19,3 +19,9 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+html {
+  scrollbar-width: thin;
+  scrollbar-gutter: stable; /* 为滚动条预留空间，防止抖动 */
+  overflow-y: auto; /* 正常显示滚动条 */
+}

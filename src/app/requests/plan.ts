@@ -1,4 +1,5 @@
 import { SERVER_BACKEND } from "../requests/misc";
+import { getPlanInfo } from "./planInfo";
 
 type Plan = {
   plan_id: string
@@ -15,23 +16,32 @@ type PlansRes = {
   }
 }
 
-export const getPlanIds = async (type_id?: string) => {
+export const getPlans = async (type_id?: string) => {
   try {
-    const _plans = await fetch(`${SERVER_BACKEND}/api/misc/plan${type_id ? `?type_id=${type_id}` : ""}`)
-    const res: PlansRes = await _plans.json()
+    const res = await fetch(`${SERVER_BACKEND}/api/misc/plan${type_id ? `?type_id=${type_id}` : ""}`)
+    if (!res.ok) {
+      console.error("Get Plans resp error:", res);
+      return {
+        homePlans: [],
+        morePlans: [],
+      }
+    }
+    const { data }: PlansRes = await res.json()
 
-    const homePlanIds = res.data.home.map((v) => v.plan_id);
-    const morePlanIds = res.data.more.map((v) => v.plan_id);
+    const [homePlans, morePlans] = await Promise.all([
+      Promise.all(data.home.map((v) => getPlanInfo(v.plan_id, v.popular === 1))),
+      Promise.all(data.more.map((v) => getPlanInfo(v.plan_id, v.popular === 1))),
+    ]);
 
     return {
-      homePlanIds,
-      morePlanIds,
+      homePlans: homePlans.filter((v) => v !== null),
+      morePlans: morePlans.filter((v) => v !== null),
     };
   } catch (error) {
-    console.error("Get Plan Ids error:", error);
+    console.error("Get Plans error:", error);
     return {
-      homePlanIds: [],
-      morePlanIds: []
+      homePlans: [],
+      morePlans: [],
     };
   }
 }

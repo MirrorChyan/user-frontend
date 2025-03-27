@@ -6,12 +6,9 @@ import { getTranslations } from "next-intl/server";
 import Announcement from "./announcement";
 import { getUSDRate } from "@/app/requests/rate";
 import { getAnnouncement } from "@/app/requests/announcement";
-import { getPlanInfo } from "@/app/requests/planInfo";
-import { getPlanIds } from "@/app/requests/plan";
+import { getPlans } from "@/app/requests/plan";
 import Plans from "./plans";
 // import { CheckIcon } from '@heroicons/react/20/solid'
-
-const mostPopularId = '69c45576c9aa11ef9ace52540025c377';
 
 export default async function GetStart({ searchParams }: { searchParams: Promise<{ type_id?: string }> }) {
   const t = await getTranslations("GetStart");
@@ -19,10 +16,7 @@ export default async function GetStart({ searchParams }: { searchParams: Promise
 
   const { type_id } = await searchParams
 
-  const { homePlanIds, morePlanIds } = await getPlanIds(type_id);
-
-  const homePlans = await Promise.all(homePlanIds.map((id) => getPlanInfo(id, mostPopularId)));
-  const morePlans = await Promise.all(morePlanIds.map((id) => getPlanInfo(id, mostPopularId)));
+  const { homePlans, morePlans } = await getPlans(type_id);
 
   const announcement = await getAnnouncement(locale as "zh" | "en");
 

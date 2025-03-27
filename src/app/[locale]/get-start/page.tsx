@@ -8,7 +8,6 @@ import { getUSDRate } from "@/app/requests/rate";
 import { getAnnouncement } from "@/app/requests/announcement";
 import { getPlans } from "@/app/requests/plan";
 import Plans from "./plans";
-// import { CheckIcon } from '@heroicons/react/20/solid'
 
 export default async function GetStart({ searchParams }: { searchParams: Promise<{ type_id?: string }> }) {
   const t = await getTranslations("GetStart");

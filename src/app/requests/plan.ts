@@ -34,8 +34,8 @@ export const getPlans = async (type_id?: string) => {
     ]);
 
     return {
-      homePlans: homePlans.filter((v) => v !== null),
-      morePlans: morePlans.filter((v) => v !== null),
+      homePlans: homePlans.filter(v => v !== null),
+      morePlans: morePlans.filter(v => v !== null),
     };
   } catch (error) {
     console.error("Get Plans error:", error);

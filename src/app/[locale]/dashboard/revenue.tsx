@@ -22,7 +22,7 @@ type PropsType = {
 type ChartDataItem = {
     name: string;
     value: number;
-    count?: number;
+    count: number;
     percentage?: number;
 }
 
@@ -55,7 +55,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
     }, [revenueData]);
 
     function calculatePercentages(data: ChartDataItem[]): ChartDataItem[] {
-        const total = data.reduce((sum, item) => sum + item.value, 0);
+        const total = data.reduce((sum, item) => sum + item.count, 0);
 
         if (total === 0) {
             return data.map(item => ({
@@ -66,9 +66,9 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
 
         return data.map(item => ({
             ...item,
-            percentage: parseFloat(((item.value / total) * 100).toFixed(1))
+            percentage: parseFloat(((item.count / total) * 100).toFixed(1))
         }))
-            .sort((a, b) => b.value - a.value);
+            .sort((a, b) => b.count - a.count);
     }
 
     // Function to prepare chart data by grouping
@@ -107,7 +107,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
                         <div className="flex flex-col">
                             <span>{entry.value} {entry.payload.percentage}% </span>
                             <span
-                                className="text-gray-500">({entry.payload.count || 0}份 {entry.payload.value.toFixed(2)}元)</span>
+                                className="text-gray-500">({entry.payload.count}份 {entry.payload.value.toFixed(2)}元)</span>
                         </div>
                     </li>
                 ))}
@@ -163,7 +163,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
                             outerRadius={80}
                             innerRadius={30}
                             fill="#8884d8"
-                            dataKey="value"
+                            dataKey="count"
                             activeIndex={activeSliceIndex}
                             onMouseEnter={(_, index) => setActiveSliceIndex(index)}
                             onMouseLeave={() => setActiveSliceIndex(undefined)}

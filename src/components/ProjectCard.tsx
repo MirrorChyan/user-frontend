@@ -201,7 +201,7 @@ export default function ProjectCard(props: ProjectCardProps) {
             {url ?
               <Tooltip content={
                 <div className="px-1 py-2">
-                  <Link href={url} underline="hover" color="primary"
+                  <Link href={url} underline="hover" color="primary" target="_blank"
                     showAnchorIcon={true}> 查看项目地址 </Link>
                 </div>
               } showArrow={true} placement="top-start">

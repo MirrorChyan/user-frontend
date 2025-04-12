@@ -11,6 +11,9 @@ import Plans from "./plans";
 
 export default async function GetStart({ searchParams }: { searchParams: Promise<{ type_id?: string }> }) {
   const t = await getTranslations("GetStart");
+
+  const p = await getTranslations('Projects')
+
   const locale = await getLocale();
 
   const { type_id } = await searchParams;
@@ -64,23 +67,37 @@ export default async function GetStart({ searchParams }: { searchParams: Promise
             >
               {t("discussion")}
             </Link>
-            <a href="https://github.com/MirrorChyan/docs" target="_blank" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
+            <Link
+                href="/projects"
+                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              {p('title')}
+            </Link>
+
+          </div>
+          <div className="mt-16 md:mt-10 flex flex-wrap items-center justify-center gap-6">
+            <a href="https://github.com/MirrorChyan/docs" target="_blank"
+               className="text-sm/6 font-semibold text-gray-900 dark:text-white">
               {t("apiDoc")}<span aria-hidden="true">&nbsp;→</span>
             </a>
-            <a href="https://github.com/MirrorChyan/user-frontend" target="_blank" className="text-sm/6 font-semibold text-gray-900 dark:text-white">
+            <a href="https://github.com/MirrorChyan/user-frontend" target="_blank"
+               className="text-sm/6 font-semibold text-gray-900 dark:text-white">
               {t("openSource")}<span aria-hidden="true">&nbsp;</span>
             </a>
           </div>
-          <div className="mt-10 bottom-4 w-full text-center">
-            <a href="https://beian.miit.gov.cn/" target="_blank" className="text-xs text-gray-500 dark:text-gray-400">
-              皖ICP备2025075166号
-            </a>
-            &nbsp;
-            &nbsp;
-            <a href="/disclaimer.html" target="_blank" className="text-xs text-gray-500 dark:text-gray-400">
-              {t("disclaimer")}<span aria-hidden="true">&nbsp;</span>
-            </a>
+          <div className='absolute bottom-4 w-full flex items-center justify-center gap-1.5 mt-16'>
+            <div className='w-32'>
+              <a href="https://beian.miit.gov.cn/" target="_blank" className="text-xs text-gray-500 dark:text-gray-400">
+                皖ICP备2025075166号
+              </a>
+            </div>
+            <div className='w-32'>
+              <a href="/disclaimer.html" target="_blank" className="text-xs text-gray-500 dark:text-gray-400">
+                {t("disclaimer")}<span aria-hidden="true">&nbsp;</span>
+              </a>
+            </div>
           </div>
+
         </div>
       </BackgroundBeamsWithCollision>
     </div>

@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { BackgroundLines } from "@/components/BackgroundLines";
 import ProjectCard from "@/components/ProjectCard";
+import ProjectIntegratedCard from "@/components/ProjectIntegratedCard";
 import { PROJECTS } from "@/data/projects";
 
 export default function ProjectsPage() {
@@ -20,6 +21,7 @@ export default function ProjectsPage() {
               {...project}
             />
           ))}
+          <ProjectIntegratedCard />
         </div>
       </div>
     </BackgroundLines>

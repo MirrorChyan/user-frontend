@@ -92,19 +92,18 @@
     "os": "os",
     "arch": "arch",
     "channel": "channel",
-
     "noCDKey": "Please enter CDK",
     "noOs": "Please select system",
     "noArch": "Please select arch",
     "noChannel": "Please select a distribution channel",
-
     "stable": "stable",
     "beta": "beta",
     "alpha": "alpha"
-
   },
   "Projects": {
-    "title": "Supported Projects"
+    "title": "Supported Projects",
+    "joinUs": "Join us",
+    "contactUs": "Integrate Mirrorchyan into your project"
   },
   "Common": {
     "ok": "OK",

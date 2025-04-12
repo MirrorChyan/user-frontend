@@ -92,18 +92,18 @@
     "os": "系统",
     "arch": "架构",
     "channel": "发布渠道",
-
     "noCDKey": "请输入CDK",
     "noOs": "请选择系统",
     "noArch": "请选择架构",
     "noChannel": "请选择发布渠道",
-
     "stable": "稳定版",
     "beta": "公测版",
     "alpha": "内测版"
   },
   "Projects": {
-    "title": "已支持的项目"
+    "title": "已支持的项目",
+    "joinUs": "加入我们",
+    "contactUs": "集成Mirror酱到您的项目"
   },
   "Common": {
     "ok": "确定",

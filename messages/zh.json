@@ -2,6 +2,7 @@
   "GetStart": {
     "title": "使用Mirror酱更新你的App",
     "description": "Mirror酱是一个第三方应用分发平台，让开源应用的更新更简单。<br></br>用户付费使用，收益与开发者共享。此外，Mirror酱本身也是开源的。",
+    "projectsTitle": "🎉 已接入的应用",
     "getKey": "查询CDK",
     "discussion": "交流反馈",
     "disclaimer": "用户协议",
@@ -165,7 +166,6 @@
     "alpha": "内测版"
   },
   "Projects": {
-    "title": "项目一览",
     "joinUs": "加入我们",
     "contactUs": "集成Mirror酱到您的项目",
     "openProjectHomepage": "访问项目官网查看详细文档和使用说明",

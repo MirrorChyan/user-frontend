@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { Card, Button, Skeleton } from "@heroui/react";
 import { useTranslations } from "next-intl";
+import { Card, Button, Skeleton } from "@heroui/react";
 import { debounce } from "lodash";
-import { RevenueType } from "@/app/[locale]/dashboard/page";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, TooltipProps } from "recharts";
+import { Props } from "recharts/types/component/DefaultLegendContent";
+import { RevenueType } from "@/app/[locale]/dashboard/page";
 import SalesList from "@/app/[locale]/dashboard/SalesList";
 import SalesLineChart from "@/app/[locale]/dashboard/SalesLineChart";
-import { Props } from "recharts/types/component/DefaultLegendContent";
 
 
-type PropsType = {
+type RevenueProps = {
     revenueData: RevenueType[]
     onLogOut: () => void
     date: string
@@ -25,7 +25,12 @@ type ChartDataItem = {
     percentage?: number;
 }
 
-export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType) {
+type SalesPieChartProps = {
+    data: ChartDataItem[],
+    title: string
+}
+
+export default function Revenue({ revenueData, onLogOut, rid, date }: RevenueProps) {
     const t = useTranslations("Dashboard");
     const [isLoading, setIsLoading] = useState<boolean>(true);
     useEffect(() => {
@@ -136,13 +141,13 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
     }, 500);
 
     // Reusable Pie Chart component
-    const SalesPieChart = ({ data, title }: { data: ChartDataItem[], title: string }) => {
+    const SalesPieChart = (pieChartProps: SalesPieChartProps) => {
         const [activeSliceIndex, setActiveSliceIndex] = useState<number | undefined>(undefined);
         const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8", "#82CA9D", "#DC143C", "#9370DB", "#20B2AA"];
 
 
-        const customTooltip = (props: TooltipProps<number, string>) => {
-            const { active, payload } = props;
+        const customTooltip = (toolTipProps: TooltipProps<number, string>) => {
+            const { active, payload } = toolTipProps;
             if (active && payload && payload.length) {
                 const data = payload[0].payload;
                 return (
@@ -159,11 +164,11 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
 
         return (
             <div className="h-full">
-                <h3 className="mb-2">{title}</h3>
+                <h3 className="mb-2">{pieChartProps.title}</h3>
                 <ResponsiveContainer width="100%" height={250}>
                     <PieChart>
                         <Pie
-                            data={data}
+                            data={pieChartProps.data}
                             cx="50%"
                             cy="50%"
                             labelLine={false}
@@ -175,7 +180,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
                             onMouseEnter={(_, index) => setActiveSliceIndex(index)}
                             onMouseLeave={() => setActiveSliceIndex(undefined)}
                         >
-                            {data.map((_entry, index) => (
+                            {pieChartProps.data.map((_entry, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                         </Pie>

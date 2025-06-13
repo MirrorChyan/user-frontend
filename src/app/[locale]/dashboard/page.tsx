@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Revenue from "@/app/[locale]/dashboard/revenue";
+import Revenue from "@/app/[locale]/dashboard/Revenue";
 import LoginForm from "@/app/[locale]/dashboard/LoginForm";
 
 export type RevenueType = {

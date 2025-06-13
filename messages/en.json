@@ -173,7 +173,7 @@
   "Projects": {
     "title": "Project List",
     "joinUs": "Join us",
-    "contactUs": "Integrate Mirrorchyan into your project",
+    "contactUs": "Integrate MirrorChyan into your project",
     "openProjectHomepage": "Visit project website for detailed documentation and usage guide",
     "onlyInternalUpdate": "{name} currently only be updated through the application itself"
   },
@@ -194,27 +194,36 @@
     "tooltip": "Query through UserAgent",
     "confirm": "Confirm",
     "error": "Please confirm that you have entered the correct content",
-    "dashboardTitle": "MirrorChyan {rid} {date} Sales Bulletin Board",
-    "totalCount": "Total Monthly Amount",
-    "totalAmount": "Total Monthly Revenue",
+    "dashboardTitle": "MirrorChyan x {rid} {date} Sales Dashboard",
     "export": "Export CSV file",
-    "application": "Application",
-    "userAgent": "User Agent",
-    "source": "Source",
-    "plan": "Plan",
-    "dailyRecord": {
-      "title": "Daily sales record",
-      "date": "Date",
-      "count": "count",
-      "amount": "Sales Volume",
-      "labelAmount": "Amount (元)",
-      "labelCount": "Revenue (份)",
-      "day": "Day",
-      "hour": "Hour",
+    "application": "Applications",
+    "userAgent": "Checkin user agents",
+    "source": "Payment sources",
+    "plan": "Plans",
+    "unit": {
+      "count": "deals",
+      "amount": "RMB",
       "minute": "Minute",
-      "toggleCount": "Click to switch to sales volume",
-      "toggleAmount": "Click to switch to sales revenue"
+      "hour": "Hour",
+      "day": "Day"
     },
-    "totalCountChart": "Line chart of total sales"
+    "amount": "Revenue",
+    "count": "Deals",
+    "monthlyCount": "Monthly Sales",
+    "monthlyAmount": "Monthly Revenue",
+    "lineChart": {
+      "toggleCount": "Click to switch to sales volume",
+      "toggleAmount": "Click to switch to sales revenue",
+      "labelAmount": "Revenue (RMB)",
+      "slide": "← Slide to see the full chart →",
+      "labelCount": "Sales (deals)",
+      "title": "Sales Line Chart"
+    },
+    "list": {
+      "date": "Date",
+      "count": "Deals",
+      "amount": "Revenue",
+      "title": "Daily Sales Record"
+    }
   }
 }

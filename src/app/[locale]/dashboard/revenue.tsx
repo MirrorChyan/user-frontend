@@ -111,8 +111,9 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
                         />
                         <div className="flex flex-col">
                             <span>{entry.value} {entry.payload.percentage}% </span>
-                            <span
-                                className="text-gray-500">({entry.payload.count}份 {entry.payload.amount.toFixed(2)}元)</span>
+                            <span className="text-gray-500">
+                                {entry.payload.count}{t("unit.count")} {entry.payload.amount.toFixed(2)}{t("unit.amount")}
+                            </span>
                         </div>
                     </li>
                 ))}
@@ -148,7 +149,9 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
                 return (
                     <div className="bg-white dark:bg-gray-800 p-2 shadow rounded border dark:border-gray-700">
                         <p className="font-medium text-gray-900 dark:text-white">{data.name} {data.percentage}%</p>
-                        <p className="text-gray-700 dark:text-gray-300">{data.count}份 {data.amount.toFixed(2)}元</p>
+                        <p className="text-gray-700 dark:text-gray-300">
+                            {data.count}{t("unit.count")} {data.amount.toFixed(2)}{t("unit.amount")}
+                        </p>
                     </div>
                 );
             }
@@ -244,19 +247,21 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                             <Card>
                                 <div className="p-4 sm:p-8">
-                                    <h3 className="text-gray-500">{t("totalCount")}</h3>
+                                    <h3 className="text-gray-500">{t("monthlyCount")}</h3>
                                     <p className="text-2xl sm:text-3xl font-bold">
-                                        {revenueData.reduce((acc, cur) => acc + Number(cur.buy_count), 0)}份
+                                        {revenueData.reduce((acc, cur) => acc + Number(cur.buy_count), 0)}
+                                        {t("unit.count")}
                                     </p>
                                 </div>
                             </Card>
                             <Card>
                                 <div className="p-4 sm:p-8">
-                                    <h3 className="text-gray-500">{t("totalAmount")}</h3>
+                                    <h3 className="text-gray-500">{t("monthlyAmount")}</h3>
                                     <p className="text-2xl sm:text-3xl font-bold">
                                         {revenueData.reduce(
                                             (acc, cur) => acc + Number(cur.amount), 0
-                                        ).toFixed(2)}元
+                                        ).toFixed(2)}
+                                        {t("unit.amount")}
                                     </p>
                                 </div>
                             </Card>
@@ -288,7 +293,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
                     </div>
                     <Card className="lg:col-span-1 mb-6">
                         <div className="p-4 flex flex-col h-96 lg:h-[48.01rem]">
-                            <h3>{t("dailyRecord.title")}</h3>
+                            <h3>{t("list.title")}</h3>
                             <div className="flex-1 overflow-y-auto custom-scrollbar">
                                 <SalesList listData={revenueData} date={date} />
                             </div>

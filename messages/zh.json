@@ -78,7 +78,7 @@
     "timeLeft": "（剩余 {relativeTime}）",
     "timeConfettiBefore": "CDK 在 {time} 内可用（剩余 {days} 天）",
     "timeConfettiAfter": "✨ 已提升至 {time} 内可用",
-    "confettiText": "\uD83C\uDF89 恭喜获得额外{randomDays}天使用时间！",
+    "confettiText": "🎉 恭喜获得额外{randomDays}天使用时间！",
     "remainingDays": " 剩余天数: {originDay}天",
     "confettiGotText": " 已获得额外{days}天",
     "getRandomDaysText": "随机抽取额外天数",
@@ -189,26 +189,35 @@
     "confirm": "确认",
     "error": "～(>_<) 怎么不对呢！是不是手指抖了一下呀？",
     "dashboardTitle": "Mirror酱 x {rid} {date} 销售看板",
-    "totalCount": "月销售总量",
-    "totalAmount": "月销售总额",
-    "export": "导出csv文件",
+    "export": "导出 CSV 文件",
     "application": "应用",
     "userAgent": "签到源",
     "source": "付费源",
     "plan": "方案",
-    "dailyRecord": {
-      "title": "日销售记录",
+    "unit": {
+      "count": "份",
+      "amount": "元",
+      "minute": "分钟",
+      "hour": "小时",
+      "day": "日"
+    },
+    "amount": "销售额",
+    "count": "销量",
+    "monthlyCount": "月销售总量",
+    "monthlyAmount": "月销售总额",
+    "lineChart": {
+      "toggleCount": "点击切换为销量",
+      "toggleAmount": "点击切换为销售额",
+      "labelAmount": "销售额 (元)",
+      "slide": "← 左右滑动查看完整图表 →",
+      "labelCount": "销量 (份)",
+      "title": "销售额/销量折线图"
+    },
+    "list": {
       "date": "日期",
       "count": "销量",
       "amount": "销售额",
-      "labelAmount": "销售额 (元)",
-      "labelCount": "销量 (份)",
-      "day": "日",
-      "hour": "小时",
-      "minute": "分钟",
-      "toggleCount": "点击切换为销量",
-      "toggleAmount": "点击切换为销售额"
-    },
-    "totalCountChart": "销售额/销量折线图"
+      "title": "日销售记录"
+    }
   }
 }

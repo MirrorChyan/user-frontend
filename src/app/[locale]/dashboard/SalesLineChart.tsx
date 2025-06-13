@@ -179,8 +179,8 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
           </p>
           <p className="text-blue-600 dark:text-blue-400">
             {showSales ?
-              `${t("dailyRecord.amount")}: ${data.amount.toFixed(2)}元` :
-              `${t("dailyRecord.count")}: ${data.count}份`}
+              `${t("amount")}: ${data.amount.toFixed(2)}${t("unit.amount")}` :
+              `${t("count")}: ${data.count}${t("unit.count")}`}
           </p>
         </div>
       );
@@ -195,7 +195,7 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
     <div className="relative h-full">
       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 px-2">
         <h3 className="w-full sm:flex-1 text-base sm:text-lg text-center">
-          {t("totalCountChart")}
+          {t("lineChart.title")}
         </h3>
 
         <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
@@ -209,8 +209,8 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
             className="flex-1 sm:flex-none"
           >
             {[
-              { label: t("dailyRecord.hour"), value: "hour" },
-              { label: t("dailyRecord.day"), value: "day" },
+              { label: t("unit.hour"), value: "hour" },
+              { label: t("unit.day"), value: "day" },
             ].map(({ label, value }) => (
               <Radio
                 key={value}
@@ -230,7 +230,7 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
             ))}
           </RadioGroup>
           <Tippy
-            content={showSales ? t("dailyRecord.toggleCount") : t("dailyRecord.toggleAmount")}
+            content={showSales ? t("lineChart.toggleCount") : t("lineChart.toggleAmount")}
             showArrow className="text-gray-500 dark:text-gray-200 "
           >
             <Switch
@@ -280,7 +280,7 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
 
             <YAxis
               label={{
-                value: showSales ? t("dailyRecord.labelAmount") : t("dailyRecord.labelCount"),
+                value: showSales ? t("lineChart.labelAmount") : t("lineChart.labelCount"),
                 angle: -90,
                 position: "insideLeft",
                 fontSize: 14,
@@ -329,7 +329,7 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
       </div>
 
       <div className="sm:hidden text-sm text-gray-500 mt-2 px-2">
-        ← 左右滑动查看完整图表 →
+        {t("lineChart.slide")}
       </div>
     </div>
   );

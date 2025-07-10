@@ -97,7 +97,12 @@ export default function QRCodePayModal({
 
                       <div className="flex justify-center mb-4">
                         {paymentHtml ? (
-                            <div dangerouslySetInnerHTML={{ __html: paymentHtml }}></div>
+                          <div
+                            className={`relative p-1 rounded-lg`}>
+                            <div className="relative bg-white p-1 rounded-md">
+                                <div dangerouslySetInnerHTML={{ __html: paymentHtml }}></div>
+                            </div>
+                          </div>
                         ) : (
                           <div
                             className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg h-[240px] w-[240px] flex items-center justify-center">

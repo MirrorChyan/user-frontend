@@ -1,18 +1,17 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { Card, Button, Skeleton } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { clsx } from "clsx";
+import { Card, Button, Skeleton } from "@heroui/react";
 import { debounce } from "lodash";
-import { RevenueType } from "@/app/[locale]/dashboard/page";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, TooltipProps } from "recharts";
+import { Props } from "recharts/types/component/DefaultLegendContent";
+import { RevenueType } from "@/app/[locale]/dashboard/page";
 import SalesList from "@/app/[locale]/dashboard/SalesList";
 import SalesLineChart from "@/app/[locale]/dashboard/SalesLineChart";
-import { Props } from "recharts/types/component/DefaultLegendContent";
 
 
-type PropsType = {
+type RevenueProps = {
     revenueData: RevenueType[]
     onLogOut: () => void
     date: string
@@ -26,7 +25,12 @@ type ChartDataItem = {
     percentage?: number;
 }
 
-export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType) {
+type SalesPieChartProps = {
+    data: ChartDataItem[],
+    title: string
+}
+
+export default function Revenue({ revenueData, onLogOut, rid, date }: RevenueProps) {
     const t = useTranslations("Dashboard");
     const [isLoading, setIsLoading] = useState<boolean>(true);
     useEffect(() => {
@@ -111,8 +115,9 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
                         />
                         <div className="flex flex-col">
                             <span>{entry.value} {entry.payload.percentage}% </span>
-                            <span
-                                className="text-gray-500">({entry.payload.count}份 {entry.payload.amount.toFixed(2)}元)</span>
+                            <span className="text-gray-500">
+                                {entry.payload.count}{t("unit.count")} {entry.payload.amount.toFixed(2)}{t("unit.amount")}
+                            </span>
                         </div>
                     </li>
                 ))}
@@ -136,19 +141,21 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
     }, 500);
 
     // Reusable Pie Chart component
-    const SalesPieChart = ({ data, title }: { data: ChartDataItem[], title: string }) => {
+    const SalesPieChart = (pieChartProps: SalesPieChartProps) => {
         const [activeSliceIndex, setActiveSliceIndex] = useState<number | undefined>(undefined);
         const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8", "#82CA9D", "#DC143C", "#9370DB", "#20B2AA"];
 
 
-        const customTooltip = (props: TooltipProps<number, string>) => {
-            const { active, payload } = props;
+        const customTooltip = (toolTipProps: TooltipProps<number, string>) => {
+            const { active, payload } = toolTipProps;
             if (active && payload && payload.length) {
                 const data = payload[0].payload;
                 return (
                     <div className="bg-white dark:bg-gray-800 p-2 shadow rounded border dark:border-gray-700">
                         <p className="font-medium text-gray-900 dark:text-white">{data.name} {data.percentage}%</p>
-                        <p className="text-gray-700 dark:text-gray-300">{data.count}份 {data.amount.toFixed(2)}元</p>
+                        <p className="text-gray-700 dark:text-gray-300">
+                            {data.count}{t("unit.count")} {data.amount.toFixed(2)}{t("unit.amount")}
+                        </p>
                     </div>
                 );
             }
@@ -157,11 +164,11 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
 
         return (
             <div className="h-full">
-                <h3 className="mb-2">{title}</h3>
+                <h3 className="mb-2">{pieChartProps.title}</h3>
                 <ResponsiveContainer width="100%" height={250}>
                     <PieChart>
                         <Pie
-                            data={data}
+                            data={pieChartProps.data}
                             cx="50%"
                             cy="50%"
                             labelLine={false}
@@ -173,7 +180,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
                             onMouseEnter={(_, index) => setActiveSliceIndex(index)}
                             onMouseLeave={() => setActiveSliceIndex(undefined)}
                         >
-                            {data.map((_entry, index) => (
+                            {pieChartProps.data.map((_entry, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                         </Pie>
@@ -244,19 +251,21 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                             <Card>
                                 <div className="p-4 sm:p-8">
-                                    <h3 className="text-gray-500">{t("totalCount")}</h3>
+                                    <h3 className="text-gray-500">{t("monthlyCount")}</h3>
                                     <p className="text-2xl sm:text-3xl font-bold">
-                                        {revenueData.reduce((acc, cur) => acc + Number(cur.buy_count), 0)}份
+                                        {revenueData.reduce((acc, cur) => acc + Number(cur.buy_count), 0)}
+                                        {t("unit.count")}
                                     </p>
                                 </div>
                             </Card>
                             <Card>
                                 <div className="p-4 sm:p-8">
-                                    <h3 className="text-gray-500">{t("totalAmount")}</h3>
+                                    <h3 className="text-gray-500">{t("monthlyAmount")}</h3>
                                     <p className="text-2xl sm:text-3xl font-bold">
                                         {revenueData.reduce(
                                             (acc, cur) => acc + Number(cur.amount), 0
-                                        ).toFixed(2)}元
+                                        ).toFixed(2)}
+                                        {t("unit.amount")}
                                     </p>
                                 </div>
                             </Card>
@@ -288,7 +297,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: PropsType)
                     </div>
                     <Card className="lg:col-span-1 mb-6">
                         <div className="p-4 flex flex-col h-96 lg:h-[48.01rem]">
-                            <h3>{t("dailyRecord.title")}</h3>
+                            <h3>{t("list.title")}</h3>
                             <div className="flex-1 overflow-y-auto custom-scrollbar">
                                 <SalesList listData={revenueData} date={date} />
                             </div>

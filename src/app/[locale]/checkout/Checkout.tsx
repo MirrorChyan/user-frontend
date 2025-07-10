@@ -9,6 +9,7 @@ import { ArrowLeft, CreditCard, ShieldCheck } from "lucide-react";
 import NoOrder from "@/app/[locale]/checkout/NoOrder";
 import QRCodePayModal from "@/components/checkout/QRCodePayModal";
 import WaitForPayModal from "@/components/checkout/WaitForPayModal";
+import HtmlFormPayModal from "@/components/checkout/HtmlFormPayModal";
 import { addToast } from "@heroui/toast";
 import PaymentOption from "@/components/checkout/PaymentOption";
 import { isMobile } from "react-device-detect"
@@ -32,6 +33,7 @@ export interface PlanInfoDetail {
   };
   yimapay_id: string;
   weixin_id: string;
+  alipay_id: string;
 }
 
 type PaymentMethod = "alipay" | "wechatPay" | "afdian";
@@ -51,7 +53,8 @@ const PayWithH5: Record<PaymentMethod | any, YmPayType> = {
 };
 
 type CreateOrderType = {
-  pay_url: string,
+  pay_url?: string,
+  html?: string,
   custom_order_id: string,
   amount: number,
   title: string,
@@ -76,10 +79,11 @@ export default function Checkout(params: CheckoutProps) {
   const [loading, setLoading] = useState(false);
   const [planInfoLoading, setPlanInfoLoading] = useState(true);
   const [planInfo, setPlanInfo] = useState<PlanInfoDetail | undefined>();
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("wechatPay");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("alipay");
   const [showModal, setShowModal] = useState<ShowedType>("none");
 
   const [paymentUrl, setPaymentUrl] = useState<string>("");
+  const [paymentHtml, setPaymentHtml] = useState<string>("");
   const [customOrderId, setCustomOrderId] = useState<string>();
   const [orderInfo, setOrderInfo] = useState<OrderInfoType>();
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
@@ -105,7 +109,7 @@ export default function Checkout(params: CheckoutProps) {
             return;
           }
           const detail = data as PlanInfoDetail
-          setPaymentMethod(detail.yimapay_id ? 'wechatPay' : 'afdian')
+          setPaymentMethod(detail.alipay_id ? 'alipay' : 'wechatPay')
           setPlanInfo(detail);
         }
       } catch (error) {
@@ -123,8 +127,8 @@ export default function Checkout(params: CheckoutProps) {
     try {
       const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?custom_order_id=${customOrderId}`);
       if (response.ok) {
-        const { code, data } = await response.json();
-        console.log(data, code);
+        const { ec, code, data } = await response.json();
+        console.log(ec, code, data);
         if (code === 0) {
           setOrderInfo({
             cdk: data.cdk,
@@ -196,39 +200,58 @@ export default function Checkout(params: CheckoutProps) {
         return;
       }
 
-      const useNativeWeixin = planInfo?.weixin_id && !usePayWithH5 && paymentMethod === "wechatPay";
+      const params = new URLSearchParams();
 
-      if (paymentMethod === "alipay" || paymentMethod === "wechatPay") {
-        const params = new URLSearchParams();
+      let platform: string = "";
 
-        params.append('plan_id', useNativeWeixin ? planInfo?.weixin_id : planInfo?.yimapay_id as string);
-
-        if (!useNativeWeixin) {
-          params.append('pay', (usePayWithH5 ? PayWithH5 : PayWithQrcode)[paymentMethod]);
+      if (usePayWithH5) {
+        platform = "yimapay";
+        params.append('plan_id', planInfo?.yimapay_id as string);
+        params.append('pay', PayWithH5[paymentMethod]);
+      } else {
+        if (paymentMethod === "alipay") {
+          platform = "alipay";
+          params.append('plan_id', planInfo?.alipay_id as string);
+        } else if (paymentMethod === "wechatPay") {
+          platform = "weixin";
+          params.append('plan_id', planInfo?.weixin_id as string);
         }
+      }
 
-        params.append('source', getSource());
+      params.append('source', getSource());
 
-        const platform = useNativeWeixin ? "weixin" : "yimapay";
-
-        const resp = await fetch(`${CLIENT_BACKEND}/api/billing/order/${platform}/create?${params}`);
-        if (resp.status !== 200) {
+      const resp = await fetch(`${CLIENT_BACKEND}/api/billing/order/${platform}/create?${params}`);
+      let jresp = await resp.json();
+      if (jresp.code != 0) {
+        // fallback
+        platform = "yimapay";
+        params.set('plan_id', planInfo?.yimapay_id as string);
+        params.set('pay', PayWithQrcode[paymentMethod]);
+        const resp_bak = await fetch(`${CLIENT_BACKEND}/api/billing/order/${platform}/create?${params}`);
+        jresp = await resp_bak.json()
+        if (jresp.code != 0) {
           addToast({
             color: "warning",
             description: t("createOrderError"),
           });
           return;
         }
-        const orderInfo = await resp.json().then(e => e.data) as CreateOrderType;
-
-        if (usePayWithH5) {
-          window.open(orderInfo.pay_url, "_blank");
-        }
-
-        setPaymentUrl(orderInfo.pay_url);
-        setCustomOrderId(orderInfo.custom_order_id);
-        setShowModal(paymentMethod);
       }
+
+      const orderInfo = jresp.data as CreateOrderType;
+
+      if (usePayWithH5) {
+        window.open(orderInfo.pay_url, "_blank");
+      }
+
+      if (orderInfo?.pay_url) {
+        setPaymentUrl(orderInfo.pay_url);
+      } else {
+        setPaymentHtml(orderInfo.html || "");
+      }
+      setCustomOrderId(orderInfo.custom_order_id);
+      setShowModal(paymentMethod);
+
     } catch (error) {
       console.log(error);
       addToast({
@@ -355,30 +378,11 @@ export default function Checkout(params: CheckoutProps) {
                 <div className="space-y-4">
 
                   {
-                    planInfo?.yimapay_id &&
-                    <PaymentOption checked={paymentMethod === "wechatPay"}
-                      onClick={() => handlePaymentMethodChange("wechatPay")}
-                      name={t("wechatPay")}
-                      recommend={true}
-                      mobilePay={true}
-                    >
-                      <div className="w-10 h-10  rounded-lg flex items-center justify-center mr-3">
-                        <svg className="icon" viewBox="0 0 1228 1024" version="1.1"
-                          xmlns="http://www.w3.org/2000/svg" p-id="12841" width="200" height="200">
-                          <path
-                            d="M530.8928 703.1296a41.472 41.472 0 0 1-35.7376-19.8144l-2.7136-5.5808L278.272 394.752a18.7392 18.7392 0 0 1-2.048-8.1408 19.968 19.968 0 0 1 20.48-19.3536c4.608 0 8.8576 1.4336 12.288 3.84l234.3936 139.9296a64.4096 64.4096 0 0 0 54.528 5.9392L1116.2624 204.8C1004.9536 80.896 821.76 0 614.4 0 275.0464 0 0 216.576 0 483.6352c0 145.7152 82.7392 276.8896 212.2752 365.5168a38.1952 38.1952 0 0 1 17.2032 31.488 44.4928 44.4928 0 0 1-2.1504 12.3904l-27.6992 97.4848c-1.3312 4.608-3.328 9.3696-3.328 14.1312 0 10.752 9.216 19.3536 20.48 19.3536 4.4032 0 8.0384-1.536 11.776-3.584l134.5536-73.3184c10.1376-5.5296 20.7872-8.96 32.6144-8.96 6.2976 0 12.288 0.9216 18.0736 2.5088 62.72 17.0496 130.4576 26.5728 200.5504 26.5728C953.7024 967.168 1228.8 750.592 1228.8 483.6352c0-80.9472-25.4464-157.1328-70.0416-224.1024l-604.9792 436.992-4.4544 2.4064a42.1376 42.1376 0 0 1-18.432 4.1984z"
-                            fill="#15BA11" p-id="12842"></path>
-                        </svg>
-                      </div>
-                    </PaymentOption>
-                  }
-
-                  {
-                    planInfo?.yimapay_id &&
+                    (planInfo?.alipay_id || planInfo?.yimapay_id) &&
                     <PaymentOption checked={paymentMethod === "alipay"}
                       onClick={() => handlePaymentMethodChange("alipay")}
                       name={t("alipay")}
-                      recommend={false}
+                      recommend={true}
                       mobilePay={true}
                     >
                       <div className="w-10 h-10  rounded-lg flex items-center justify-center mr-3">
@@ -387,6 +391,25 @@ export default function Checkout(params: CheckoutProps) {
                           <path
                             d="M1024.0512 701.0304V196.864A196.9664 196.9664 0 0 0 827.136 0H196.864A196.9664 196.9664 0 0 0 0 196.864v630.272A196.9152 196.9152 0 0 0 196.864 1024h630.272a197.12 197.12 0 0 0 193.8432-162.0992c-52.224-22.6304-278.528-120.32-396.4416-176.64-89.7024 108.6976-183.7056 173.9264-325.3248 173.9264s-236.1856-87.2448-224.8192-194.048c7.4752-70.0416 55.552-184.576 264.2944-164.9664 110.08 10.3424 160.4096 30.8736 250.1632 60.5184 23.1936-42.5984 42.496-89.4464 57.1392-139.264H248.064v-39.424h196.9152V311.1424H204.8V267.776h240.128V165.632s2.1504-15.9744 19.8144-15.9744h98.4576V267.776h256v43.4176h-256V381.952h208.8448a805.9904 805.9904 0 0 1-84.8384 212.6848c60.672 22.016 336.7936 106.3936 336.7936 106.3936zM283.5456 791.6032c-149.6576 0-173.312-94.464-165.376-133.9392 7.8336-39.3216 51.2-90.624 134.4-90.624 95.5904 0 181.248 24.4736 284.0576 74.5472-72.192 94.0032-160.9216 150.016-253.0816 150.016z"
                             fill="#009FE8" p-id="11877"></path>
+                        </svg>
+                      </div>
+                    </PaymentOption>
+                  }
+
+                  {
+                    (planInfo?.weixin_id || planInfo?.yimapay_id) &&
+                    <PaymentOption checked={paymentMethod === "wechatPay"}
+                      onClick={() => handlePaymentMethodChange("wechatPay")}
+                      name={t("wechatPay")}
+                      recommend={false}
+                      mobilePay={true}
+                    >
+                      <div className="w-10 h-10  rounded-lg flex items-center justify-center mr-3">
+                        <svg className="icon" viewBox="0 0 1228 1024" version="1.1"
+                          xmlns="http://www.w3.org/2000/svg" p-id="12841" width="200" height="200">
+                          <path
+                            d="M530.8928 703.1296a41.472 41.472 0 0 1-35.7376-19.8144l-2.7136-5.5808L278.272 394.752a18.7392 18.7392 0 0 1-2.048-8.1408 19.968 19.968 0 0 1 20.48-19.3536c4.608 0 8.8576 1.4336 12.288 3.84l234.3936 139.9296a64.4096 64.4096 0 0 0 54.528 5.9392L1116.2624 204.8C1004.9536 80.896 821.76 0 614.4 0 275.0464 0 0 216.576 0 483.6352c0 145.7152 82.7392 276.8896 212.2752 365.5168a38.1952 38.1952 0 0 1 17.2032 31.488 44.4928 44.4928 0 0 1-2.1504 12.3904l-27.6992 97.4848c-1.3312 4.608-3.328 9.3696-3.328 14.1312 0 10.752 9.216 19.3536 20.48 19.3536 4.4032 0 8.0384-1.536 11.776-3.584l134.5536-73.3184c10.1376-5.5296 20.7872-8.96 32.6144-8.96 6.2976 0 12.288 0.9216 18.0736 2.5088 62.72 17.0496 130.4576 26.5728 200.5504 26.5728C953.7024 967.168 1228.8 750.592 1228.8 483.6352c0-80.9472-25.4464-157.1328-70.0416-224.1024l-604.9792 436.992-4.4544 2.4064a42.1376 42.1376 0 0 1-18.432 4.1984z"
+                            fill="#15BA11" p-id="12842"></path>
                         </svg>
                       </div>
                     </PaymentOption>
@@ -459,6 +482,17 @@ export default function Checkout(params: CheckoutProps) {
         {
           planInfo && !usePayWithH5 &&
           <>
+            <HtmlFormPayModal
+              qrCodeCircleColor={"bg-[#009FE8] border-2 border-[#009FE8]"}
+              paymentHtml={paymentHtml}
+              paymentType={t("alipay")}
+              open={paymentHtml !== ""}
+              planInfo={planInfo}
+              rate={params.rate}
+              orderInfo={orderInfo}
+              isPolling={isPolling}
+              onClose={handleCloseModal}
+            />
             <QRCodePayModal
               qrCodeCircleColor={"bg-[#009FE8] border-2 border-[#009FE8]"}
               qrCodeIcon={
@@ -473,7 +507,7 @@ export default function Checkout(params: CheckoutProps) {
               }
               paymentUrl={paymentUrl}
               paymentType={t("alipay")}
-              open={showModal === "alipay"}
+              open={showModal === "alipay" && paymentUrl !== ""}
               planInfo={planInfo}
               rate={params.rate}
               orderInfo={orderInfo}
@@ -494,7 +528,7 @@ export default function Checkout(params: CheckoutProps) {
               }
               paymentUrl={paymentUrl}
               paymentType={t("wechatPay")}
-              open={showModal === "wechatPay"}
+              open={showModal === "wechatPay" && paymentUrl !== ""}
               planInfo={planInfo}
               rate={params.rate}
               orderInfo={orderInfo}

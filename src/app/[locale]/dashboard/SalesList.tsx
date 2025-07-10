@@ -30,7 +30,7 @@ const UpDownIcon = () => {
 };
 
 export default function SalesList({ listData, date }: PropsType) {
-  const t = useTranslations("Dashboard.dailyRecord");
+  const t = useTranslations("Dashboard");
   const [sortBy, setSortBy] = useState<string>("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
@@ -99,15 +99,15 @@ export default function SalesList({ listData, date }: PropsType) {
   const columns = [
     {
       key: "date",
-      label: t("date"),
+      label: t("list.date"),
     },
     {
       key: "count",
-      label: t("count")
+      label: t("list.count")
     },
     {
       key: "amount",
-      label: t("amount")
+      label: t("list.amount")
     }
   ];
 

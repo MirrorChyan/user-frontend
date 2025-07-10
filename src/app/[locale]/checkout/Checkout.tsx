@@ -486,6 +486,7 @@ export default function Checkout(params: CheckoutProps) {
           planInfo && !usePayWithH5 &&
           <>
             <HtmlFormPayModal
+              qrCodeCircleColor={"bg-[#009FE8] border-2 border-[#009FE8]"}
               paymentHtml={paymentHtml}
               paymentType={t("alipay")}
               open={paymentHtml !== ""}

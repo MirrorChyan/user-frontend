@@ -6,6 +6,7 @@ import { Fragment } from "react";
 import ShowKeyInfo from "@/components/checkout/ShowKeyInfo";
 import { Loader2 } from "lucide-react";
 import QQGroupLink from "@/components/QQGroupLink";
+import HtmlFormPayPage from "@/components/checkout/HtmlFormPayPage";
 
 export interface OrderInfoType {
   cdk?: string;
@@ -24,6 +25,7 @@ export interface HtmlFormPayModalProps {
   rate: number;
   isPolling?: boolean;
   onClose?: () => void;
+  qrCodeCircleColor?: string;
 }
 
 
@@ -35,6 +37,7 @@ export default function HtmlFormPayModal({
   planInfo,
   isPolling = true,
   rate,
+  qrCodeCircleColor,
 }: HtmlFormPayModalProps) {
   const gT = useTranslations('GetStart');
   const t = useTranslations("Checkout");
@@ -98,9 +101,9 @@ export default function HtmlFormPayModal({
                       <div className="flex justify-center mb-4">
                         {paymentHtml ? (
                           <div
-                            className={`relative p-1 rounded-lg`}>
+                            className={`relative p-1 rounded-lg ${qrCodeCircleColor}`}>
                             <div className="relative bg-white p-1 rounded-md">
-                                <div dangerouslySetInnerHTML={{ __html: paymentHtml }}></div>
+                              <HtmlFormPayPage paymentHtml={paymentHtml} />
                             </div>
                           </div>
                         ) : (

@@ -3,7 +3,6 @@
 import { useTranslations } from "next-intl";
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
 import { Fragment } from "react";
-import QRCodeImage from "@/components/checkout/QRCodeImage";
 import ShowKeyInfo from "@/components/checkout/ShowKeyInfo";
 import { Loader2 } from "lucide-react";
 import QQGroupLink from "@/components/QQGroupLink";
@@ -13,9 +12,9 @@ export interface OrderInfoType {
   expired_at?: string;
 }
 
-export interface QRCodePayModalProps {
+export interface HtmlFormPayModalProps {
   open: boolean;
-  paymentUrl?: string;
+  paymentHtml?: string;
   paymentType: string;
   orderInfo?: OrderInfoType;
   planInfo?: {
@@ -25,22 +24,18 @@ export interface QRCodePayModalProps {
   rate: number;
   isPolling?: boolean;
   onClose?: () => void;
-  qrCodeCircleColor?: string;
-  qrCodeIcon: React.ReactNode
 }
 
 
 export default function QRCodePayModal({
   open,
   paymentType,
-  paymentUrl,
+  paymentHtml,
   orderInfo,
   planInfo,
   isPolling = true,
   rate,
-  qrCodeCircleColor,
-  qrCodeIcon,
-}: QRCodePayModalProps) {
+}: HtmlFormPayModalProps) {
   const gT = useTranslations('GetStart');
   const t = useTranslations("Checkout");
 
@@ -101,17 +96,8 @@ export default function QRCodePayModal({
                       </div>
 
                       <div className="flex justify-center mb-4">
-                        {paymentUrl ? (
-                          <div
-                            className={`relative p-1 rounded-lg ${qrCodeCircleColor} `}>
-                            <div className="relative bg-white p-1 rounded-md">
-                              <QRCodeImage
-                                size={240}
-                                value={paymentUrl}
-                                logo={qrCodeIcon}
-                              />
-                            </div>
-                          </div>
+                        {paymentHtml ? (
+                            <div dangerouslySetInnerHTML={{ __html: paymentHtml }}></div>
                         ) : (
                           <div
                             className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg h-[240px] w-[240px] flex items-center justify-center">
@@ -130,7 +116,7 @@ export default function QRCodePayModal({
                         )}
                       </div>
 
-                      {paymentUrl && isPolling && (
+                      {paymentHtml && isPolling && (
                         <div className="flex justify-center items-center mb-6 text-gray-600 dark:text-gray-300">
                           <Loader2 className="animate-spin mr-2 h-4 w-4" />
                           <span className="text-sm">{t("checkingPaymentStatus")}</span>
@@ -141,7 +127,7 @@ export default function QRCodePayModal({
                         <p className="text-sm text-center text-gray-500 dark:text-gray-400">
                           {t("paymentNote")}
                         </p>
-                        {paymentUrl && (
+                        {paymentHtml && (
                           <p className="text-sm text-center mt-3">
                             <QQGroupLink text={t("paymentIssue")} />
                           </p>

@@ -62,7 +62,7 @@
   "GetKey": {
     "title": "欢迎使用Mirror酱",
     "thanksForBuying": "感谢赞助",
-    "orderId": "微信-米诺斯工作室：商户单号（WeN开头）<br></br>微信-云卬数据：商品号（客服QQ前面的部分）<br></br>支付宝-云卬数据：商家订单号（条码，点击后可复制）<br></br>爱发电：订单号",
+    "orderId": "微信-米诺斯工作室：商户单号（WeN开头）<br></br>微信-云卬数据：商品号（客服QQ前面的部分）<br></br>支付宝-米诺斯工作室：商家订单号（ALN开头）<br></br>支付宝-云卬数据：商品说明号（客服QQ前面的部分）<br></br>爱发电：订单号",
     "getKey": "查询CDK",
     "queryOrderId": "查询订单号",
     "haveQuestion": "查询遇到问题？",

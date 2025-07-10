@@ -14,7 +14,7 @@ export default function HtmlFormPayPage({ paymentHtml }: HtmlFormPayPageProps) {
     setIframeSrc(url);
 
     return () => URL.revokeObjectURL(url);
-  }, []);
+  }, [paymentHtml]);
 
   return (
     <div>

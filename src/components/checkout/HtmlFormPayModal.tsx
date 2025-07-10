@@ -27,7 +27,7 @@ export interface HtmlFormPayModalProps {
 }
 
 
-export default function QRCodePayModal({
+export default function HtmlFormPayModal({
   open,
   paymentType,
   paymentHtml,

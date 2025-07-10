@@ -208,13 +208,11 @@ export default function Checkout(params: CheckoutProps) {
         platform = "yimapay";
         params.append('plan_id', planInfo?.yimapay_id as string);
         params.append('pay', PayWithH5[paymentMethod]);
-      }
-      else {
+      } else {
         if (paymentMethod === "alipay") {
           platform = "alipay";
           params.append('plan_id', planInfo?.alipay_id as string);
-        }
-        else if (paymentMethod === "wechatPay") {
+        } else if (paymentMethod === "wechatPay") {
           platform = "weixin";
           params.append('plan_id', planInfo?.weixin_id as string);
         }
@@ -248,8 +246,7 @@ export default function Checkout(params: CheckoutProps) {
 
       if (orderInfo?.pay_url) {
         setPaymentUrl(orderInfo.pay_url);
-      }
-      else {
+      } else {
         setPaymentHtml(orderInfo.html || "");
       }
       setCustomOrderId(orderInfo.custom_order_id);

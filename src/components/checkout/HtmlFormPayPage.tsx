@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export interface HtmlFormPayPageProps {
   paymentHtml: string;
 }
 
-export default function HtmlFormPayPage({
-  paymentHtml,
-}: HtmlFormPayPageProps) {
+export default function HtmlFormPayPage({ paymentHtml }: HtmlFormPayPageProps) {
+
   const [iframeSrc, setIframeSrc] = useState<string>('');
 
   useEffect(() => {
@@ -22,6 +21,7 @@ export default function HtmlFormPayPage({
       {iframeSrc ? (
         <iframe
           className='p-4 h-[240px] w-[240px] flex items-center justify-center'
+          style={{ marginLeft: '10px' }}
           src={iframeSrc}
           sandbox="allow-scripts allow-same-origin"
           title="支付宝支付"

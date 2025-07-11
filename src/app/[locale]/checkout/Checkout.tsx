@@ -90,8 +90,7 @@ export default function Checkout(params: CheckoutProps) {
   const [isPolling, setIsPolling] = useState(false);
 
   const [hasError, setHasError] = useState(false);
-
-  const usePayWithH5 = isMobile;
+  const [usePayWithH5, SetusePayWithH5] = useState(isMobile);
 
   useEffect(() => {
     (async () => {
@@ -194,9 +193,10 @@ export default function Checkout(params: CheckoutProps) {
 
   const handlePayment = async () => {
     setLoading(true);
+    SetusePayWithH5(isMobile);
     try {
       if (paymentMethod === "afdian") {
-        handleAfdianPayment()
+        handleAfdianPayment();
         return;
       }
 
@@ -228,7 +228,7 @@ export default function Checkout(params: CheckoutProps) {
         params.set('plan_id', planInfo?.yimapay_id as string);
         params.set('pay', PayWithQrcode[paymentMethod]);
         const resp_bak = await fetch(`${CLIENT_BACKEND}/api/billing/order/${platform}/create?${params}`);
-        jresp = await resp_bak.json()
+        jresp = await resp_bak.json();
         if (jresp.code != 0) {
           addToast({
             color: "warning",
@@ -236,10 +236,12 @@ export default function Checkout(params: CheckoutProps) {
           });
           return;
         }
+        if (usePayWithH5) {
+          SetusePayWithH5(false);
+        }
       }
 
       const orderInfo = jresp.data as CreateOrderType;
-
       if (usePayWithH5) {
         window.open(orderInfo.pay_url, "_blank");
       }

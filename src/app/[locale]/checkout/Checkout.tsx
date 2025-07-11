@@ -90,7 +90,7 @@ export default function Checkout(params: CheckoutProps) {
   const [isPolling, setIsPolling] = useState(false);
 
   const [hasError, setHasError] = useState(false);
-  const [usePayWithH5, SetusePayWithH5] = useState(isMobile);
+  const [usePayWithH5, setUsePayWithH5] = useState(isMobile);
 
   useEffect(() => {
     (async () => {
@@ -193,7 +193,7 @@ export default function Checkout(params: CheckoutProps) {
 
   const handlePayment = async () => {
     setLoading(true);
-    SetusePayWithH5(isMobile);
+    setUsePayWithH5(isMobile);
     try {
       if (paymentMethod === "afdian") {
         handleAfdianPayment();
@@ -220,12 +220,13 @@ export default function Checkout(params: CheckoutProps) {
 
       params.append('source', getSource());
 
+      let openLink: boolean = isMobile && usePayWithH5;
       const resp = await fetch(`${CLIENT_BACKEND}/api/billing/order/${platform}/create?${params}`);
       let jresp = await resp.json();
       if (jresp.code != 0) {
+        openLink = false;
         if (usePayWithH5) {
           // fallback for yimapay, use alipay or wechat pay instead
-          SetusePayWithH5(false);
           if (paymentMethod === "alipay") {
             platform = "alipay";
             params.set('plan_id', planInfo?.alipay_id as string);
@@ -240,6 +241,8 @@ export default function Checkout(params: CheckoutProps) {
           params.set('plan_id', planInfo?.yimapay_id as string);
           params.set('pay', PayWithQrcode[paymentMethod]);
         }
+        setUsePayWithH5(false);
+
         const resp_bak = await fetch(`${CLIENT_BACKEND}/api/billing/order/${platform}/create?${params}`);
         jresp = await resp_bak.json();
         if (jresp.code != 0) {
@@ -252,7 +255,7 @@ export default function Checkout(params: CheckoutProps) {
       }
 
       const orderInfo = jresp.data as CreateOrderType;
-      if (usePayWithH5) {
+      if (openLink && orderInfo?.pay_url) {
         window.open(orderInfo.pay_url, "_blank");
       }
 

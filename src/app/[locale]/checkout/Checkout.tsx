@@ -223,10 +223,23 @@ export default function Checkout(params: CheckoutProps) {
       const resp = await fetch(`${CLIENT_BACKEND}/api/billing/order/${platform}/create?${params}`);
       let jresp = await resp.json();
       if (jresp.code != 0) {
-        // fallback
-        platform = "yimapay";
-        params.set('plan_id', planInfo?.yimapay_id as string);
-        params.set('pay', PayWithQrcode[paymentMethod]);
+        if (usePayWithH5) {
+          // fallback for yimapay, use alipay or wechat pay instead
+          SetusePayWithH5(false);
+          if (paymentMethod === "alipay") {
+            platform = "alipay";
+            params.set('plan_id', planInfo?.alipay_id as string);
+          } else if (paymentMethod === "wechatPay") {
+            platform = "weixin";
+            params.set('plan_id', planInfo?.weixin_id as string);
+          }
+        }
+        else {
+          // fallback for alipay or wechat pay, use yimapay instead
+          platform = "yimapay";
+          params.set('plan_id', planInfo?.yimapay_id as string);
+          params.set('pay', PayWithQrcode[paymentMethod]);
+        }
         const resp_bak = await fetch(`${CLIENT_BACKEND}/api/billing/order/${platform}/create?${params}`);
         jresp = await resp_bak.json();
         if (jresp.code != 0) {
@@ -235,9 +248,6 @@ export default function Checkout(params: CheckoutProps) {
             description: t("createOrderError"),
           });
           return;
-        }
-        if (usePayWithH5) {
-          SetusePayWithH5(false);
         }
       }
 

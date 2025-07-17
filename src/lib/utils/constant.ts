@@ -7,7 +7,7 @@ export const getGroupUrl = async () => {
   try {
     const resp = await fetch(`${CLIENT_BACKEND}/api/misc/contact_us`);
     if (resp.ok) {
-      const { QQGroupLink } = await resp.json();
+      const { QQGroupLink } = (await resp.json()).data;
       return QQGroupLink
     }
   } catch (e) {

@@ -1,12 +1,24 @@
-import { QQ_GROUP } from "@/lib/utils/constant";
+"use client"
+
+import { getGroupUrl, QQ_GROUP } from "@/lib/utils/constant";
+import { useState, useEffect } from "react";
 
 export interface QQGroupProps {
   text: string;
 }
 
 export default function QQGroupLink({ text }: QQGroupProps) {
+  const [url, setUrl] = useState(QQ_GROUP);
+
+  useEffect(() => {
+    getGroupUrl().then((url) => {
+      setUrl(url);
+    })
+  }, []);
+
   return (
-    <a href={QQ_GROUP} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
+    <a href={url} target="_blank" rel="noopener noreferrer"
+      className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
       {text}
     </a>
   );

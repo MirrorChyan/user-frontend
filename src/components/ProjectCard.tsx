@@ -390,6 +390,20 @@ export default function ProjectCard(props: ProjectCardProps) {
                     <p className="text-gray-600 dark:text-gray-300 text-sm group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">
                       {desc}
                     </p>
+                    {url && (
+                      <div className="mt-6">
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="inline-flex items-center gap-1 text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+                        >
+                          <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+                          {p("openProjectHomepage")}
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex flex-row gap-4">

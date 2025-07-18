@@ -42,14 +42,9 @@ type ShowedType = "none" | PaymentMethod;
 
 type YmPayType = "AlipayQRCode" | "WeChatQRCode" | "AlipayH5" | "WeChatH5"
 
-const PayWithQrcode: Record<PaymentMethod | any, YmPayType> = {
+const YmPayQrcode: Record<PaymentMethod | any, YmPayType> = {
   alipay: "AlipayQRCode",
   wechatPay: "WeChatQRCode",
-};
-
-const PayWithH5: Record<PaymentMethod | any, YmPayType> = {
-  alipay: "AlipayH5",
-  wechatPay: "WeChatH5",
 };
 
 type CreateOrderType = {
@@ -205,9 +200,15 @@ export default function Checkout(params: CheckoutProps) {
       let platform: string = "";
 
       if (usePayWithH5) {
-        platform = "yimapay";
-        params.append('plan_id', planInfo?.yimapay_id as string);
-        params.append('pay', PayWithH5[paymentMethod]);
+        if (paymentMethod === "alipay") {
+          platform = "alipay";
+          params.append('plan_id', planInfo?.alipay_id as string);
+          params.append('pay', "H5");
+        } else if (paymentMethod === "wechatPay") {
+          platform = "yimapay";
+          params.append('plan_id', planInfo?.yimapay_id as string);
+          params.append('pay', "WeChatH5");
+        }
       } else {
         if (paymentMethod === "alipay") {
           platform = "alipay";
@@ -239,7 +240,7 @@ export default function Checkout(params: CheckoutProps) {
           // fallback for alipay or wechat pay, use yimapay instead
           platform = "yimapay";
           params.set('plan_id', planInfo?.yimapay_id as string);
-          params.set('pay', PayWithQrcode[paymentMethod]);
+          params.set('pay', YmPayQrcode[paymentMethod]);
         }
         setUsePayWithH5(false);
 
@@ -255,8 +256,16 @@ export default function Checkout(params: CheckoutProps) {
       }
 
       const orderInfo = jresp.data as CreateOrderType;
-      if (openLink && orderInfo?.pay_url) {
-        window.open(orderInfo.pay_url, "_blank");
+      if (openLink) {
+        if (orderInfo?.pay_url) {
+          window.open(orderInfo.pay_url, "_blank");
+        }
+        else if (orderInfo?.html) {
+          const blob = new Blob([orderInfo.html], { type: 'text/html' });
+          const url = URL.createObjectURL(blob);
+          const win = window.open(url, '_blank');
+          win?.addEventListener('load', () => URL.revokeObjectURL(url));
+        }
       }
 
       if (orderInfo?.pay_url) {

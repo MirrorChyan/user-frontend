@@ -6,6 +6,7 @@ import CopyButton from "@/components/CopyButton";
 import { Link } from "@/i18n/routing";
 import { SERVER_BACKEND } from "@/app/requests/misc";
 import QQGroupLink from "@/components/QQGroupLink";
+import ProjectLink from "@/components/ProjectLink";
 import { Suspense } from "react";
 import LoadingState from "@/components/LoadingState";
 
@@ -51,9 +52,12 @@ async function OrderContent({ order_id }: { order_id: string }) {
                 <span>{t("timeLeft", { relativeTime })}</span>
               </p>
             </div>
-            <p className="text-sm text-center mt-6">
+
+            <div className="text-sm text-center mt-6 flex justify-center gap-4">
               <QQGroupLink text={t("haveQuestion")} />
-            </p>
+              <ProjectLink text={t("viewProjects")} locale={locale} />
+            </div>
+
           </div>
         </div>
       </div>

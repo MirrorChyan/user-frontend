@@ -119,7 +119,7 @@ export default function Checkout(params: CheckoutProps) {
     if (!customOrderId) return;
 
     try {
-      const response = await fetch(`/api/billing/order/query?custom_order_id=${customOrderId}`);
+      const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?custom_order_id=${customOrderId}`);
       if (response.ok) {
         const {ec, code, data} = await response.json();
         console.log(ec, code, data);

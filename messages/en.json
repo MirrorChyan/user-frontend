@@ -169,7 +169,15 @@
     "noChannel": "Please select a distribution channel",
     "stable": "stable",
     "beta": "beta",
-    "alpha": "alpha"
+    "alpha": "alpha",
+    "downloadStarted": "{name} Download Started",
+    "downloadInProgress": "File is downloading in the background, please check your download directory",
+    "importantNote": "Important Note",
+    "downloadWarning": "Do not use download tools such as Thunder. We recommend downloading directly via browser to ensure successful download.",
+    "downloadProblems": "Having download issues?",
+    "troubleshoot1": "Try disabling Thunder download extension and retry",
+    "troubleshoot2": "Refresh the page and download again",
+    "troubleshoot3": "Contact customer support"
   },
   "Projects": {
     "title": "Project List",
@@ -181,6 +189,7 @@
   "Common": {
     "ok": "OK",
     "cancel": "Cancel",
+    "close": "Close",
     "durationDays": "days",
     "durationHours": "hours",
     "durationMinutes": "minutes",

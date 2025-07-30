@@ -59,6 +59,7 @@ export default function ProjectCard(props: ProjectCardProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [downloadStarted, setDownloadStarted] = useState(false);
   const [isLoadingAnimation, setIsLoadingAnimation] = useState(false);
+  const [version, setVersion] = useState("");
 
 
   const t = useTranslations("Download");
@@ -204,6 +205,8 @@ export default function ProjectCard(props: ProjectCardProps) {
         });
         return;
       }
+
+      setVersion(data.version_name);
 
       return url;
 
@@ -393,11 +396,8 @@ export default function ProjectCard(props: ProjectCardProps) {
                         )}
                       </div>
                       <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                        {isLoadingAnimation ? t("downloading") : t("downloadStarted", { name })}
+                        {isLoadingAnimation ? t("downloading") : t("downloadStarted", { name, version })}
                       </h3>
-                      <p className="text-gray-600 dark:text-gray-300">
-                        {isLoadingAnimation ? t("pleaseWait") : t("downloadInProgress")}
-                      </p>
                     </div>
                   </div>
 
@@ -444,8 +444,6 @@ export default function ProjectCard(props: ProjectCardProps) {
                           <div className="mt-1 text-sm text-blue-700 dark:text-blue-400 group-hover:underline">
                             <ul className="list-disc list-inside space-y-1">
                               <li className="group-hover:underline">{t("troubleshoot1")}</li>
-                              <li className="group-hover:underline">{t("troubleshoot2")}</li>
-                              <li className="group-hover:underline">{t("troubleshoot3")}</li>
                             </ul>
                           </div>
                         </div>

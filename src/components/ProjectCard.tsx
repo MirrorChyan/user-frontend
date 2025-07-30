@@ -236,7 +236,8 @@ export default function ProjectCard(props: ProjectCardProps) {
     if (!url) {
       return;
     }
-    window.location.href = url;
+
+    window.open(url,"_blank");
 
     setDownloadStarted(true);
     setIsLoadingAnimation(true);

@@ -398,6 +398,9 @@ export default function ProjectCard(props: ProjectCardProps) {
                       <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                         {isLoadingAnimation ? t("downloading") : t("downloadStarted", { name, version })}
                       </h3>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        {isLoadingAnimation ? t("pleaseWait") : t("downloadInProgress")}
+                      </p>
                     </div>
                   </div>
 

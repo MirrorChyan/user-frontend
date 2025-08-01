@@ -165,9 +165,10 @@
     "stable": "稳定版",
     "beta": "公测版",
     "alpha": "内测版",
-    "downloadStarted": "{name} {version} 正在下载中",
+    "downloadStarted": "{name} {version} 正在下载中……",
+    "downloadInProgress": "请检查下载管理器以查看进度",
     "importantNote": "重要提示",
-    "downloadWarning": "请不要使用迅雷等多线程下载器，建议使用浏览器直接下载",
+    "downloadWarning": "请不要使用迅雷等多线程下载器，建议使用浏览器直接下载！",
     "downloadProblems": "下载遇到问题？",
     "troubleshoot1": "加入QQ群获取帮助"
   },

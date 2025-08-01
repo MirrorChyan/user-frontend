@@ -170,7 +170,7 @@
     "stable": "stable",
     "beta": "beta",
     "alpha": "alpha",
-    "downloadStarted": "{name} {version} is Downloading...",
+    "downloadStarted": "{name} {version} is Downloading",
     "downloadInProgress": "Please check the download manager to see the progress",
     "importantNote": "Important Note",
     "downloadWarning": "Please do not use multi-threaded downloaders such as Thunder. We recommend downloading directly using your browser.",

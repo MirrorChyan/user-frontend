@@ -23,6 +23,7 @@
       "canvas-confetti": "^1.9.3",
       "clsx": "^2.1.1",
       "date-fns": "^4.1.0",
+      "dotenv": "^17.2.1",
       "framer-motion": "^12.5.0",
       "lodash": "^4.17.21",
       "lucide-react": "^0.503.0",

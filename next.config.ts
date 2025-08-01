@@ -1,5 +1,8 @@
 import type { NextConfig } from "next";
+import dotenv from 'dotenv'
 import createNextIntlPlugin from "next-intl/plugin";
+
+dotenv.config()
 
 const withNextIntl = createNextIntlPlugin();
 

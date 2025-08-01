@@ -273,20 +273,17 @@ export default function ProjectCard(props: ProjectCardProps) {
     if (!showModal) {
       const s = new URLSearchParams(window.location.search);
       s.set("rid", resource);
+      if (os) {
+        s.set("os", os);
+      }
+      if (arch) {
+        s.set("arch", arch);
+      }
+      if (channel) {
+        s.set("channel", channel);
+      }
       window.history.replaceState(null, "", `/${locale}/projects?${s}`);
     }
-  };
-
-  const onModalClose = () => {
-    const s = new URLSearchParams(window.location.search);
-    s.delete("rid");
-    s.delete("os");
-    s.delete("arch");
-    s.delete("channel");
-    window.history.replaceState(null, "", `/${locale}/projects?${s}`);
-
-    setDownloadStarted(false);
-    setIsLoadingAnimation(false);
   };
 
   return (
@@ -357,7 +354,6 @@ export default function ProjectCard(props: ProjectCardProps) {
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        onClose={onModalClose}
         backdrop="opaque"
         size="2xl"
         placement="center"
@@ -645,10 +641,7 @@ export default function ProjectCard(props: ProjectCardProps) {
                   <Button
                     color="danger"
                     variant="light"
-                    onPress={() => {
-                      onModalClose();
-                      onClose();
-                    }}
+                    onPress={onClose}
                   >
                     {common("cancel")}
                   </Button>

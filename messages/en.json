@@ -170,14 +170,12 @@
     "stable": "stable",
     "beta": "beta",
     "alpha": "alpha",
-    "downloadStarted": "{name} Download Started",
-    "downloadInProgress": "File is downloading in the background, please check your download directory",
+    "downloadStarted": "{name} {version} is Downloading...",
+    "downloadInProgress": "Please check the download manager to see the progress",
     "importantNote": "Important Note",
-    "downloadWarning": "Do not use download tools such as Thunder. We recommend downloading directly via browser to ensure successful download.",
+    "downloadWarning": "Please do not use multi-threaded downloaders such as Thunder. We recommend downloading directly using your browser.",
     "downloadProblems": "Having download issues?",
-    "troubleshoot1": "Try disabling Thunder download extension and retry",
-    "troubleshoot2": "Refresh the page and download again",
-    "troubleshoot3": "Contact customer support"
+    "troubleshoot1": "Join QQ group for help"
   },
   "Projects": {
     "title": "Project List",

@@ -240,7 +240,7 @@ export default function ProjectCard(props: ProjectCardProps) {
       return;
     }
 
-    window.open(url,"_blank");
+    window.open(url, "_blank");
 
     setDownloadStarted(true);
     setIsLoadingAnimation(true);

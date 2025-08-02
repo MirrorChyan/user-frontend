@@ -273,6 +273,15 @@ export default function ProjectCard(props: ProjectCardProps) {
     if (!showModal) {
       const s = new URLSearchParams(window.location.search);
       s.set("rid", resource);
+      if (os) {
+        s.set("os", os);
+      }
+      if (arch) {
+        s.set("arch", arch);
+      }
+      if (channel) {
+        s.set("channel", channel);
+      }
       window.history.replaceState(null, "", `/${locale}/projects?${s}`);
     }
   };
@@ -283,7 +292,11 @@ export default function ProjectCard(props: ProjectCardProps) {
     s.delete("os");
     s.delete("arch");
     s.delete("channel");
-    window.history.replaceState(null, "", `/${locale}/projects?${s}`);
+    if (s.size === 0) {
+      window.history.replaceState(null, "", `/${locale}/projects`);
+    } else {
+      window.history.replaceState(null, "", `/${locale}/projects?${s}`);
+    }
 
     setDownloadStarted(false);
     setIsLoadingAnimation(false);
@@ -355,6 +368,7 @@ export default function ProjectCard(props: ProjectCardProps) {
       </div>
 
       <Modal
+        isDismissable={false}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         onClose={onModalClose}
@@ -646,8 +660,8 @@ export default function ProjectCard(props: ProjectCardProps) {
                     color="danger"
                     variant="light"
                     onPress={() => {
-                      onModalClose();
-                      onClose();
+                      onClose()
+                      onModalClose()
                     }}
                   >
                     {common("cancel")}

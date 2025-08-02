@@ -286,6 +286,22 @@ export default function ProjectCard(props: ProjectCardProps) {
     }
   };
 
+  const onModalClose = () => {
+    const s = new URLSearchParams(window.location.search);
+    s.delete("rid");
+    s.delete("os");
+    s.delete("arch");
+    s.delete("channel");
+    if (s.size === 0) {
+      window.history.replaceState(null, "", `/${locale}/projects`);
+    } else {
+      window.history.replaceState(null, "", `/${locale}/projects?${s}`);
+    }
+
+    setDownloadStarted(false);
+    setIsLoadingAnimation(false);
+  };
+
   return (
     <div
       className={
@@ -352,8 +368,10 @@ export default function ProjectCard(props: ProjectCardProps) {
       </div>
 
       <Modal
+        isDismissable={false}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
+        onClose={onModalClose}
         backdrop="opaque"
         size="2xl"
         placement="center"
@@ -641,7 +659,10 @@ export default function ProjectCard(props: ProjectCardProps) {
                   <Button
                     color="danger"
                     variant="light"
-                    onPress={onClose}
+                    onPress={() => {
+                      onClose()
+                      onModalClose()
+                    }}
                   >
                     {common("cancel")}
                   </Button>

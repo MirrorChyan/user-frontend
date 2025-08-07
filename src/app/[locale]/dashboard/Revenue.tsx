@@ -233,13 +233,12 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
 
     return (
         <div className="dark:bg-gray-900">
-            <div className="p-6 max-w-7xl mx-auto">
-                {/* 标题区 */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-                    <h1 className="text-4xl font-bold dark:text-white flex-grow">
-                        {t("dashboardTitle", { rid, date })}
-                    </h1>
-                    {/* 导出按钮移动到标题右侧 */}
+            <div className="p-6 sm:p-8 max-w-7xl mx-auto">
+                {/* Title area */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                    <h2 className="text-2xl sm:text-3xl font-bold dark:text-white flex-grow">
+                        {t("dashboardSubTitle", { rid, date })}
+                    </h2>
                     <Button className="w-full sm:w-auto" color="secondary" variant="ghost" onClick={handleExport}>
                         {t("export")}
                     </Button>
@@ -304,7 +303,8 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
                         </div>
                     </Card>
                 </div>
-                {/* 折线图 (桌面2列) */}
+
+                {/* Line chart */}
                 <Card>
                     <div className="w-full h-96 sm:h-80 p-4">
                         <SalesLineChart revenueData={revenueData} date={date} />

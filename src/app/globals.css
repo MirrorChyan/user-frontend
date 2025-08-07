@@ -67,3 +67,7 @@ html {
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #6b7280;
 }
+
+::-ms-reveal {
+  display: none;
+}

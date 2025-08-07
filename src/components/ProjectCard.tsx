@@ -660,8 +660,8 @@ export default function ProjectCard(props: ProjectCardProps) {
                     color="danger"
                     variant="light"
                     onPress={() => {
-                      onClose()
-                      onModalClose()
+                      onClose();
+                      onModalClose();
                     }}
                   >
                     {common("cancel")}

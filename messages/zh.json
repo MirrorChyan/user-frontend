@@ -90,7 +90,8 @@
       "Order not found": "订单不存在哦",
       "order not found": "订单不存在哦",
       "order_id is required": "请输入订单号",
-      "CDK already exists": "出错啦，请重试！"
+      "CDK already exists": "出错啦，请重试！",
+      "CDK is blocked": "订单已被封禁"
     },
     "paymentSuccess": "支付成功",
     "copy": "复制",

@@ -95,7 +95,8 @@
       "Order not found": "Order does not exist",
       "order not found": "Order does not exist",
       "order_id is required": "Please enter the order ID",
-      "CDK already exists": "Error, please try again"
+      "CDK already exists": "Error, please try again",
+      "CDK is blocked": "Order has been blocked"
     },
     "paymentSuccess": "Payment Successful",
     "copy": "Copy",

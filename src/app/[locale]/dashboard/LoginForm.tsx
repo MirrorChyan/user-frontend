@@ -9,10 +9,9 @@ import { CLIENT_BACKEND } from "@/app/requests/misc";
 import YearMonthPicker from "@/components/YearMonthPicker";
 import { RevenueType, RevenueResponse } from "@/app/[locale]/dashboard/page";
 
-
 type LoginFormProps = {
   onLoginSuccess: (data: RevenueType[], rid: string, date: string) => void;
-}
+};
 
 export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
   const t = useTranslations("Dashboard");
@@ -68,40 +67,33 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center">
-      <div className="text-center min-w-[40vw]">
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <div className="min-w-[40vw] text-center">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-center text-4xl font-semibold tracking-tight sm:text-5xl text-gray-900 dark:text-white">
+          <h2 className="text-center text-4xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
             {t("title")}
           </h2>
 
           <form
-            className="flex flex-col gap-5 mt-12 text-balance text-lg leading-8 text-gray-600 dark:text-gray-400"
+            className="mt-12 flex flex-col gap-5 text-balance text-lg leading-8 text-gray-600 dark:text-gray-400"
             onSubmit={onSubmit}
           >
             <YearMonthPicker onChange={handleMonthChange} />
 
-            <div className="flex items-center gap-2 h-14">
+            <div className="flex h-14 items-center gap-2">
               <div className="flex-grow">
                 <Input label={t("rid")} name="rid" type="text" onChange={handleRidChange} />
               </div>
 
               <Tooltip content={t("tooltip")}>
-                <div className="flex items-center h-full justify-center">
+                <div className="flex h-full items-center justify-center">
                   <button
                     type="button"
                     onClick={toggleUa}
-                    className={`
-                      flex items-center justify-center
-                      h-full w-14 rounded-md mr-1 transition-colors
-                      ${isUa ? "bg-indigo-100 dark:bg-indigo-900" : "bg-gray-100 dark:bg-gray-800"}
-                    `}
+                    className={`mr-1 flex h-full w-14 items-center justify-center rounded-md transition-colors ${isUa ? "bg-indigo-100 dark:bg-indigo-900" : "bg-gray-100 dark:bg-gray-800"} `}
                   >
                     <ComputerDesktopIcon
-                      className={`
-                        h-1/2 w-1/2
-                        ${isUa ? "text-indigo-600 dark:text-indigo-400" : "text-gray-500 dark:text-gray-400"}
-                      `}
+                      className={`h-1/2 w-1/2 ${isUa ? "text-indigo-600 dark:text-indigo-400" : "text-gray-500 dark:text-gray-400"} `}
                     />
                   </button>
                 </div>
@@ -113,14 +105,7 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
             <Button
               type="submit"
               isLoading={isLoading}
-              className="
-                mt-6 flex w-full justify-center
-                rounded-md bg-indigo-500 px-3 py-1.5
-                text-sm/6 font-semibold text-white shadow-sm
-                hover:bg-indigo-400 focus-visible:outline
-                focus-visible:outline-2 focus-visible:outline-offset-2
-                focus-visible:outline-indigo-500
-              "
+              className="mt-6 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
               {t("confirm")}
             </Button>

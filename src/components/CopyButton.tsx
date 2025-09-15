@@ -10,8 +10,7 @@ export default function CopyButton({ text }: { text: string }) {
   const [tooltip, setTooltip] = useState(false);
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(text)
-      .then(() => setCopied(true));
+    navigator.clipboard.writeText(text).then(() => setCopied(true));
   };
 
   return (
@@ -21,7 +20,7 @@ export default function CopyButton({ text }: { text: string }) {
       isOpen={tooltip}
     >
       <span
-        className="tooltip text-indigo-600 cursor-pointer select-text"
+        className="tooltip cursor-pointer select-text text-indigo-600"
         onClick={copyToClipboard}
         onMouseEnter={() => setTooltip(true)}
         onMouseLeave={() => setTooltip(false)}
@@ -29,6 +28,5 @@ export default function CopyButton({ text }: { text: string }) {
         {text}
       </span>
     </Tooltip>
-
   );
 }

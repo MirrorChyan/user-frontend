@@ -6,7 +6,7 @@ interface RequestStat {
 }
 
 interface Props {
-  stats: RequestStat
+  stats: RequestStat;
 }
 
 export default function RequestStat({ stats }: Props) {

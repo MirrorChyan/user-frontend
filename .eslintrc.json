@@ -1,0 +1,23 @@
+{
+  "extends": ["next/core-web-vitals", "prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "no-console": "off",
+    "prefer-const": "error",
+    "no-var": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "semi": true,
+        "trailingComma": "es5",
+        "singleQuote": false,
+        "printWidth": 100,
+        "tabWidth": 2,
+        "useTabs": false,
+        "endOfLine": "lf",
+        "arrowParens": "avoid",
+        "bracketSpacing": true
+      }
+    ]
+  }
+}

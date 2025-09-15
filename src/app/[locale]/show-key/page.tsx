@@ -10,8 +10,8 @@ import { Suspense } from "react";
 import LoadingState from "@/components/LoadingState";
 
 type Props = {
-  searchParams: Promise<{ order_id: string }>
-}
+  searchParams: Promise<{ order_id: string }>;
+};
 
 async function OrderContent({ order_id }: { order_id: string }) {
   const t = await getTranslations("ShowKey");
@@ -22,17 +22,21 @@ async function OrderContent({ order_id }: { order_id: string }) {
   const isSuccessful = ec === 200;
   const isExpired = isSuccessful && moment(data.expired_at).isBefore(moment());
 
-  const time = isSuccessful ? format.dateTime(moment(data.expired_at).toDate(), {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  }) : null;
+  const time = isSuccessful
+    ? format.dateTime(moment(data.expired_at).toDate(), {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      })
+    : null;
 
   moment.locale(locale);
 
-  const relativeTime = isSuccessful ? moment.duration(moment(data.expired_at).diff(moment())).humanize() : null;
+  const relativeTime = isSuccessful
+    ? moment.duration(moment(data.expired_at).diff(moment())).humanize()
+    : null;
 
   return isSuccessful && !isExpired ? (
     <BackgroundLines className="select-none">
@@ -43,7 +47,8 @@ async function OrderContent({ order_id }: { order_id: string }) {
               {t("thanksForBuying")}
             </h2>
             <div className="mt-6 text-pretty text-lg/8 text-gray-600">
-              <p>{t("yourKey")}:&nbsp;
+              <p>
+                {t("yourKey")}:&nbsp;
                 <CopyButton text={data.cdk} />
               </p>
               <p>
@@ -51,7 +56,7 @@ async function OrderContent({ order_id }: { order_id: string }) {
                 <span>{t("timeLeft", { relativeTime })}</span>
               </p>
             </div>
-            <p className="text-sm text-center mt-6">
+            <p className="mt-6 text-center text-sm">
               <QQGroupLink text={t("haveQuestion")} />
             </p>
           </div>
@@ -73,7 +78,7 @@ async function OrderContent({ order_id }: { order_id: string }) {
               {t("goBack")}
             </button>
           </Link>
-          <p className="text-sm text-center mt-6">
+          <p className="mt-6 text-center text-sm">
             <QQGroupLink text={t("haveQuestion")} />
           </p>
         </div>
@@ -87,15 +92,8 @@ export default async function ShowKey({ searchParams }: Props) {
   const { order_id } = await searchParams;
 
   return (
-    <Suspense fallback={
-      <LoadingState
-        title={t("thanksForBuying")}
-        description={t("loading")}
-      />
-    }>
-      <OrderContent
-        order_id={order_id}
-      />
+    <Suspense fallback={<LoadingState title={t("thanksForBuying")} description={t("loading")} />}>
+      <OrderContent order_id={order_id} />
     </Suspense>
   );
 }

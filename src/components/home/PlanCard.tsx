@@ -12,43 +12,40 @@ type PropsType = {
 
 export default function PlanCard({ plan, C2URate }: PropsType) {
   const t = useTranslations("GetStart");
-  const planName = t.has(`planTitle.${plan.title}`)
-    ? t(`planTitle.${plan.title}`)
-    : plan.title;
+  const planName = t.has(`planTitle.${plan.title}`) ? t(`planTitle.${plan.title}`) : plan.title;
 
   const priceFixed: number = Number(t("priceFixed"));
   const price: number = parseFloat((Number(plan.price) * C2URate).toFixed(priceFixed));
-  const originalPrice: string | null = plan.original_price > plan.price
-    ? (Number(plan.original_price) * C2URate).toFixed(priceFixed)
-    : null;
+  const originalPrice: string | null =
+    plan.original_price > plan.price
+      ? (Number(plan.original_price) * C2URate).toFixed(priceFixed)
+      : null;
   return (
     <div
       key={plan.plan_id}
       className={cn(
         plan.popular ? "ring-2 ring-indigo-600" : "ring-1 ring-gray-200",
-        "rounded-3xl p-8 bg-white dark:bg-white/5 shadow-sm flex flex-col"
+        "flex flex-col rounded-3xl bg-white p-8 shadow-sm dark:bg-white/5"
       )}
     >
       <h3
         id={plan.plan_id}
         className={cn(
-          plan.popular
-            ? "text-indigo-600"
-            : "text-gray-900 dark:text-white",
+          plan.popular ? "text-indigo-600" : "text-gray-900 dark:text-white",
           "text-lg/8 font-semibold"
         )}
       >
         {planName}
       </h3>
       {originalPrice ? (
-        <p className="mt-6 flex items-baseline gap-x-1 basis-full text-nowrap">
+        <p className="mt-6 flex basis-full items-baseline gap-x-1 text-nowrap">
           <span className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
             {`
               ${t("priceSymbol")}
               ${price}
             `}
           </span>
-          <span className="text-sm/6 line-through text-gray-500 dark:text-gray-400">
+          <span className="text-sm/6 text-gray-500 line-through dark:text-gray-400">
             {`
               ${t("priceSymbol")}
               ${originalPrice}
@@ -56,7 +53,7 @@ export default function PlanCard({ plan, C2URate }: PropsType) {
           </span>
         </p>
       ) : (
-        <p className="mt-6 flex items-baseline gap-x-1 basis-full text-nowrap">
+        <p className="mt-6 flex basis-full items-baseline gap-x-1 text-nowrap">
           <span className="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
             {`
               ${t("priceSymbol")}

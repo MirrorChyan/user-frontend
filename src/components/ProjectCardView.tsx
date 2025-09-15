@@ -30,16 +30,18 @@ export default function ProjectCardView({ projects }: { projects: Array<ProjectC
     }
   }, []);
 
-  return <>
-    {projects.map((project) => (
-      <ProjectCard
-        key={project.resource}
-        showModal={project.download && rid === project.resource}
-        osParam={searchParams.get("os")}
-        archParam={searchParams.get("arch")}
-        channelParam={searchParams.get("channel")}
-        {...project}
-      />
-    ))}
-  </>;
+  return (
+    <>
+      {projects.map(project => (
+        <ProjectCard
+          key={project.resource}
+          showModal={project.download && rid === project.resource}
+          osParam={searchParams.get("os")}
+          archParam={searchParams.get("arch")}
+          channelParam={searchParams.get("channel")}
+          {...project}
+        />
+      ))}
+    </>
+  );
 }

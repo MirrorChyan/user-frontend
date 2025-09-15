@@ -1,13 +1,13 @@
 import { SERVER_BACKEND } from "@/app/requests/misc";
 
 type Announcement = {
-  ec: number
-  msg: string
+  ec: number;
+  msg: string;
   data: {
-    summary: string
-    details: string
-  }
-}
+    summary: string;
+    details: string;
+  };
+};
 
 // 缓存的公告
 const announcementCache: Record<string, Announcement> = {};
@@ -20,7 +20,11 @@ const CACHE_DURATION = 60 * 1000; // 1分钟（毫秒）
 export async function getAnnouncement(lang: "zh" | "en"): Promise<Announcement> {
   // Use absolute URL with origin to work properly in server components
   const now = Date.now();
-  if (lastFetchTime[lang] && now - lastFetchTime[lang] < CACHE_DURATION && announcementCache[lang]) {
+  if (
+    lastFetchTime[lang] &&
+    now - lastFetchTime[lang] < CACHE_DURATION &&
+    announcementCache[lang]
+  ) {
     return announcementCache[lang];
   }
 
@@ -35,12 +39,12 @@ export async function getAnnouncement(lang: "zh" | "en"): Promise<Announcement> 
   } catch (error) {
     console.error("Get Announcement error:", error);
     return {
-      "ec": 400,
-      "msg": "",
-      "data": {
-        "summary": "",
-        "details": ""
-      }
+      ec: 400,
+      msg: "",
+      data: {
+        summary: "",
+        details: "",
+      },
     };
   }
 }

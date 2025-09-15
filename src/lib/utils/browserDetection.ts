@@ -1,18 +1,26 @@
-const BROWSER_BLACKLIST = ["Safari"];
-
 export function getUserAgent(): string {
-  return typeof navigator !== "undefined" ? navigator.userAgent.toLowerCase() : "";
+  return typeof navigator !== "undefined" ? navigator.userAgent : "";
 }
 
-export function isBlacklistedBrowser(): boolean {
-  const userAgent = getUserAgent();
-
+export function isSafariBrowser(): boolean {
   if (typeof window === "undefined") {
     return false;
   }
-  return BROWSER_BLACKLIST.some(browser => userAgent.includes(browser.toLowerCase()));
+
+  const userAgent = getUserAgent();
+
+  const isSafari =
+    userAgent.includes("Safari") &&
+    !userAgent.includes("Chrome") &&
+    !userAgent.includes("Chromium") &&
+    !userAgent.includes("Edge");
+
+  const isAppleDevice =
+    userAgent.includes("Macintosh") || userAgent.includes("iPhone") || userAgent.includes("iPad");
+
+  return isSafari && isAppleDevice;
 }
 
 export function shouldUseQRCodePayment(): boolean {
-  return isBlacklistedBrowser();
+  return isSafariBrowser();
 }

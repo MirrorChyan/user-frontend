@@ -7,9 +7,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<Que
   redirect({
     href: {
       pathname: "/get-start",
-      query: await searchParams
+      query: await searchParams,
     },
     locale,
-
   });
 }

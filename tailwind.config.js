@@ -10,7 +10,7 @@ export const content = [
   // Or if using `src` directory:
   "./src/**/*.{js,ts,jsx,tsx,mdx}",
   // heroui
-  "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}"
+  "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
 ];
 export const darkMode = "class";
 export const theme = {

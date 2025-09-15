@@ -8,7 +8,7 @@ import {
   Tooltip,
   TooltipProps,
   XAxis,
-  YAxis
+  YAxis,
 } from "recharts";
 import {
   eachDayOfInterval,
@@ -18,7 +18,7 @@ import {
   parseISO,
   startOfDay,
   startOfHour,
-  startOfMonth
+  startOfMonth,
 } from "date-fns";
 import { RevenueType } from "@/app/[locale]/dashboard/page";
 import { cn, Radio, RadioGroup, Switch, Tooltip as Tippy } from "@heroui/react";
@@ -27,23 +27,23 @@ import { useTranslations } from "next-intl";
 type PropsType = {
   revenueData: RevenueType[];
   date: string;
-}
+};
 
 type DataType = {
   amount: number;
   count: number;
   time: Date;
-}
+};
 
 type TooltipType = TooltipProps<number, string> & {
   payload?: {
     payload: {
       time: Date;
       amount: number;
-      count: number
-    }
-  }[]
-}
+      count: number;
+    };
+  }[];
+};
 
 export default function SalesLineChart({ revenueData, date }: PropsType) {
   const t = useTranslations("Dashboard");
@@ -69,26 +69,19 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
   const processedData = useMemo(() => {
     const groupedData: Record<string, { sumAmount: number; sumCount: number; time: Date }> = {};
 
-    function createDataMap(
-      data: DataType[],
-    ): Map<string, DataType> {
+    function createDataMap(data: DataType[]): Map<string, DataType> {
       const map = new Map<string, DataType>();
-      data.forEach((item) => {
-        map.set(
-          timeFormatter(item.time),
-          {
-            amount: item.amount,
-            count: item.count,
-            time: item.time
-          });
+      data.forEach(item => {
+        map.set(timeFormatter(item.time), {
+          amount: item.amount,
+          count: item.count,
+          time: item.time,
+        });
       });
       return map;
     }
 
-    function generateTimeSeries(
-      start: Date,
-      end: Date,
-    ): Date[] {
+    function generateTimeSeries(start: Date, end: Date): Date[] {
       const interval = { start, end };
 
       switch (timeRange) {
@@ -101,14 +94,23 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
       }
     }
 
-    function fillTimeSeries(
-      originalData: DataType[],
-    ): DataType[] {
+    function fillTimeSeries(originalData: DataType[]): DataType[] {
       const currentYear = Number(date.slice(0, 4));
       const currentMonth = Number(date.slice(5));
-      const month = [31,
-        currentYear % 4 === 0 && currentYear % 100 !== 0 || currentYear % 400 === 0 ? 29 : 28,
-        31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      const month = [
+        31,
+        (currentYear % 4 === 0 && currentYear % 100 !== 0) || currentYear % 400 === 0 ? 29 : 28,
+        31,
+        30,
+        31,
+        30,
+        31,
+        31,
+        30,
+        31,
+        30,
+        31,
+      ];
 
       const start = startOfMonth(`${currentYear}-${currentMonth}-${1} 00:00:00`);
       const end = endOfMonth(`${currentYear}-${currentMonth}-${month[currentMonth - 1]} 23:59:59`);
@@ -118,11 +120,13 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
 
       return completeTimes.map(time => {
         const key = timeFormatter(time);
-        return dataMap.get(key) || {
-          amount: 0,
-          count: 0,
-          time: time,
-        };
+        return (
+          dataMap.get(key) || {
+            amount: 0,
+            count: 0,
+            time: time,
+          }
+        );
       });
     }
 
@@ -147,7 +151,7 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
         groupedData[isoKey] = {
           sumAmount: 0,
           sumCount: 0,
-          time: key
+          time: key,
         };
       }
 
@@ -159,27 +163,26 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
       .map(item => ({
         time: item.time,
         amount: item.sumAmount,
-        count: item.sumCount
+        count: item.sumCount,
       }));
     return fillTimeSeries(result);
   }, [revenueData, timeRange]);
 
   // 自定义 Tooltip
-  const CustomTooltip = (
-    { active, payload }: TooltipType) => {
+  const CustomTooltip = ({ active, payload }: TooltipType) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white dark:bg-gray-800 p-3 shadow-lg rounded dark:border-gray-700">
-          <p className="font-medium dark:border-gray-70">
+        <div className="rounded bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+          <p className="dark:border-gray-70 font-medium">
             {timeRange === "day"
               ? format(data.time, "yyyy-MM-dd")
               : format(data.time, "yyyy-MM-dd HH:mm")}
           </p>
           <p className="text-blue-600 dark:text-blue-400">
-            {showSales ?
-              `${t("amount")}: ${data.amount.toFixed(2)}${t("unit.amount")}` :
-              `${t("count")}: ${data.count}${t("unit.count")}`}
+            {showSales
+              ? `${t("amount")}: ${data.amount.toFixed(2)}${t("unit.amount")}`
+              : `${t("count")}: ${data.count}${t("unit.count")}`}
           </p>
         </div>
       );
@@ -188,16 +191,17 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
   };
 
   const startIndex = 0;
-  const endIndex = timeRange === "day" ? (processedData.length - 1) : Math.floor(processedData.length * 0.25);
+  const endIndex =
+    timeRange === "day" ? processedData.length - 1 : Math.floor(processedData.length * 0.25);
 
   return (
     <div className="relative h-full">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 px-2">
-        <h3 className="w-full sm:flex-1 text-base sm:text-lg text-center">
+      <div className="flex flex-col gap-2 px-2 sm:flex-row sm:items-center sm:gap-4">
+        <h3 className="w-full text-center text-base sm:flex-1 sm:text-lg">
           {t("lineChart.title")}
         </h3>
 
-        <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+        <div className="flex w-full items-center gap-3 sm:w-auto sm:gap-4">
           <RadioGroup
             orientation="horizontal"
             value={timeRange}
@@ -230,13 +234,10 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
           </RadioGroup>
           <Tippy
             content={showSales ? t("lineChart.toggleCount") : t("lineChart.toggleAmount")}
-            showArrow className="text-gray-500 dark:text-gray-200 "
+            showArrow
+            className="text-gray-500 dark:text-gray-200"
           >
-            <Switch
-              isSelected={showSales}
-              size="sm"
-              onValueChange={(value) => setShowSales(value)}
-            />
+            <Switch isSelected={showSales} size="sm" onValueChange={value => setShowSales(value)} />
           </Tippy>
         </div>
       </div>
@@ -246,21 +247,17 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
         style={{
           cursor: "grab",
           scrollbarWidth: "thin",
-          scrollbarColor: "#888 transparent"
+          scrollbarColor: "#888 transparent",
         }}
       >
-        <ResponsiveContainer
-          width={"100%"}
-          height={220}
-          debounce={200}
-        >
+        <ResponsiveContainer width={"100%"} height={220} debounce={200}>
           <LineChart
             data={processedData}
             margin={{
               left: 0,
               right: 24,
               top: 12,
-              bottom: 8
+              bottom: 8,
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
@@ -283,7 +280,7 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
                 angle: -90,
                 position: "insideLeft",
                 fontSize: 14,
-                offset: 10
+                offset: 10,
               }}
               tick={{ fill: "#666", fontSize: 12 }}
               tickLine={{ stroke: "#ccc" }}
@@ -327,9 +324,7 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
         </ResponsiveContainer>
       </div>
 
-      <div className="sm:hidden text-sm text-gray-500 mt-2 px-2">
-        {t("lineChart.slide")}
-      </div>
+      <div className="mt-2 px-2 text-sm text-gray-500 sm:hidden">{t("lineChart.slide")}</div>
     </div>
   );
-};
+}

@@ -8,7 +8,7 @@ export default function HomeButton({ className }: HomeButtonProps) {
   return (
     <Link
       href="/get-start"
-      className={clsx("h-6 w-6 hover:opacity-70 duration-300 m-1", className)}
+      className={clsx("m-1 h-6 w-6 duration-300 hover:opacity-70", className)}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

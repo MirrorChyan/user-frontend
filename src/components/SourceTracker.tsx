@@ -1,5 +1,4 @@
-'use client';
-
+"use client";
 
 import { useEffect } from "react";
 
@@ -10,19 +9,21 @@ interface SourceTrackerProps {
 type SourceInfo = {
   source: string;
   ts: number;
-
-}
+};
 
 export default function SourceTracker({ source }: SourceTrackerProps) {
   useEffect(() => {
     if (source) {
-      window.localStorage.setItem("source", JSON.stringify({
-        source: source,
-        ts: new Date().valueOf(),
-      } as SourceInfo));
+      window.localStorage.setItem(
+        "source",
+        JSON.stringify({
+          source: source,
+          ts: new Date().valueOf(),
+        } as SourceInfo)
+      );
     }
-  })
-  return null
+  });
+  return null;
 }
 
 export function getSource(): string {

@@ -45,8 +45,7 @@ export default function Transmission() {
       const valid_days = data.valid_days;
       setFromCdkDescription(t("rewardValidDays", { valid_days }));
       setFromCdkValid(true);
-    }
-    else {
+    } else {
       setFromCdkDescription(t("fromNotFound"));
       setFromCdkValid(false);
     }
@@ -78,8 +77,7 @@ export default function Transmission() {
       const relativeTime = format.relativeTime(expiredAt.toDate(), { unit: "day" });
       setFromCdkDescription(`${relativeTime} (${timeFormat(expiredAt.toDate())})`);
       setFromCdkValid(true);
-    }
-    else {
+    } else {
       setFromCdkDescription(msg);
       setFromCdkValid(false);
     }
@@ -104,8 +102,7 @@ export default function Transmission() {
       }
       setToCdkValid(true);
       setShowOrderId(data.custom_order_id);
-    }
-    else {
+    } else {
       setToCdkDescription(msg);
       setToCdkValid(false);
     }
@@ -132,7 +129,9 @@ export default function Transmission() {
 
   async function handleTransfer() {
     setTransfering(true);
-    const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/transfer?from=${fromCdk}&to=${toCdk}`);
+    const response = await fetch(
+      `${CLIENT_BACKEND}/api/billing/order/transfer?from=${fromCdk}&to=${toCdk}`
+    );
     const { ec, msg } = await response.json();
     if (ec === 200) {
       router.replace(`/show-key?order_id=${showOrderId}`);
@@ -153,12 +152,16 @@ export default function Transmission() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center">
-      <div className="text-center w-full max-w-md md:min-w-[48rem] px-4 relative">
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <div className="relative w-full max-w-md px-4 text-center md:min-w-[48rem]">
         <HomeButton className="absolute left-3" />
-        <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">{t("title")}</h2>
-        <div className="mt-4 md:mt-6 text-pretty text-base/7 md:text-lg/8 text-gray-600">{t("description")}</div>
-        <div className="flex flex-col md:flex-row justify-center items-center mt-6 space-y-4 md:space-y-0 md:space-x-6">
+        <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
+          {t("title")}
+        </h2>
+        <div className="mt-4 text-pretty text-base/7 text-gray-600 md:mt-6 md:text-lg/8">
+          {t("description")}
+        </div>
+        <div className="mt-6 flex flex-col items-center justify-center space-y-4 md:flex-row md:space-x-6 md:space-y-0">
           <Input
             className="w-full md:min-w-[10rem]"
             label={t("fromCdk")}
@@ -166,8 +169,10 @@ export default function Transmission() {
             onChange={handleFromCdkChange}
             description={fromCdkDescription}
           />
-          <div className="hidden md:block px-2 py-1 md:py-0 flex-1 text-nowrap">{t("transferTo")}</div>
-          <div className="rotate-90 md:rotate-0 px-2 py-1 md:py-0">→</div>
+          <div className="hidden flex-1 text-nowrap px-2 py-1 md:block md:py-0">
+            {t("transferTo")}
+          </div>
+          <div className="rotate-90 px-2 py-1 md:rotate-0 md:py-0">→</div>
           <Input
             className="w-full md:min-w-[10rem]"
             label={t("toCdk")}
@@ -176,9 +181,7 @@ export default function Transmission() {
             description={toCdkDescription}
           />
         </div>
-        <div className="mt-4">
-
-        </div>
+        <div className="mt-4"></div>
         <Button
           className="mt-6"
           onClick={handleTransfer}
@@ -189,6 +192,6 @@ export default function Transmission() {
           {t("transfer")}
         </Button>
       </div>
-    </div >
+    </div>
   );
 }

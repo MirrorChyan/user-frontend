@@ -1,4 +1,3 @@
-
 type Rates = {
   rates: {
     CNY: number;

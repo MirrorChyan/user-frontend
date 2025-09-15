@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 import createNextIntlPlugin from "next-intl/plugin";
 
-dotenv.config()
+dotenv.config();
 
 const withNextIntl = createNextIntlPlugin();
 
@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     reactCompiler: true,
-  }
+  },
 };
 
 export default withNextIntl(nextConfig);

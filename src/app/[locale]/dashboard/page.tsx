@@ -5,20 +5,20 @@ import Revenue from "@/app/[locale]/dashboard/Revenue";
 import LoginForm from "@/app/[locale]/dashboard/LoginForm";
 
 export type RevenueType = {
-  activated_at: Date
-  amount: string
-  application: string
-  buy_count: number
-  plan: string
-  user_agent: string
-  platform: string
-  source: string
-}
+  activated_at: Date;
+  amount: string;
+  application: string;
+  buy_count: number;
+  plan: string;
+  user_agent: string;
+  platform: string;
+  source: string;
+};
 
 export type RevenueResponse = {
-  data: RevenueType[]
-  ec: number
-}
+  data: RevenueType[];
+  ec: number;
+};
 
 export default function Dashboard() {
   const [isLogin, setIsLogin] = useState<boolean>(false);
@@ -41,7 +41,14 @@ export default function Dashboard() {
   };
 
   if (isLogin) {
-    return <Revenue onLogOut={handleLogOut} revenueData={revenueData} date={currentDate} rid={currentRid} />;
+    return (
+      <Revenue
+        onLogOut={handleLogOut}
+        revenueData={revenueData}
+        date={currentDate}
+        rid={currentRid}
+      />
+    );
   }
 
   return <LoginForm onLoginSuccess={handleLoginSuccess} />;

@@ -17,7 +17,13 @@ interface WaitForPayModalProps {
   orderInfo?: OrderInfoType;
 }
 
-export default function WaitForPayModal({ open, paymentType, isLoading = true, onClose, orderInfo }: WaitForPayModalProps) {
+export default function WaitForPayModal({
+  open,
+  paymentType,
+  isLoading = true,
+  onClose,
+  orderInfo,
+}: WaitForPayModalProps) {
   const t = useTranslations("Checkout");
   const orderT = useTranslations("Order");
   const router = useRouter();
@@ -31,7 +37,7 @@ export default function WaitForPayModal({ open, paymentType, isLoading = true, o
 
   return (
     <Transition appear show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={() => { }}>
+      <Dialog as="div" className="relative z-50" onClose={() => {}}>
         <TransitionChild
           as={Fragment}
           enter="ease-out duration-300"
@@ -55,9 +61,8 @@ export default function WaitForPayModal({ open, paymentType, isLoading = true, o
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <DialogPanel
-                className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-8 text-left align-middle shadow-xl transition-all">
-                <div className="flex justify-between items-center mb-6">
+              <DialogPanel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-8 text-left align-middle shadow-xl transition-all dark:bg-gray-800">
+                <div className="mb-6 flex items-center justify-between">
                   <DialogTitle
                     as="h3"
                     className="text-xl font-medium leading-6 text-gray-900 dark:text-white"
@@ -79,26 +84,23 @@ export default function WaitForPayModal({ open, paymentType, isLoading = true, o
                 {isLoading ? (
                   <>
                     <div className="flex flex-col items-center justify-center py-10">
-                      <div
-                        className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-pink-500 mb-4"></div>
+                      <div className="mb-4 h-16 w-16 animate-spin rounded-full border-b-2 border-t-2 border-pink-500"></div>
                       <p className="text-base text-gray-500 dark:text-gray-400">
                         {orderT("ProcessingOrder")}
                       </p>
                     </div>
                     <div className="mt-6">
-                      <p className="text-sm text-center text-gray-500 dark:text-gray-400">
+                      <p className="text-center text-sm text-gray-500 dark:text-gray-400">
                         {t("paymentNote")}
                       </p>
-                      <p className="text-sm text-center mt-3">
+                      <p className="mt-3 text-center text-sm">
                         <QQGroupLink text={t("paymentIssue")} />
                       </p>
                     </div>
                   </>
-                ) :
+                ) : (
                   <ShowKeyInfo info={orderInfo}></ShowKeyInfo>
-                }
-
-
+                )}
               </DialogPanel>
             </TransitionChild>
           </div>
@@ -106,4 +108,4 @@ export default function WaitForPayModal({ open, paymentType, isLoading = true, o
       </Dialog>
     </Transition>
   );
-} 
+}

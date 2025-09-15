@@ -23,9 +23,5 @@ export default function Download() {
     router.push(redirectUrl);
   }, [searchParams, router]);
 
-  return (
-    <LoadingState
-      title={t("pleaseWait")}
-    />
-  );
+  return <LoadingState title={t("pleaseWait")} />;
 }

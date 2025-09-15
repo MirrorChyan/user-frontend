@@ -83,7 +83,6 @@ export default function Checkout(params: CheckoutProps) {
 
   const [hasError, setHasError] = useState(false);
   const [usePayWithH5, setUsePayWithH5] = useState(() => {
-    // 如果是黑名单浏览器，强制使用二维码支付
     if (shouldUseQRCodePayment()) {
       return false;
     }

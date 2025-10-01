@@ -44,7 +44,7 @@ export default function SalesList({ listData, date }: PropsType) {
 
   const generateDateRange = () => {
     const tarngetYear = Number(date.slice(0, 4));
-    const tarngetMonth = Number(date.slice(5));
+    const tarngetMonth = Number(date.slice(4));
     const month = [
       31,
       (tarngetYear % 4 === 0 && tarngetYear % 100 !== 0) || tarngetYear % 400 === 0 ? 29 : 28,
@@ -75,7 +75,7 @@ export default function SalesList({ listData, date }: PropsType) {
     const groupedData = groupBy(
       listData.map(item => ({
         ...item,
-        activated_at: `${date.slice(5)}-${new Date(item.activated_at).getDate()}`,
+        activated_at: `${date.slice(4)}-${new Date(item.activated_at).getDate()}`,
       })),
       item => item.activated_at
     );
@@ -83,7 +83,7 @@ export default function SalesList({ listData, date }: PropsType) {
     const dateRange = generateDateRange();
 
     dateRange.forEach(day => {
-      const key = `${date.slice(5)}-${day}`;
+      const key = `${date.slice(4)}-${day}`;
 
       if (groupedData[key] === undefined) {
         dateMap.set(key, {

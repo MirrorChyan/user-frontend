@@ -96,7 +96,7 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
 
     function fillTimeSeries(originalData: DataType[]): DataType[] {
       const currentYear = Number(date.slice(0, 4));
-      const currentMonth = Number(date.slice(5));
+      const currentMonth = Number(date.slice(4));
       const month = [
         31,
         (currentYear % 4 === 0 && currentYear % 100 !== 0) || currentYear % 400 === 0 ? 29 : 28,

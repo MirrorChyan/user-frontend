@@ -25,8 +25,9 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
 
   // Event handlers
   const handleMonthChange = (value: string) => setMonth(value);
-  const handleRidChange = (e: React.ChangeEvent<HTMLInputElement>) => setRid(e.target.value);
-  const handleTokenChange = (e: React.ChangeEvent<HTMLInputElement>) => setToken(e.target.value);
+  const handleRidChange = (e: React.ChangeEvent<HTMLInputElement>) => setRid(e.target.value.trim());
+  const handleTokenChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setToken(e.target.value.trim());
   const toggleUa = () => setIsUa(!isUa);
 
   // Form submission

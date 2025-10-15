@@ -14,7 +14,7 @@ Mirror酱是一个第三方应用分发平台，让开源应用的更新更简�
 
 - B 站: [Mirror酱-Official](https://space.bilibili.com/3546848463685966)
 - QQ 频道：[MirrorChyan](https://pd.qq.com/g/MirrorChyan)
-- 用户售后 QQ 群：995458883
+- 用户售后 QQ 群：534984726
 - 集成开发 QQ 群：1026040805
 
 ## 开发者文档

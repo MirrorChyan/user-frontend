@@ -62,7 +62,13 @@
     "createOrderError": "Failed to create order, please try again",
     "paymentIssue": "Problem paying?",
     "recommend": "Recommend",
-    "mobilePay": "Mobile payment"
+    "mobilePay": "Mobile payment",
+    "renewalTitle": "Already have a CDK and want to renew?",
+    "oldCdkPlaceholder": "Enter your CDK to renew",
+    "cdkNotFound": "CDK does not exist",
+    "cdkCheckError": "Failed to verify CDK, please try again",
+    "cdkExpiredAt": "CDK expired on {date}",
+    "cdkExpiresAt": "CDK expires on {date}"
   },
   "GetKey": {
     "title": "Welcome to MirrorChyan",

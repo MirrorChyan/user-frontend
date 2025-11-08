@@ -15,6 +15,7 @@ import PaymentOption from "@/components/checkout/PaymentOption";
 import { isMobile } from "react-device-detect";
 import { getSource } from "@/components/SourceTracker";
 import { shouldUseQRCodePayment } from "@/lib/utils/browserDetection";
+import RenewalCdkInput, { RenewalCdkInputRef } from "@/components/checkout/RenewalCdkInput";
 
 export interface CheckoutProps {
   planId: Array<string>;
@@ -59,6 +60,7 @@ interface OrderInfoType {
   cdk?: string;
   expired_at?: string;
   created_at?: string;
+  is_renewal?: boolean;
 }
 
 export default function Checkout(params: CheckoutProps) {
@@ -80,6 +82,8 @@ export default function Checkout(params: CheckoutProps) {
   const [orderInfo, setOrderInfo] = useState<OrderInfoType>();
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const [isPolling, setIsPolling] = useState(false);
+  const [renewCdk, setRenewCdk] = useState("");
+  const renewalCdkInputRef = useRef<RenewalCdkInputRef>(null);
 
   const [hasError, setHasError] = useState(false);
   const [usePayWithH5, setUsePayWithH5] = useState(() => {
@@ -132,6 +136,7 @@ export default function Checkout(params: CheckoutProps) {
             cdk: data.cdk,
             expired_at: data.expired_at,
             created_at: data.created_at,
+            is_renewal: renewCdk.length > 0,
           });
           if (intervalIdRef.current) {
             clearInterval(intervalIdRef.current);
@@ -196,6 +201,12 @@ export default function Checkout(params: CheckoutProps) {
   };
 
   const handlePayment = async () => {
+    // 验证续费CDK（如果填写了）
+    const isValidCdk = await renewalCdkInputRef.current?.validate();
+    if (isValidCdk === false) {
+      return;
+    }
+
     setLoading(true);
     try {
       if (paymentMethod === "afdian") {
@@ -228,6 +239,11 @@ export default function Checkout(params: CheckoutProps) {
       }
 
       params.append("source", getSource());
+
+      // 如果填写了续费CDK，添加 renew 参数
+      if (renewCdk && renewCdk.length > 0) {
+        params.append("renew", renewCdk);
+      }
 
       let openLink: boolean = isMobile && usePayWithH5;
       const resp = await fetch(`${CLIENT_BACKEND}/api/billing/order/${platform}/create?${params}`);
@@ -412,6 +428,8 @@ export default function Checkout(params: CheckoutProps) {
                   </div>
                 </div>
               </div>
+
+              <RenewalCdkInput ref={renewalCdkInputRef} value={renewCdk} onChange={setRenewCdk} />
 
               <div className="p-6">
                 <h3 className="mb-4 flex items-center text-xl font-semibold text-gray-900 dark:text-white">

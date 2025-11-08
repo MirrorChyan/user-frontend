@@ -84,6 +84,7 @@
   },
   "ShowKey": {
     "thanksForBuying": "Thanks for Sponsoring",
+    "renewalSuccess": "Renewal Successful",
     "yourKey": "Your CDKey",
     "invalidOrderId": "Order does not exist",
     "orderExpired": "CDKey has expired",

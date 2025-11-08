@@ -11,6 +11,8 @@ import QQGroupLink from "@/components/QQGroupLink";
 export interface OrderInfoType {
   cdk?: string;
   expired_at?: string;
+  created_at?: string;
+  is_renewal?: boolean;
 }
 
 export interface QRCodePayModalProps {

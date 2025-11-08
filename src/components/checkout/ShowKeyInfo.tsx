@@ -106,7 +106,7 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
           </div>
         </div>
         <h4 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
-          {t("thanksForBuying")}
+          {info.is_renewal ? t("renewalSuccess") : t("thanksForBuying")}
         </h4>
         <p className="mb-2 text-base text-gray-600 dark:text-gray-300">{t("yourKey")}</p>
         <div

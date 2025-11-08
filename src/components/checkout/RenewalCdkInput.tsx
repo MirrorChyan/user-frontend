@@ -13,7 +13,7 @@ import {
 } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { HelpCircle } from "lucide-react";
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from "react";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 
 interface RenewalCdkInputProps {
@@ -97,16 +97,19 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
       },
     }));
 
-    const handleChange = (newValue: string) => {
-      onChange(newValue);
-      lastValidatedValueRef.current = "";
-      lastValidationResultRef.current = null;
-    };
+    const handleChange = useCallback(
+      (newValue: string) => {
+        onChange(newValue);
+        lastValidatedValueRef.current = "";
+        lastValidationResultRef.current = null;
+      },
+      [onChange]
+    );
 
-    const handleCloseErrorModal = () => {
+    const handleCloseErrorModal = useCallback(() => {
       setErrorModalOpen(false);
       setErrorMessage("");
-    };
+    }, []);
 
     return (
       <div className="border-b border-gray-100 px-6 py-4 dark:border-gray-700">
@@ -138,19 +141,21 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
           </AccordionItem>
         </Accordion>
 
-        <Modal isOpen={errorModalOpen} onClose={handleCloseErrorModal}>
-          <ModalContent>
-            <ModalHeader className="flex flex-col gap-1">{t("cdkValidationError")}</ModalHeader>
-            <ModalBody>
-              <p>{errorMessage}</p>
-            </ModalBody>
-            <ModalFooter>
-              <Button color="primary" onPress={handleCloseErrorModal}>
-                {t("confirmButton")}
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        {errorModalOpen && (
+          <Modal isOpen={errorModalOpen} onClose={handleCloseErrorModal}>
+            <ModalContent>
+              <ModalHeader className="flex flex-col gap-1">{t("cdkValidationError")}</ModalHeader>
+              <ModalBody>
+                <p>{errorMessage}</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" onPress={handleCloseErrorModal}>
+                  {t("confirmButton")}
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        )}
       </div>
     );
   }

@@ -79,6 +79,7 @@
   },
   "ShowKey": {
     "thanksForBuying": "感谢赞助",
+    "renewalSuccess": "续期成功",
     "yourKey": "你的CDKey",
     "invalidOrderId": "订单不存在哦",
     "orderExpired": "CDKey已过期",

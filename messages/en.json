@@ -65,10 +65,12 @@
     "mobilePay": "Mobile payment",
     "renewalTitle": "Already have a CDK and want to renew?",
     "oldCdkPlaceholder": "Enter your CDK to renew",
-    "cdkNotFound": "CDK does not exist",
+    "cdkInvalid": "Invalid CDK",
     "cdkCheckError": "Failed to verify CDK, please try again",
     "cdkExpiredAt": "CDK expired on {date}",
-    "cdkExpiresAt": "CDK expires on {date}"
+    "cdkExpiresAt": "CDK expires on {date}",
+    "cdkValidationError": "CDK Validation Error",
+    "confirmButton": "Confirm"
   },
   "GetKey": {
     "title": "Welcome to MirrorChyan",

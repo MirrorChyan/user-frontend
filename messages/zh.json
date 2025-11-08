@@ -60,10 +60,12 @@
     "mobilePay": "移动支付",
     "renewalTitle": "已有CDK，想要续期？",
     "oldCdkPlaceholder": "输入您的CDK",
-    "cdkNotFound": "CDK不存在",
+    "cdkInvalid": "CDK不正确",
     "cdkCheckError": "验证CDK失败，请重试",
     "cdkExpiredAt": "CDK已在 {date} 前过期",
-    "cdkExpiresAt": "CDK将在 {date} 后过期"
+    "cdkExpiresAt": "CDK将在 {date} 后过期",
+    "cdkValidationError": "CDK验证错误",
+    "confirmButton": "确认"
   },
   "GetKey": {
     "title": "欢迎使用Mirror酱",

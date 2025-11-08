@@ -1,18 +1,24 @@
 "use client";
 
-import { Accordion, AccordionItem, Input } from "@heroui/react";
-import { useFormatter, useTranslations } from "next-intl";
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@heroui/react";
+import { useTranslations } from "next-intl";
 import { HelpCircle } from "lucide-react";
-import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from "react";
-import { debounce } from "lodash";
-import moment from "moment";
-import { addToast } from "@heroui/toast";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 
 interface RenewalCdkInputProps {
   value: string;
   onChange: (value: string) => void;
-  onValidationChange?: (isValid: boolean) => void;
 }
 
 export interface RenewalCdkInputRef {
@@ -22,16 +28,14 @@ export interface RenewalCdkInputRef {
 interface CdkValidationResult {
   isValid: boolean;
   ec: number;
-  message?: string;
 }
 
 const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
-  ({ value, onChange, onValidationChange }, ref) => {
+  ({ value, onChange }, ref) => {
     const t = useTranslations("Checkout");
-    const format = useFormatter();
 
-    const [message, setMessage] = useState("");
-    const [isValid, setIsValid] = useState(false);
+    const [errorModalOpen, setErrorModalOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const lastValidatedValueRef = useRef<string>("");
     const lastValidationResultRef = useRef<CdkValidationResult | null>(null);
 
@@ -42,25 +46,10 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
 
       try {
         const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?cdk=${cdk}`);
-        const { ec, data } = await response.json();
+        const { ec } = await response.json();
 
         if (ec === 200) {
-          const expiredAt = moment(data.expired_at);
-          const now = moment();
-          const formattedDate = format.dateTime(expiredAt.toDate(), {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          });
-
-          let message = "";
-          if (expiredAt.isBefore(now)) {
-            message = t("cdkExpiredAt", { date: formattedDate });
-          } else {
-            message = t("cdkExpiresAt", { date: formattedDate });
-          }
-
-          return { isValid: true, ec, message };
+          return { isValid: true, ec };
         }
 
         return { isValid: false, ec };
@@ -69,25 +58,6 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
         return { isValid: false, ec: 0 };
       }
     };
-
-    const validateForDisplay = async (cdk: string) => {
-      const result = await performValidation(cdk);
-
-      if (result.isValid && result.message) {
-        setIsValid(true);
-        setMessage(result.message);
-        onValidationChange?.(true);
-      } else {
-        setIsValid(false);
-        setMessage("");
-        onValidationChange?.(false);
-      }
-
-      lastValidatedValueRef.current = cdk;
-      lastValidationResultRef.current = result;
-    };
-
-    const validateCdkDebounced = useCallback(debounce(validateForDisplay, 1500), []);
 
     // 暴露验证方法给父组件
     useImperativeHandle(ref, () => ({
@@ -103,17 +73,10 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
             return true;
           }
 
-          if (result.ec === 404) {
-            addToast({
-              color: "warning",
-              description: t("cdkNotFound"),
-            });
-          } else {
-            addToast({
-              color: "warning",
-              description: t("cdkCheckError"),
-            });
-          }
+          // 显示错误 Modal
+          const errorMsg = result.ec === 404 ? t("cdkInvalid") : t("cdkCheckError");
+          setErrorMessage(errorMsg);
+          setErrorModalOpen(true);
           return false;
         }
 
@@ -126,31 +89,23 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
           return true;
         }
 
-        if (result.ec === 404) {
-          addToast({
-            color: "warning",
-            description: t("cdkNotFound"),
-          });
-        } else {
-          addToast({
-            color: "warning",
-            description: t("cdkCheckError"),
-          });
-        }
+        // 显示错误 Modal
+        const errorMsg = result.ec === 404 ? t("cdkInvalid") : t("cdkCheckError");
+        setErrorMessage(errorMsg);
+        setErrorModalOpen(true);
         return false;
       },
     }));
 
     const handleChange = (newValue: string) => {
       onChange(newValue);
-      setMessage("");
-      setIsValid(false);
-      onValidationChange?.(false);
+      lastValidatedValueRef.current = "";
+      lastValidationResultRef.current = null;
+    };
 
-      if (newValue !== lastValidatedValueRef.current) {
-        lastValidatedValueRef.current = "";
-        lastValidationResultRef.current = null;
-      }
+    const handleCloseErrorModal = () => {
+      setErrorModalOpen(false);
+      setErrorMessage("");
     };
 
     return (
@@ -171,25 +126,31 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
               content: "pt-2 pb-4",
             }}
           >
-            <div className="space-y-2">
-              <Input
-                placeholder={t("oldCdkPlaceholder")}
-                value={value}
-                onChange={e => handleChange(e.target.value.trim())}
-                color="default"
-                classNames={{
-                  input: "font-mono",
-                }}
-              />
-              {message && (
-                <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400">
-                  <span>✓</span>
-                  <span>{message}</span>
-                </div>
-              )}
-            </div>
+            <Input
+              placeholder={t("oldCdkPlaceholder")}
+              value={value}
+              onChange={e => handleChange(e.target.value.trim())}
+              color="default"
+              classNames={{
+                input: "font-mono",
+              }}
+            />
           </AccordionItem>
         </Accordion>
+
+        <Modal isOpen={errorModalOpen} onClose={handleCloseErrorModal}>
+          <ModalContent>
+            <ModalHeader className="flex flex-col gap-1">{t("cdkValidationError")}</ModalHeader>
+            <ModalBody>
+              <p>{errorMessage}</p>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" onPress={handleCloseErrorModal}>
+                {t("confirmButton")}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </div>
     );
   }

@@ -151,10 +151,6 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
         lastValidatedValueRef.current = "";
         lastValidationResultRef.current = null;
       }
-
-      if (newValue.length > 0) {
-        validateCdkDebounced(newValue);
-      }
     };
 
     return (

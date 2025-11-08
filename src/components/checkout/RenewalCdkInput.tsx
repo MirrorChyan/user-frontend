@@ -19,6 +19,12 @@ export interface RenewalCdkInputRef {
   validate: () => Promise<boolean>;
 }
 
+interface CdkValidationResult {
+  isValid: boolean;
+  ec: number;
+  message?: string;
+}
+
 const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
   ({ value, onChange, onValidationChange }, ref) => {
     const t = useTranslations("Checkout");
@@ -26,14 +32,12 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
 
     const [message, setMessage] = useState("");
     const [isValid, setIsValid] = useState(false);
-    const hasValidatedRef = useRef(false);
+    const lastValidatedValueRef = useRef<string>("");
+    const lastValidationResultRef = useRef<CdkValidationResult | null>(null);
 
-    const validateCdk = async (cdk: string) => {
+    const performValidation = async (cdk: string): Promise<CdkValidationResult> => {
       if (!cdk || cdk.length === 0) {
-        setIsValid(false);
-        setMessage("");
-        onValidationChange?.(false);
-        return;
+        return { isValid: false, ec: 0 };
       }
 
       try {
@@ -56,22 +60,34 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
             message = t("cdkExpiresAt", { date: formattedDate });
           }
 
-          setIsValid(true);
-          setMessage(message);
-          onValidationChange?.(true);
-        } else {
-          setIsValid(false);
-          setMessage("");
-          onValidationChange?.(false);
+          return { isValid: true, ec, message };
         }
+
+        return { isValid: false, ec };
       } catch (error) {
+        console.error("CDK validation error:", error);
+        return { isValid: false, ec: 0 };
+      }
+    };
+
+    const validateForDisplay = async (cdk: string) => {
+      const result = await performValidation(cdk);
+
+      if (result.isValid && result.message) {
+        setIsValid(true);
+        setMessage(result.message);
+        onValidationChange?.(true);
+      } else {
         setIsValid(false);
         setMessage("");
         onValidationChange?.(false);
       }
+
+      lastValidatedValueRef.current = cdk;
+      lastValidationResultRef.current = result;
     };
 
-    const validateCdkDebounced = useCallback(debounce(validateCdk, 1500), []);
+    const validateCdkDebounced = useCallback(debounce(validateForDisplay, 1500), []);
 
     // 暴露验证方法给父组件
     useImperativeHandle(ref, () => ({
@@ -80,39 +96,48 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
           return true; // 空值视为有效（可选字段）
         }
 
-        // 如果已经在失焦时验证过，跳过
-        if (hasValidatedRef.current) {
-          return isValid;
-        }
+        if (lastValidatedValueRef.current === value && lastValidationResultRef.current) {
+          const result = lastValidationResultRef.current;
 
-        try {
-          const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?cdk=${value}`);
-          const { ec } = await response.json();
+          if (result.isValid) {
+            return true;
+          }
 
-          if (ec === 404) {
+          if (result.ec === 404) {
             addToast({
               color: "warning",
               description: t("cdkNotFound"),
             });
-            return false;
-          }
-
-          if (ec !== 200) {
+          } else {
             addToast({
               color: "warning",
               description: t("cdkCheckError"),
             });
-            return false;
           }
+          return false;
+        }
 
+        const result = await performValidation(value);
+
+        lastValidatedValueRef.current = value;
+        lastValidationResultRef.current = result;
+
+        if (result.isValid) {
           return true;
-        } catch (error) {
+        }
+
+        if (result.ec === 404) {
+          addToast({
+            color: "warning",
+            description: t("cdkNotFound"),
+          });
+        } else {
           addToast({
             color: "warning",
             description: t("cdkCheckError"),
           });
-          return false;
         }
+        return false;
       },
     }));
 
@@ -120,37 +145,15 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
       onChange(newValue);
       setMessage("");
       setIsValid(false);
-      hasValidatedRef.current = false;
       onValidationChange?.(false);
+
+      if (newValue !== lastValidatedValueRef.current) {
+        lastValidatedValueRef.current = "";
+        lastValidationResultRef.current = null;
+      }
 
       if (newValue.length > 0) {
         validateCdkDebounced(newValue);
-      }
-    };
-
-    const handleBlur = async () => {
-      if (!value || value.length === 0 || hasValidatedRef.current) {
-        return;
-      }
-
-      hasValidatedRef.current = true;
-
-      try {
-        const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?cdk=${value}`);
-        const { ec } = await response.json();
-
-        if (ec === 404) {
-          addToast({
-            color: "warning",
-            description: t("cdkNotFound"),
-          });
-          onChange("");
-          setMessage("");
-          setIsValid(false);
-          onValidationChange?.(false);
-        }
-      } catch (error) {
-        console.error("CDK validation error:", error);
       }
     };
 
@@ -177,7 +180,6 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
                 placeholder={t("oldCdkPlaceholder")}
                 value={value}
                 onChange={e => handleChange(e.target.value.trim())}
-                onBlur={handleBlur}
                 color="default"
                 classNames={{
                   input: "font-mono",

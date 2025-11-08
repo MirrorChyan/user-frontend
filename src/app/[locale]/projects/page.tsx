@@ -1,5 +1,5 @@
 import { BackgroundLines } from "@/components/BackgroundLines";
-import ProjectCard, { ProjectCardProps } from "@/components/ProjectCard";
+import { ProjectCardProps } from "@/components/ProjectCard";
 import ProjectIntegratedCard from "@/components/ProjectIntegratedCard";
 import { getTranslations } from "next-intl/server";
 import { SERVER_BACKEND } from "@/app/requests/misc";

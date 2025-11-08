@@ -1,7 +1,7 @@
 "use client";
 
 import { getGroupUrl, QQ_GROUP } from "@/lib/utils/constant";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export interface QQGroupProps {
   text: string;

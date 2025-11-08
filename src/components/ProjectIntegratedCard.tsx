@@ -1,20 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  useDisclosure,
-  Input,
-  Textarea,
-  Link,
-} from "@heroui/react";
+import React from "react";
+import { Link } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { addToast } from "@heroui/toast";
 import { PlusIcon } from "@heroicons/react/24/outline";
 
 export default function ProjectIntegratedCard() {

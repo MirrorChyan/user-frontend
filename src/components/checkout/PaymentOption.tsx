@@ -1,7 +1,6 @@
 import React from "react";
-import { ThumbsUp, Smartphone } from "lucide-react";
+import { ThumbsUp } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { isMobile } from "react-device-detect";
 
 export default function PaymentOption({
   checked,

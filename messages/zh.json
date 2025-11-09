@@ -223,7 +223,6 @@
     "count": "销量",
     "monthlyCount": "月销售总量",
     "monthlyAmount": "月销售总额",
-    "refresh": "重新查询",
     "refreshSuccess": "(☆▽☆) 数据更新成功",
     "lineChart": {
       "toggleCount": "点击切换为销量",

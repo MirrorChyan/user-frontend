@@ -66,6 +66,8 @@ export default function Dashboard() {
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
     debounceTimer.current = setTimeout(async () => {
+      if (month === pendingMonth) return;
+
       try {
         const response: RevenueResponse = await fetch(
           `${CLIENT_BACKEND}/api/billing/revenue?rid=${currentRid}&date=${pendingMonth}&is_ua=${+currentIsUa}`,
@@ -76,6 +78,10 @@ export default function Dashboard() {
 
         if (response.ec === 200) {
           closeAll();
+          addToast({
+            description: t("refreshSuccess"),
+            color: "success",
+          });
           setRevenueData(response.data);
           setMonth(pendingMonth);
           setCurrentDate(pendingMonth);

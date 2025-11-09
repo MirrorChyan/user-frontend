@@ -229,7 +229,6 @@
     "count": "Deals",
     "monthlyCount": "Monthly Sales",
     "monthlyAmount": "Monthly Revenue",
-    "refresh": "Refresh",
     "refreshSuccess": "Refresh was successful",
     "lineChart": {
       "toggleCount": "Click to switch to sales volume",

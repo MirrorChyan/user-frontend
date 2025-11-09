@@ -69,7 +69,7 @@
     "cdkCheckError": "Failed to verify CDK, please try again",
     "cdkExpiredAt": "CDK expired on {date}",
     "cdkExpiresAt": "CDK expires on {date}",
-    "cdkValidationError": "CDK Validation Error",
+    "cdkValidationError": "CDK validation error, please check your input or subscribe to a new CDK",
     "confirmButton": "Confirm"
   },
   "GetKey": {

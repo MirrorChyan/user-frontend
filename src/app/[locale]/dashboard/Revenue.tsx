@@ -259,7 +259,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
         {/* 标题区 */}
         <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <h1 className="flex-grow text-4xl font-bold dark:text-white">
-            {t("dashboardTitle", { rid, date })}
+            {t("dashboardSubTitle", { rid, date })}
           </h1>
           {/* 导出按钮移动到标题右侧 */}
           <Button

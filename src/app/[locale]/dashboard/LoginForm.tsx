@@ -10,7 +10,13 @@ import YearMonthPicker from "@/components/YearMonthPicker";
 import { RevenueResponse, RevenueType } from "@/app/[locale]/dashboard/page";
 
 type LoginFormProps = {
-  onLoginSuccess: (data: RevenueType[], rid: string, date: string) => void;
+  onLoginSuccess: (
+    data: RevenueType[],
+    rid: string,
+    date: string,
+    token?: string,
+    isUa?: boolean
+  ) => void;
 };
 
 export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
@@ -54,7 +60,7 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
         return;
       }
 
-      onLoginSuccess(response.data, rid, month);
+      onLoginSuccess(response.data, rid, month, token, isUa);
     } catch (error) {
       console.error("Error:", error);
       closeAll();

@@ -2,19 +2,22 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Button, Card, Skeleton } from "@heroui/react";
+import { Button, Card, Skeleton, Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
 import { debounce } from "lodash";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, TooltipProps } from "recharts";
 import { Props } from "recharts/types/component/DefaultLegendContent";
 import { RevenueType } from "@/app/[locale]/dashboard/page";
 import SalesList from "@/app/[locale]/dashboard/SalesList";
 import SalesLineChart from "@/app/[locale]/dashboard/SalesLineChart";
+import YearMonthPicker from "@/components/YearMonthPicker";
 
 type RevenueProps = {
   revenueData: RevenueType[];
   onLogOut: () => void;
   date: string;
   rid: string;
+  month: string;
+  onMonthChange: (month: string) => void;
 };
 
 type ChartDataItem = {
@@ -29,7 +32,14 @@ type SalesPieChartProps = {
   title: string;
 };
 
-export default function Revenue({ revenueData, onLogOut, rid, date }: RevenueProps) {
+export default function Revenue({
+  revenueData,
+  onLogOut,
+  rid,
+  date,
+  month,
+  onMonthChange,
+}: RevenueProps) {
   const t = useTranslations("Dashboard");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   useEffect(() => {
@@ -39,7 +49,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
-  }, []);
+  }, [revenueData, onLogOut]);
 
   // Prepare chart data
   const applicationData = useMemo(() => {
@@ -255,21 +265,38 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
 
   return (
     <div className="dark:bg-gray-900">
-      <div className="mx-auto max-w-7xl p-6">
+      <div className="mx-auto max-w-7xl p-2">
         {/* 标题区 */}
         <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <h1 className="flex-grow text-4xl font-bold dark:text-white">
-            {t("dashboardSubTitle", { rid, date })}
+          <h1 className="flex-grow text-3xl font-bold dark:text-white sm:text-4xl">
+            <span>{t("dashboardTitle", { rid })}</span>
           </h1>
-          {/* 导出按钮移动到标题右侧 */}
-          <Button
-            className="w-full sm:w-auto"
-            color="secondary"
-            variant="ghost"
-            onClick={handleExport}
-          >
-            {t("export")}
-          </Button>
+
+          <div className="flex w-full gap-6 px-1 sm:w-auto sm:gap-4">
+            <h2 className="flex items-center text-3xl font-bold dark:text-white">
+              <Popover placement="bottom" showArrow>
+                <PopoverTrigger className="transition-all hover:border-indigo-900 hover:text-indigo-900 dark:hover:border-indigo-200 dark:hover:text-indigo-200">
+                  <span className="cursor-pointer border-b-2 border-dashed">{date}</span>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-2">
+                  <YearMonthPicker
+                    onChange={onMonthChange}
+                    initialYearMonth={month}
+                    showArrow={true}
+                  />
+                </PopoverContent>
+              </Popover>
+            </h2>
+
+            <Button
+              className="flex-grow sm:flex-grow-0"
+              color="secondary"
+              variant="ghost"
+              onClick={handleExport}
+            >
+              {t("export")}
+            </Button>
+          </div>
         </div>
 
         <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">

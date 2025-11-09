@@ -60,11 +60,11 @@
     "mobilePay": "移动支付",
     "renewalTitle": "已有 CDK，想要续期？",
     "oldCdkPlaceholder": "输入您想要续期的 CDK",
-    "cdkInvalid": "续期 CDK 错误",
-    "cdkCheckError": "续期 CDK 验证失败，请重试",
+    "cdkInvalid": "请检查您的输入，或直接订阅新 CDK",
+    "cdkCheckError": "验证失败，请重试",
     "cdkExpiredAt": "CDK 已在 {date} 前过期",
     "cdkExpiresAt": "CDK 将在 {date} 后过期",
-    "cdkValidationError": "请检查您的输入，或直接订阅新 CDK",
+    "cdkValidationError": "续期 CDK 错误",
     "confirmButton": "确认"
   },
   "GetKey": {

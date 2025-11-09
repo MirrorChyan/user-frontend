@@ -65,11 +65,11 @@
     "mobilePay": "Mobile payment",
     "renewalTitle": "Already have a CDK and want to renew?",
     "oldCdkPlaceholder": "Enter your CDK to renew",
-    "cdkInvalid": "Invalid CDK",
+    "cdkInvalid": "Please check your input or directly subscribe to a new CDK",
     "cdkCheckError": "Failed to verify CDK, please try again",
     "cdkExpiredAt": "CDK expired on {date}",
     "cdkExpiresAt": "CDK expires on {date}",
-    "cdkValidationError": "CDK validation error, please check your input or subscribe to a new CDK",
+    "cdkValidationError": "Invalid CDK",
     "confirmButton": "Confirm"
   },
   "GetKey": {

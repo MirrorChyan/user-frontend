@@ -51,7 +51,7 @@ export default function PaymentMethodSelector({
           </PaymentOption>
         )}
 
-        {locale !== "zh" && planInfo.afdian_info && (
+        {false && planInfo.afdian_info && (
           <PaymentOption
             checked={value === "afdian"}
             onClick={() => onChange("afdian")}

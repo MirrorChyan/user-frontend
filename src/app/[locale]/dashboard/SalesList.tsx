@@ -1,4 +1,4 @@
-import { Table, TableBody, TableColumn, TableHeader, TableRow, TableCell } from "@heroui/react";
+import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
 import { RevenueType } from "@/app/[locale]/dashboard/page";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";

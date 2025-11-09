@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils/css";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { SERVER_BACKEND, CLIENT_BACKEND } from "@/app/requests/misc";
+import { CLIENT_BACKEND, SERVER_BACKEND } from "@/app/requests/misc";
 import { ProjectCardProps } from "@/components/ProjectCard";
 
 export default async function ProjectBanner() {

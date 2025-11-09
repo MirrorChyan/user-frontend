@@ -1,5 +1,5 @@
 import { BackgroundLines } from "@/components/BackgroundLines";
-import { getTranslations, getFormatter, getLocale } from "next-intl/server";
+import { getFormatter, getLocale, getTranslations } from "next-intl/server";
 import moment from "moment";
 
 import CopyButton from "@/components/CopyButton";

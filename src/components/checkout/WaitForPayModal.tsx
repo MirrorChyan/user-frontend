@@ -3,7 +3,6 @@
 import { useTranslations } from "next-intl";
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
 import { Fragment } from "react";
-import { Home } from "lucide-react";
 import { useRouter } from "@/i18n/routing";
 import ShowKeyInfo from "@/components/checkout/ShowKeyInfo";
 import { OrderInfoType } from "@/components/checkout/QRCodePayModal";

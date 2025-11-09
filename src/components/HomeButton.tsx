@@ -1,5 +1,6 @@
 import { Link } from "@/i18n/routing";
 import clsx from "clsx";
+
 interface HomeButtonProps {
   className?: string;
 }

@@ -36,10 +36,10 @@ export default function GetKey() {
         <div className="w-full overflow-hidden rounded-2xl border border-border bg-card p-8 shadow-xl shadow-black/5 md:p-10">
           {/* Header Section */}
           <div className="mb-10 text-center">
-            <h1 className="mb-3 text-2xl font-bold tracking-tight text-card-foreground">
+            <h1 className="mb-6 text-2xl font-bold tracking-tight text-card-foreground">
               {t("title")}
             </h1>
-            <p className="text-left text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-6 text-left text-sm leading-relaxed text-muted-foreground">
               {t.rich("orderId", {
                 br: () => <br />,
               })}

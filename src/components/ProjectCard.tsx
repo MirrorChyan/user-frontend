@@ -319,7 +319,7 @@ export default function ProjectCard(props: ProjectCardProps) {
   return (
     <div
       className={
-        "group relative transform cursor-pointer overflow-hidden rounded-lg border border-border bg-gradient-to-br from-card to-muted/20 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10"
+        "group relative transform cursor-pointer overflow-hidden rounded-lg border border-gray-100 bg-gradient-to-br from-white to-gray-50 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-gray-600 dark:from-gray-800 dark:to-gray-900 dark:hover:shadow-primary-500/30"
       }
       onClick={openModal}
     >
@@ -337,7 +337,7 @@ export default function ProjectCard(props: ProjectCardProps) {
               onClick={e => e.stopPropagation()}
               className="flex h-8 w-8 items-center justify-center transition-colors duration-200"
             >
-              <ArrowTopRightOnSquareIcon className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+              <ArrowTopRightOnSquareIcon className="h-4 w-4 text-gray-600 group-hover:text-primary-600 dark:text-gray-300 dark:group-hover:text-primary-400" />
             </a>
           </Tooltip>
         </div>
@@ -345,7 +345,7 @@ export default function ProjectCard(props: ProjectCardProps) {
       <div className="flex p-4">
         {image ? (
           <div
-            className="relative mr-4 flex-shrink-0 overflow-hidden rounded-md bg-muted shadow-sm"
+            className="relative mr-4 flex-shrink-0 overflow-hidden rounded-md bg-gray-50 shadow-sm dark:bg-gray-700"
             style={{ width: "80px", height: "80px" }}
           >
             <img
@@ -367,13 +367,13 @@ export default function ProjectCard(props: ProjectCardProps) {
           </div>
         )}
         <div className="flex flex-col justify-center">
-          <h3 className="text-lg font-semibold text-foreground transition-colors duration-300 group-hover:text-primary">
+          <h3 className="text-lg font-semibold text-gray-900 transition-colors duration-300 group-hover:text-primary-600 dark:text-white dark:group-hover:text-primary-400">
             {name}
           </h3>
         </div>
       </div>
       <div className="mt-3.5 px-4 pb-4">
-        <p className="text-sm text-muted-foreground transition-colors duration-300 group-hover:text-foreground">
+        <p className="text-sm text-gray-600 transition-colors duration-300 group-hover:text-gray-800 dark:text-gray-300 dark:group-hover:text-gray-200">
           {desc}
         </p>
       </div>
@@ -400,12 +400,14 @@ export default function ProjectCard(props: ProjectCardProps) {
                     <div className="mb-4">
                       <div
                         className={`mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full ${
-                          isLoadingAnimation ? "bg-primary/10" : "bg-green-100 dark:bg-green-900/30"
+                          isLoadingAnimation
+                            ? "bg-primary-100 dark:bg-primary-900"
+                            : "bg-green-100 dark:bg-green-900"
                         }`}
                       >
                         {isLoadingAnimation ? (
                           <svg
-                            className="h-8 w-8 animate-spin text-primary"
+                            className="h-8 w-8 animate-spin text-primary-600 dark:text-primary-400"
                             fill="none"
                             viewBox="0 0 24 24"
                           >
@@ -439,12 +441,12 @@ export default function ProjectCard(props: ProjectCardProps) {
                           </svg>
                         )}
                       </div>
-                      <h3 className="mb-2 text-xl font-semibold text-foreground">
+                      <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
                         {isLoadingAnimation
                           ? t("downloading")
                           : t("downloadStarted", { name, version })}
                       </h3>
-                      <p className="text-muted-foreground">
+                      <p className="text-gray-600 dark:text-gray-300">
                         {isLoadingAnimation ? t("pleaseWait") : t("downloadInProgress")}
                       </p>
                     </div>
@@ -518,7 +520,7 @@ export default function ProjectCard(props: ProjectCardProps) {
                   <div className="flex p-4">
                     {image ? (
                       <div
-                        className="relative mr-4 flex-shrink-0 overflow-hidden rounded-md bg-muted shadow-sm"
+                        className="relative mr-4 flex-shrink-0 overflow-hidden rounded-md bg-gray-50 shadow-sm dark:bg-gray-700"
                         style={{ width: "80px", height: "80px" }}
                       >
                         <img
@@ -539,8 +541,13 @@ export default function ProjectCard(props: ProjectCardProps) {
                         {avatarText}
                       </div>
                     )}
+                    {/* <div className="flex flex-col justify-center">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
+                        {name}
+                      </h3>
+                    </div> */}
                     <div className="self-center px-4 pb-4">
-                      <p className="text-sm text-muted-foreground transition-colors duration-300 group-hover:text-foreground">
+                      <p className="text-sm text-gray-600 transition-colors duration-300 group-hover:text-gray-800 dark:text-gray-300 dark:group-hover:text-gray-200">
                         {desc}
                       </p>
                       {url && (
@@ -550,7 +557,7 @@ export default function ProjectCard(props: ProjectCardProps) {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={e => e.stopPropagation()}
-                            className="inline-flex items-center gap-1 text-sm text-primary transition-colors hover:text-primary/80"
+                            className="inline-flex items-center gap-1 text-sm text-primary-600 transition-colors hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                           >
                             <ArrowTopRightOnSquareIcon className="h-4 w-4" />
                             {p("openProjectHomepage")}
@@ -629,9 +636,9 @@ export default function ProjectCard(props: ProjectCardProps) {
                               className="focus:outline-none dark:text-gray-300"
                             >
                               {isPasswordVisible ? (
-                                <EyeSlashIcon className="h-5 w-5 text-muted-foreground hover:text-foreground" />
+                                <EyeSlashIcon className="h-5 w-5 text-gray-400 hover:text-gray-500 dark:text-gray-400 dark:hover:text-gray-300" />
                               ) : (
-                                <EyeIcon className="h-5 w-5 text-muted-foreground hover:text-foreground" />
+                                <EyeIcon className="h-5 w-5 text-gray-400 hover:text-gray-500 dark:text-gray-400 dark:hover:text-gray-300" />
                               )}
                             </button>
                           </div>
@@ -647,7 +654,7 @@ export default function ProjectCard(props: ProjectCardProps) {
                 </div>
               )}
               {!downloadStarted && (
-                <div className="bottom-4 mt-10 w-full text-center text-xs leading-relaxed text-muted-foreground">
+                <div className="bottom-4 mt-10 w-full text-center text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                   {t.rich("disclaimer", {
                     rid: name,
                     br: () => <br />,

@@ -20,7 +20,7 @@ export default function PaymentOption({
   const t = useTranslations("Checkout");
   return (
     <label
-      className={`relative flex cursor-pointer items-center rounded-xl border p-4 transition-colors ${checked ? "border-primary bg-secondary/50" : "border-border hover:bg-muted/50"}`}
+      className={`relative flex cursor-pointer items-center rounded-xl border p-4 transition-colors ${checked ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/30" : "border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50"}`}
       onClick={onClick}
     >
       {recommend && (
@@ -29,6 +29,13 @@ export default function PaymentOption({
           <span>{t("recommend")}</span>
         </div>
       )}
+
+      {/* {mobilePay && isMobile && (
+      <div className="absolute -top-2 right-16 bg-blue-500 text-white text-xs px-2 py-1 rounded-full flex items-center shadow-sm">
+        <Smartphone className="w-3 h-3 mr-1" />
+        <span>{t('mobilePay')}</span>
+      </div>
+    )} */}
 
       <input
         type="radio"
@@ -41,12 +48,12 @@ export default function PaymentOption({
 
       <div className="flex flex-1 items-center">
         {children}
-        <span className="font-medium text-foreground">{name}</span>
+        <span className="font-medium text-gray-900 dark:text-white">{name}</span>
       </div>
       <div
-        className={`ml-6 mr-3 flex h-5 w-5 items-center justify-center rounded-full border-2 ${checked ? "border-primary" : "border-border"}`}
+        className={`ml-6 mr-3 flex h-5 w-5 items-center justify-center rounded-full border-2 ${checked ? "border-indigo-600" : "border-gray-300 dark:border-gray-600"}`}
       >
-        {checked && <div className="h-3 w-3 rounded-full bg-primary"></div>}
+        {checked && <div className="h-3 w-3 rounded-full bg-indigo-600"></div>}
       </div>
     </label>
   );

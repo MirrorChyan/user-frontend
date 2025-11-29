@@ -26,10 +26,10 @@ export default function HtmlFormPayPage({ paymentHtml }: HtmlFormPayPageProps) {
           title="支付宝支付"
         />
       ) : (
-        <div className="flex h-[240px] w-[240px] items-center justify-center rounded-lg bg-muted p-4">
+        <div className="flex h-[240px] w-[240px] items-center justify-center rounded-lg bg-gray-100 p-4 dark:bg-gray-700">
           <div className="flex flex-col items-center">
             <svg
-              className="mb-2 h-16 w-16 animate-spin text-primary"
+              className="mb-2 h-16 w-16 animate-spin text-indigo-600"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"

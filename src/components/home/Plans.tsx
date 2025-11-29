@@ -50,7 +50,7 @@ export default function Plans({ morePlans, homePlans, ...rest }: PlansProps) {
             className={cn(
               "absolute -bottom-9 left-1/2 z-10 -translate-x-1/2",
               "md:-bottom-1 md:left-auto md:translate-x-6",
-              "text-nowrap text-primary hover:text-primary/80"
+              "text-nowrap text-indigo-600 hover:text-indigo-500"
             )}
             style={offset ? { left: offset } : {}}
             onClick={() => setIsOpenMore(val => !val)}

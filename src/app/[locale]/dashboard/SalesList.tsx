@@ -151,7 +151,7 @@ export default function SalesList({ listData, date }: PropsType) {
                   setSortBy(column.key);
                   setSortOrder(sortOrder === "asc" ? "desc" : "asc");
                 }}
-                className="absolute right-0 top-1 mr-2 mt-2 cursor-pointer transition hover:rotate-180 hover:text-muted-foreground hover:shadow-sm"
+                className="absolute right-0 top-1 mr-2 mt-2 cursor-pointer transition hover:rotate-180 hover:text-gray-400 hover:shadow-sm"
               >
                 <UpDownIcon />
               </div>
@@ -160,7 +160,10 @@ export default function SalesList({ listData, date }: PropsType) {
         </TableHeader>
         <TableBody items={processedData}>
           {item => (
-            <TableRow key={String(item.date)} className="hover:bg-muted">
+            <TableRow
+              key={String(item.date)}
+              className="hover:bg-gray-100 dark:text-white dark:hover:bg-gray-800"
+            >
               <TableCell className="text-center">{item.date}</TableCell>
               <TableCell className="text-center">{item.count}</TableCell>
               <TableCell className="pr-6 text-right">{item.amount}</TableCell>

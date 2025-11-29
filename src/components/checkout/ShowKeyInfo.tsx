@@ -105,21 +105,25 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
             <CheckCircle className="h-12 w-12 text-green-600" />
           </div>
         </div>
-        <h4 className="mb-4 text-xl font-semibold text-foreground">
+        <h4 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
           {info.is_renewal ? t("renewalSuccess") : t("thanksForBuying")}
         </h4>
-        <p className="mb-2 text-base text-muted-foreground">{t("yourKey")}</p>
+        <p className="mb-2 text-base text-gray-600 dark:text-gray-300">{t("yourKey")}</p>
         <div
-          className="mb-4 flex items-center justify-between rounded-lg bg-muted/50 p-4"
+          className="mb-4 flex items-center justify-between rounded-lg bg-gray-50 p-4 dark:bg-gray-700"
           onClick={copyToClipboard}
         >
-          <span className="cursor-pointer select-all font-mono text-primary">{info.cdk}</span>
-          <button className="ml-2 text-muted-foreground hover:text-primary">{t("copy")}</button>
+          <span className="cursor-pointer select-all font-mono text-indigo-600 dark:text-indigo-400">
+            {info.cdk}
+          </span>
+          <button className="ml-2 text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400">
+            {t("copy")}
+          </button>
         </div>
         {info.expired_at && (
           <div className="mb-4">
             {showConfetti ? (
-              <span className="whitespace-pre-line text-sm text-muted-foreground">
+              <span className="whitespace-pre-line text-sm text-gray-500 dark:text-gray-400">
                 {t.rich("timeConfettiAfter", {
                   addDay: extraDays,
                   time: expiredTime.format("YYYY-MM-DD HH:mm:ss"),
@@ -133,7 +137,7 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
                 </div>
               </span>
             ) : (
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
                 {t.rich("timeConfettiBefore", {
                   time: expiredTime.format("YYYY-MM-DD HH:mm:ss"),
                   days: relativeDays,
@@ -149,7 +153,7 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
             disabled={showConfetti}
             className={`mx-auto flex items-center justify-center rounded-lg px-4 py-2 transition-colors ${
               showConfetti
-                ? "cursor-not-allowed bg-muted text-muted-foreground"
+                ? "cursor-not-allowed bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-500"
                 : "bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400 dark:hover:bg-amber-800/50"
             }`}
           >
@@ -163,12 +167,12 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
         </div>
 
         <div className="mt-4 flex items-center justify-center">
-          <span className="text-sm text-muted-foreground">{t("lostCDK")}</span>
+          <span className="text-sm text-gray-500 dark:text-gray-400">{t("lostCDK")}</span>
         </div>
         <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
           <button
             onClick={handleJoinQQGroup}
-            className="flex items-center justify-center rounded-lg bg-primary/5 px-6 py-3 text-primary transition-colors hover:bg-primary/10"
+            className="flex items-center justify-center rounded-lg bg-indigo-50 px-6 py-3 text-indigo-600 transition-colors hover:bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-800/50"
           >
             <MessageCircle className="mr-2 h-5 w-5" />
             <span>{t("joinQQGroup")}</span>

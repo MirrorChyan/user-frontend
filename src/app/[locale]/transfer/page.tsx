@@ -163,19 +163,38 @@ export default function Transmission() {
           className="relative w-full max-w-3xl"
         >
           {/* 返回首页按钮 */}
-          <div className="absolute -top-12 left-0">
-            <HomeButton className="border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground" />
-          </div>
+          <HomeButton className="absolute -top-12 left-0" />
 
           {/* 主卡片 */}
-          <div className="overflow-hidden rounded-2xl border border-border bg-card/80 shadow-xl backdrop-blur-sm">
+          <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white/80 shadow-xl backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/80">
+            {/* 头部装饰 */}
+            <div className="relative h-2 w-full bg-violet-500" />
+
             {/* 卡片内容 */}
             <div className="px-8 py-10">
+              {/* 图标 */}
+              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-violet-500 shadow-lg">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="white"
+                  className="h-8 w-8"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
+                  />
+                </svg>
+              </div>
+
               {/* 标题 */}
-              <h2 className="mb-2 text-center text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+              <h2 className="mb-2 text-center text-2xl font-bold tracking-tight text-gray-900 dark:text-white md:text-3xl">
                 {t("title")}
               </h2>
-              <p className="mb-8 text-center text-sm text-muted-foreground md:text-base">
+              <p className="mb-8 text-center text-sm text-gray-500 dark:text-gray-400 md:text-base">
                 {t("description")}
               </p>
 
@@ -188,17 +207,20 @@ export default function Transmission() {
                   transition={{ duration: 0.5, delay: 0.1 }}
                   className="w-full flex-1"
                 >
-                  <div className="rounded-xl border border-border bg-muted/30 p-4">
+                  <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4 dark:border-gray-700 dark:bg-gray-700/30">
                     <div className="mb-2 flex items-center gap-2">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600 dark:bg-violet-900/50 dark:text-violet-400">
                         1
                       </div>
-                      <span className="text-sm font-medium text-foreground">{t("fromCdk")}</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {t("fromCdk")}
+                      </span>
                     </div>
                     <Input
                       className="w-full"
                       classNames={{
-                        inputWrapper: "bg-background border-border",
+                        inputWrapper:
+                          "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600",
                       }}
                       value={fromCdk}
                       onChange={handleFromCdkChange}
@@ -216,10 +238,10 @@ export default function Transmission() {
                   className="flex flex-col items-center justify-center"
                 >
                   <div className="hidden flex-col items-center md:flex">
-                    <span className="mb-1 text-xs font-medium text-muted-foreground">
+                    <span className="mb-1 text-xs font-medium text-gray-400">
                       {t("transferTo")}
                     </span>
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-500 text-white shadow-lg">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -237,7 +259,7 @@ export default function Transmission() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 md:hidden">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-500 text-white shadow-lg">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -263,17 +285,20 @@ export default function Transmission() {
                   transition={{ duration: 0.5, delay: 0.1 }}
                   className="w-full flex-1"
                 >
-                  <div className="rounded-xl border border-border bg-muted/30 p-4">
+                  <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4 dark:border-gray-700 dark:bg-gray-700/30">
                     <div className="mb-2 flex items-center gap-2">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600 dark:bg-violet-900/50 dark:text-violet-400">
                         2
                       </div>
-                      <span className="text-sm font-medium text-foreground">{t("toCdk")}</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {t("toCdk")}
+                      </span>
                     </div>
                     <Input
                       className="w-full"
                       classNames={{
-                        inputWrapper: "bg-background border-border",
+                        inputWrapper:
+                          "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600",
                       }}
                       value={toCdk}
                       onChange={handleToCdkChange}
@@ -295,7 +320,7 @@ export default function Transmission() {
                   onClick={handleTransfer}
                   isLoading={transfering}
                   isDisabled={!fromCdkValid || !toCdkValid}
-                  className="bg-primary px-8 py-6 text-base font-semibold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:shadow-primary/20 disabled:opacity-50"
+                  className="bg-violet-600 px-8 py-6 text-base font-semibold text-white shadow-lg transition-all hover:bg-violet-500 hover:shadow-violet-500/25 disabled:opacity-50"
                   startContent={
                     !transfering && (
                       <svg
@@ -321,8 +346,8 @@ export default function Transmission() {
             </div>
 
             {/* 底部提示 */}
-            <div className="border-t border-border bg-muted/30 px-8 py-4">
-              <div className="flex items-center justify-center gap-2 text-center text-sm text-muted-foreground">
+            <div className="border-t border-gray-100 bg-gray-50/50 px-8 py-4 dark:border-gray-700 dark:bg-gray-800/50">
+              <div className="flex items-center justify-center gap-2 text-center text-sm text-gray-500 dark:text-gray-400">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

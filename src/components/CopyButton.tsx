@@ -20,7 +20,7 @@ export default function CopyButton({ text }: { text: string }) {
       isOpen={tooltip}
     >
       <span
-        className="tooltip cursor-pointer select-text text-primary hover:text-primary/80"
+        className="tooltip cursor-pointer select-text text-indigo-600"
         onClick={copyToClipboard}
         onMouseEnter={() => setTooltip(true)}
         onMouseLeave={() => setTooltip(false)}

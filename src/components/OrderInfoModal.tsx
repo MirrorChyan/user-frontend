@@ -117,7 +117,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/25 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm" />
         </TransitionChild>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -131,17 +131,17 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <DialogPanel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-card p-8 text-left align-middle shadow-xl transition-all">
+              <DialogPanel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-8 text-left align-middle shadow-xl transition-all dark:bg-gray-800">
                 <div className="mb-6 flex items-center justify-between">
                   <DialogTitle
                     as="h3"
-                    className="text-xl font-medium leading-6 text-card-foreground"
+                    className="text-xl font-medium leading-6 text-gray-900 dark:text-white"
                   >
                     {t("orderInfo")}
                   </DialogTitle>
                   <button
                     onClick={onClose}
-                    className="rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    className="rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -150,7 +150,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
                 {loading ? (
                   <div className="flex flex-col items-center justify-center py-12">
                     <svg
-                      className="mb-4 h-12 w-12 animate-spin text-primary"
+                      className="mb-4 h-12 w-12 animate-spin text-indigo-600"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -169,7 +169,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    <p className="text-muted-foreground">{t("loading")}</p>
+                    <p className="text-gray-500 dark:text-gray-400">{t("loading")}</p>
                   </div>
                 ) : orderInfo && orderInfo.cdk ? (
                   <div className="text-center">
@@ -178,21 +178,25 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
                         <CheckCircle className="h-12 w-12 text-green-600" />
                       </div>
                     </div>
-                    <h4 className="mb-4 text-xl font-semibold text-foreground">
+                    <h4 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
                       {t("thanksForBuying")}
                     </h4>
-                    <p className="mb-2 text-base text-muted-foreground">{t("yourKey")}</p>
+                    <p className="mb-2 text-base text-gray-600 dark:text-gray-300">
+                      {t("yourKey")}
+                    </p>
                     <div
-                      className="mb-4 flex cursor-pointer items-center justify-between rounded-lg bg-muted/50 p-4"
+                      className="mb-4 flex cursor-pointer items-center justify-between rounded-lg bg-gray-50 p-4 dark:bg-gray-700"
                       onClick={copyToClipboard}
                     >
-                      <span className="select-all font-mono text-primary">{orderInfo.cdk}</span>
-                      <button className="ml-2 text-muted-foreground hover:text-primary">
+                      <span className="select-all font-mono text-indigo-600 dark:text-indigo-400">
+                        {orderInfo.cdk}
+                      </span>
+                      <button className="ml-2 text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400">
                         {t("copy")}
                       </button>
                     </div>
                     {orderInfo.expired_at && formattedTime && relativeTime && (
-                      <p className="mb-4 text-muted-foreground">
+                      <p className="mb-4 text-gray-600 dark:text-gray-300">
                         <span>{t("expireAt", { time: formattedTime })}</span>
                         <span>{t("timeLeft", { relativeTime })}</span>
                       </p>
@@ -206,7 +210,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
                     <div className="mb-4 rounded-full bg-red-100 p-3 dark:bg-red-900/30">
                       <AlertCircle className="h-12 w-12 text-red-600 dark:text-red-400" />
                     </div>
-                    <h4 className="mb-4 text-xl font-semibold text-foreground">
+                    <h4 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
                       {isExpired
                         ? t("orderExpired")
                         : error
@@ -216,7 +220,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
                     <Link href="/get-key">
                       <button
                         type="button"
-                        className="mt-4 flex justify-center rounded-md bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                        className="mt-4 flex justify-center rounded-md bg-indigo-500 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                       >
                         {t("goBack")}
                       </button>

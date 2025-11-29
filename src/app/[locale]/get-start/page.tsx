@@ -10,7 +10,6 @@ import ProjectBanner from "@/components/ProjectsBanner";
 import Announcement from "@/components/home/Announcement";
 import Plans from "@/components/home/Plans";
 import IcpInfo from "@/components/home/IcpInfo";
-import { shimmerPresets, TextShimmer } from "@/components/TextShimmer";
 
 export default async function GetStart({
   searchParams,
@@ -39,10 +38,10 @@ export default async function GetStart({
         <div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="px-6 py-12 sm:px-6 sm:py-8 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-balance text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-                <TextShimmer>{t("title")}</TextShimmer>
+              <h2 className="text-balance text-4xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
+                {t("title")}
               </h2>
-              <p className="mx-auto mt-6 max-w-xl text-pretty text-lg/8 text-muted-foreground">
+              <p className="mx-auto mt-6 max-w-xl text-pretty text-lg/8 text-gray-600">
                 {t.rich("description", {
                   br: () => <br />,
                 })}
@@ -59,20 +58,20 @@ export default async function GetStart({
           <div className="mt-12 flex flex-wrap items-center justify-center gap-6 md:mt-10">
             <Link
               href="/get-key"
-              className="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               {t("getKey")}
             </Link>
             <Link
               href="/transfer"
-              className="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               {t("transfer")}
             </Link>
             <Link
               href="https://pd.qq.com/g/MirrorChyan"
               target="_blank"
-              className="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               {t("discussion")}
             </Link>
@@ -81,7 +80,7 @@ export default async function GetStart({
             <a
               href="https://github.com/MirrorChyan/docs"
               target="_blank"
-              className="text-sm/6 font-semibold text-foreground"
+              className="text-sm/6 font-semibold text-gray-900 dark:text-white"
             >
               {t("apiDoc")}
               <span aria-hidden="true">&nbsp;</span>
@@ -89,7 +88,7 @@ export default async function GetStart({
             <a
               href="https://github.com/MirrorChyan/user-frontend"
               target="_blank"
-              className="text-sm/6 font-semibold text-foreground"
+              className="text-sm/6 font-semibold text-gray-900 dark:text-white"
             >
               {t("openSource")}
               <span aria-hidden="true">&nbsp;</span>
@@ -98,7 +97,11 @@ export default async function GetStart({
           <div className="absolute bottom-4 left-0 mt-16 flex w-full items-center justify-center gap-1.5">
             <IcpInfo />
             <div>
-              <a href="/disclaimer.html" target="_blank" className="text-xs text-muted-foreground">
+              <a
+                href="/disclaimer.html"
+                target="_blank"
+                className="text-xs text-gray-500 dark:text-gray-400"
+              >
                 {t("disclaimer")}
                 <span aria-hidden="true">&nbsp;</span>
               </a>

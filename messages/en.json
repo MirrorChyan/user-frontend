@@ -1,4 +1,13 @@
 {
+  "Metadata": {
+    "getStart": "MirrorChyan",
+    "getKey": "Query CDK - MirrorChyan",
+    "checkout": "Checkout - MirrorChyan",
+    "transfer": "Transfer - MirrorChyan",
+    "download": "Download - MirrorChyan",
+    "projects": "Projects - MirrorChyan",
+    "dashboard": "Dashboard - MirrorChyan"
+  },
   "GetStart": {
     "title": "Update Your Application with MirrorChyan",
     "description": "MirrorChyan is a third-party application distribution platform<br></br>that makes updating open-source applications easier.<br></br>Users pay for access, and the revenue is shared with developers.<br></br>Plus, MirrorChyan itself is open source.",
@@ -9,7 +18,7 @@
     "openSource": "MirrorChyan Open Source",
     "subscribeNow": "Subscribe Now",
     "buyNow": "Buy Now",
-    "transfer": "Order Transfer",
+    "transfer": "Time Transfer",
     "LimitTimeOffer": "Ends in ",
     "planTitle": {
       "Mirror酱月卡": "Monthly Plan",

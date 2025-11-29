@@ -1,4 +1,13 @@
 {
+  "Metadata": {
+    "getStart": "Mirror酱",
+    "getKey": "查询CDK - Mirror酱",
+    "checkout": "收银台 - Mirror酱",
+    "transfer": "时长转移 - Mirror酱",
+    "download": "下载 - Mirror酱",
+    "projects": "项目列表 - Mirror酱",
+    "dashboard": "仪表盘 - Mirror酱"
+  },
   "GetStart": {
     "title": "使用Mirror酱更新你的App",
     "description": "Mirror酱是一个第三方应用分发平台，让开源应用的更新更简单。<br></br>用户付费使用，收益与开发者共享。此外，Mirror酱本身也是开源的。",
@@ -9,7 +18,7 @@
     "openSource": "Mirror酱源码",
     "subscribeNow": "前往赞助",
     "buyNow": "立即购买",
-    "transfer": "订单转换",
+    "transfer": "时长转换",
     "LimitTimeOffer": "剩余：",
     "priceSymbol": "¥ ",
     "priceFixed": "1",

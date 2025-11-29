@@ -109,6 +109,7 @@
     "paymentSuccess": "支付成功",
     "copy": "复制",
     "copySuccess": "复制成功",
+    "copyFailed": "复制失败，请手动复制",
     "lostCDK": "若遗失 CDK，可前往Mirror酱官网首页重新查询",
     "joinQQGroup": "售后QQ群",
     "viewProjects": "项目一览"

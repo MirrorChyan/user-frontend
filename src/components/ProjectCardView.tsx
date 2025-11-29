@@ -28,7 +28,7 @@ export default function ProjectCardView({ projects }: { projects: Array<ProjectC
       setIsLoadingAnimation(true);
 
       // 安慰剂动画
-      setTimeout(() => {
+      const timerId = setTimeout(() => {
         setIsLoadingAnimation(false);
       }, 1000);
 
@@ -37,6 +37,10 @@ export default function ProjectCardView({ projects }: { projects: Array<ProjectC
       const s = new URLSearchParams(window.location.search);
       s.delete("download");
       window.history.replaceState(null, "", `/${locale}/projects?${s}`);
+
+      return () => {
+        clearTimeout(timerId);
+      };
     }
   }, []);
 

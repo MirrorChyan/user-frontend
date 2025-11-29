@@ -36,26 +36,41 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
     });
   }, [orderInfo?.expired_at, format]);
 
+  useEffect(() => {
+    moment.locale(locale);
+  }, [locale]);
+
   const relativeTime = useMemo(() => {
     if (!orderInfo?.expired_at) return null;
-    moment.locale(locale);
     return moment.duration(moment(orderInfo.expired_at).diff(moment())).humanize();
   }, [orderInfo?.expired_at, locale]);
 
   const copyToClipboard = () => {
-    if (orderInfo?.cdk) {
-      navigator.clipboard
-        .writeText(orderInfo.cdk)
-        .then(() => {
-          addToast({
-            color: "success",
-            description: t("copySuccess"),
-          });
-        })
-        .catch(err => {
-          console.error(err);
-        });
+    if (!orderInfo?.cdk) return;
+
+    if (!navigator?.clipboard?.writeText) {
+      addToast({
+        color: "danger",
+        description: t("copyFailed"),
+      });
+      return;
     }
+
+    navigator.clipboard
+      .writeText(orderInfo.cdk)
+      .then(() => {
+        addToast({
+          color: "success",
+          description: t("copySuccess"),
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        addToast({
+          color: "danger",
+          description: t("copyFailed"),
+        });
+      });
   };
 
   useEffect(() => {

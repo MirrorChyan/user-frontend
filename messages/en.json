@@ -114,6 +114,7 @@
     "paymentSuccess": "Payment Successful",
     "copy": "Copy",
     "copySuccess": "Copied",
+    "copyFailed": "Copy failed, please copy manually",
     "lostCDK": "If you lose your CDK, you can go to MirrorChyan's website to check it again.",
     "joinQQGroup": "Feedback QQ Group",
     "viewProjects": "Project List"

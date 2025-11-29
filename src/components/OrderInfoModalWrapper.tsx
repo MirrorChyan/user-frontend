@@ -20,8 +20,11 @@ export default function OrderInfoModalWrapper() {
 
   const handleClose = () => {
     setShowModal(false);
-    // Remove order_id from URL without page reload
-    const newUrl = `/${locale}/projects`;
+    // Remove order_id from URL without page reload, preserve other params
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("order_id");
+    const queryString = params.toString();
+    const newUrl = `/${locale}/projects${queryString ? `?${queryString}` : ""}`;
     router.replace(newUrl);
   };
 

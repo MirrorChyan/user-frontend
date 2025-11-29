@@ -83,6 +83,10 @@
     "errorOrderFormat": "Incorrect order number format "
   },
   "ShowKey": {
+    "orderInfo": "Order Information",
+    "loading": "Loading...",
+    "orderNotFound": "Order not found",
+    "networkError": "Network error, please try again",
     "thanksForBuying": "Thanks for Sponsoring",
     "renewalSuccess": "Renewal Successful",
     "yourKey": "Your CDKey",

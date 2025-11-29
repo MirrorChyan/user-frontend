@@ -14,7 +14,7 @@ export default function GetKey() {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     const orderId = inputOrderId.trim();
-    router.push(`/show-key?order_id=${orderId}`);
+    router.push(`/projects?order_id=${orderId}`);
   };
 
   return (

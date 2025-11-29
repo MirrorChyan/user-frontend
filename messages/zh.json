@@ -78,6 +78,10 @@
     "errorOrderFormat": "订单号格式不对哦~"
   },
   "ShowKey": {
+    "orderInfo": "订单信息",
+    "loading": "正在查询...",
+    "orderNotFound": "订单不存在",
+    "networkError": "网络错误，请重试",
     "thanksForBuying": "感谢赞助",
     "renewalSuccess": "续期成功",
     "yourKey": "你的CDKey",

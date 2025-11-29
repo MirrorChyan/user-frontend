@@ -139,13 +139,13 @@ export default function Checkout(params: CheckoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
       <div className="mx-auto max-w-4xl px-4 pb-16 pt-10 sm:px-6 lg:px-8">
         {/* 返回按钮 */}
         <div className="mb-8">
           <button
             onClick={() => router.replace("/")}
-            className="flex items-center text-gray-600 transition-colors hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400"
+            className="flex items-center text-muted-foreground transition-colors hover:text-primary"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             <span>{t("backToPlans")}</span>
@@ -153,25 +153,23 @@ export default function Checkout(params: CheckoutProps) {
         </div>
 
         {/* 标题 */}
-        <h1 className="mb-1 text-center text-3xl font-bold text-gray-900 dark:text-white">
+        <h1 className="mb-1 text-center text-3xl font-bold text-foreground">
           {t("checkoutTitle")}
         </h1>
-        <p className="mb-8 text-center text-gray-500 dark:text-gray-400">
-          {t("completeYourOrder")}
-        </p>
+        <p className="mb-8 text-center text-muted-foreground">{t("completeYourOrder")}</p>
 
         {/* 加载状态 */}
         {planInfoLoading ? (
           <div className="flex items-center justify-center py-32">
             <div className="flex flex-col items-center">
-              <Spinner size="lg" className="mb-4 text-indigo-600" />
-              <p className="text-lg text-gray-600 dark:text-gray-300">{t("loadingPlanInfo")}</p>
+              <Spinner size="lg" className="mb-4 text-primary" />
+              <p className="text-lg text-muted-foreground">{t("loadingPlanInfo")}</p>
             </div>
           </div>
         ) : (
           <div className="mx-auto max-w-2xl">
             {/* 主内容卡片 */}
-            <div className="mb-6 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <div className="mb-6 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
               {/* 订单摘要 */}
               {planInfo && (
                 <OrderSummaryCard
@@ -195,7 +193,7 @@ export default function Checkout(params: CheckoutProps) {
             </div>
 
             {/* 支付按钮和安全提示,神秘小样式 */}
-            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
               <PaymentButton onClick={handlePayment} loading={paymentLoading} />
               <SecurityFooter />
             </div>

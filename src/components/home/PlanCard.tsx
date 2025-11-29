@@ -24,14 +24,14 @@ export default function PlanCard({ plan, C2URate }: PropsType) {
     <div
       key={plan.plan_id}
       className={cn(
-        plan.popular ? "ring-2 ring-indigo-600" : "ring-1 ring-gray-200",
-        "flex flex-col rounded-3xl bg-white p-8 shadow-sm dark:bg-white/5"
+        plan.popular ? "ring-2 ring-primary" : "ring-1 ring-border",
+        "flex flex-col rounded-3xl bg-card p-8 shadow-sm"
       )}
     >
       <h3
         id={plan.plan_id}
         className={cn(
-          plan.popular ? "text-indigo-600" : "text-gray-900 dark:text-white",
+          plan.popular ? "text-primary" : "text-card-foreground",
           "text-lg/8 font-semibold"
         )}
       >
@@ -39,13 +39,13 @@ export default function PlanCard({ plan, C2URate }: PropsType) {
       </h3>
       {originalPrice ? (
         <p className="mt-6 flex basis-full items-baseline gap-x-1 text-nowrap">
-          <span className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
+          <span className="text-3xl font-semibold tracking-tight text-card-foreground">
             {`
               ${t("priceSymbol")}
               ${price}
             `}
           </span>
-          <span className="text-sm/6 text-gray-500 line-through dark:text-gray-400">
+          <span className="text-sm/6 text-muted-foreground line-through">
             {`
               ${t("priceSymbol")}
               ${originalPrice}
@@ -54,7 +54,7 @@ export default function PlanCard({ plan, C2URate }: PropsType) {
         </p>
       ) : (
         <p className="mt-6 flex basis-full items-baseline gap-x-1 text-nowrap">
-          <span className="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
+          <span className="text-4xl font-semibold tracking-tight text-card-foreground">
             {`
               ${t("priceSymbol")}
               ${price}
@@ -67,9 +67,9 @@ export default function PlanCard({ plan, C2URate }: PropsType) {
         aria-describedby={plan.plan_id}
         className={cn(
           plan.popular
-            ? "bg-indigo-600 text-white shadow-sm hover:bg-indigo-500"
-            : "text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300 dark:text-white",
-          "mt-6 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
+            : "text-primary ring-1 ring-inset ring-primary/20 hover:ring-primary/30",
+          "mt-6 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         )}
       >
         {t("subscribeNow")}

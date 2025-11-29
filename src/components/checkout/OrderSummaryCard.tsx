@@ -25,16 +25,16 @@ export default function OrderSummaryCard({
   const { finalPrice, originPrice, currentPrice, hasDiscount } = priceInfo;
 
   return (
-    <div className="border-b border-gray-100 p-6 dark:border-gray-700">
-      <h3 className="mb-4 flex items-center text-xl font-semibold text-gray-900 dark:text-white">
-        <ShieldCheck className="mr-2 h-5 w-5 text-indigo-600" />
+    <div className="border-b border-border p-6">
+      <h3 className="mb-4 flex items-center text-xl font-semibold text-foreground">
+        <ShieldCheck className="mr-2 h-5 w-5 text-primary" />
         {t("orderSummary")}
       </h3>
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <span className="text-gray-600 dark:text-gray-400">{t("productName")}</span>
-          <span className="font-medium text-gray-900 dark:text-white">
+          <span className="text-muted-foreground">{t("productName")}</span>
+          <span className="font-medium text-foreground">
             {gT.has?.(`planTitle.${planInfo.title}`)
               ? gT(`planTitle.${planInfo.title}`)
               : planInfo.title}
@@ -42,14 +42,12 @@ export default function OrderSummaryCard({
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-gray-600 dark:text-gray-400">
+          <span className="text-muted-foreground">
             {t(hasDiscount ? "originalPrice" : "Price")}
           </span>
           <span
             className={
-              hasDiscount
-                ? "text-gray-500 line-through dark:text-gray-400"
-                : "font-medium text-gray-900 dark:text-white"
+              hasDiscount ? "text-muted-foreground line-through" : "font-medium text-foreground"
             }
           >
             {`${gT("priceSymbol")} ${originPrice}`}
@@ -58,7 +56,7 @@ export default function OrderSummaryCard({
 
         {hasDiscount && (
           <div className="flex items-center justify-between">
-            <span className="text-gray-600 dark:text-gray-400">{t("discountPrice")}</span>
+            <span className="text-muted-foreground">{t("discountPrice")}</span>
             <span className="font-medium text-emerald-600 dark:text-emerald-400">
               {`${gT("priceSymbol")} ${currentPrice}`}
             </span>
@@ -66,15 +64,13 @@ export default function OrderSummaryCard({
         )}
 
         <div className="flex items-center justify-between">
-          <span className="text-gray-600 dark:text-gray-400">{t("paymentMethod")}</span>
-          <span className="font-medium text-gray-900 dark:text-white">{t(paymentMethod)}</span>
+          <span className="text-muted-foreground">{t("paymentMethod")}</span>
+          <span className="font-medium text-foreground">{t(paymentMethod)}</span>
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-lg font-semibold text-gray-900 dark:text-white">
-            {t("totalAmount")}
-          </span>
-          <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
+          <span className="text-lg font-semibold text-foreground">{t("totalAmount")}</span>
+          <span className="text-xl font-bold text-primary">
             {gT("priceSymbol")} {finalPrice}
           </span>
         </div>

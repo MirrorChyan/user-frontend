@@ -54,7 +54,7 @@ export default function HtmlFormPayModal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-black/25 backdrop-blur-sm" />
         </TransitionChild>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -68,11 +68,11 @@ export default function HtmlFormPayModal({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <DialogPanel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-8 text-left align-middle shadow-xl transition-all dark:bg-gray-800">
+              <DialogPanel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-card p-8 text-left align-middle shadow-xl transition-all">
                 <div className="mb-6 flex items-center justify-between">
                   <DialogTitle
                     as="h3"
-                    className="text-xl font-medium leading-6 text-gray-900 dark:text-white"
+                    className="text-xl font-medium leading-6 text-card-foreground"
                   >
                     {orderInfo ? t("paymentSuccess") : paymentType}
                   </DialogTitle>
@@ -83,16 +83,14 @@ export default function HtmlFormPayModal({
                 ) : (
                   <>
                     <div className="mb-6 text-center">
-                      <p className="mb-3 text-base text-gray-500 dark:text-gray-400">
-                        {t("scanQRCodeToPay")}
-                      </p>
-                      <p className="text-base text-gray-400 dark:text-gray-500">
+                      <p className="mb-3 text-base text-muted-foreground">{t("scanQRCodeToPay")}</p>
+                      <p className="text-base text-muted-foreground">
                         {t("productTitle")}:{" "}
                         {gT.has(`planTitle.${planInfo?.title}`)
                           ? gT(`planTitle.${planInfo?.title}`)
                           : planInfo?.title}
                       </p>
-                      <p className="mt-2 text-lg font-medium text-indigo-600 dark:text-indigo-400">
+                      <p className="mt-2 text-lg font-medium text-primary">
                         {t("amountToPay")}: {gT("priceSymbol")} {currentPrice}
                       </p>
                     </div>
@@ -105,10 +103,10 @@ export default function HtmlFormPayModal({
                           </div>
                         </div>
                       ) : (
-                        <div className="flex h-[240px] w-[240px] items-center justify-center rounded-lg bg-gray-100 p-4 dark:bg-gray-700">
+                        <div className="flex h-[240px] w-[240px] items-center justify-center rounded-lg bg-muted p-4">
                           <div className="flex flex-col items-center">
                             <svg
-                              className="mb-2 h-16 w-16 animate-spin text-indigo-600"
+                              className="mb-2 h-16 w-16 animate-spin text-primary"
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
                               viewBox="0 0 24 24"
@@ -133,14 +131,14 @@ export default function HtmlFormPayModal({
                     </div>
 
                     {paymentHtml && isPolling && (
-                      <div className="mb-6 flex items-center justify-center text-gray-600 dark:text-gray-300">
+                      <div className="mb-6 flex items-center justify-center text-muted-foreground">
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         <span className="text-sm">{t("checkingPaymentStatus")}</span>
                       </div>
                     )}
 
                     <div className="mt-6">
-                      <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-center text-sm text-muted-foreground">
                         {t("paymentNote")}
                       </p>
                       {paymentHtml && (

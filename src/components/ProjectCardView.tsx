@@ -42,7 +42,7 @@ export default function ProjectCardView({ projects }: { projects: Array<ProjectC
         clearTimeout(timerId);
       };
     }
-  }, []);
+  }, [download, locale]);
 
   const handleCloseModal = () => {
     setShowDownloadModal(false);

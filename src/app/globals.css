@@ -2,35 +2,96 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Light Mode: 干净、明亮、高对比度 */
+    --background: 0 0% 100%; /* 纯白背景 */
+    --foreground: 222.2 84% 4.9%; /* 深蓝黑文字，比纯黑更高级 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    /* Primary: 电光靛蓝，极具穿透力 */
+    --primary: 249 95% 60%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 249 95% 60%; /* 与 Primary 呼应 */
+
+    --shimmer-color: hsl(var(--primary));
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Dark Mode: 柔和的深灰色，减少纯黑的压抑感 */
+    --background: 224 71% 4%; /* #020817: 极深的蓝灰色，比之前的 #020617 稍亮 */
+    --foreground: 210 40% 98%; /* #f8fafc: 亮白文字 */
+
+    --card: 222.2 47.4% 11.2%; /* #0f172a: 稍亮的深蓝灰，用于卡片 */
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Primary: 在深色背景上依然醒目，但饱和度略微降低以适应背景 */
+    --primary: 263.4 70% 50%; /* #6d28d9: 稍微深一点的紫色 */
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 217.2 32.6% 17.5%; /* #1e293b: 较暗的蓝灰色 */
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%; /* #94a3b8: 柔和的灰色文字 */
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%; /* 边框颜色更深，融入背景 */
+    --input: 217.2 32.6% 17.5%;
+    --ring: 263.4 70% 50.4%;
+    --shimmer-color: hsl(var(--primary));
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
+/* Scrollbar Styles */
 html {
   scrollbar-width: thin;
   scrollbar-gutter: stable;
-  /* 为滚动条预留空间，防止抖动 */
   overflow-y: auto;
-  /* 正常显示滚动条 */
 }
 
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #d1d5db #f3f4f6;
+  scrollbar-color: hsl(var(--muted-foreground)) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -38,34 +99,15 @@ html {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f3f4f6;
-  border-radius: 4px;
+  background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
+  @apply rounded-full bg-muted-foreground/20 transition-colors;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
-}
-
-.dark .custom-scrollbar {
-  scrollbar-color: #4b5563 #1f2937;
-}
-
-.dark .custom-scrollbar::-webkit-scrollbar-track {
-  background: #1f2937;
-}
-
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #4b5563;
-}
-
-.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
+  @apply bg-muted-foreground/40;
 }
 
 ::-ms-reveal {

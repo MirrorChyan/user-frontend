@@ -71,12 +71,12 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
     <div className="flex min-h-screen flex-col items-center justify-center">
       <div className="min-w-[40vw] text-center">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-center text-4xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
+          <h2 className="text-center text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
             {t("title")}
           </h2>
 
           <form
-            className="mt-12 flex flex-col gap-5 text-balance text-lg leading-8 text-gray-600 dark:text-gray-400"
+            className="mt-12 flex flex-col gap-5 text-balance text-lg leading-8 text-muted-foreground"
             onSubmit={onSubmit}
           >
             <YearMonthPicker onChange={handleMonthChange} />
@@ -91,10 +91,10 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
                   <button
                     type="button"
                     onClick={toggleUa}
-                    className={`mr-1 flex h-full w-14 items-center justify-center rounded-md transition-colors ${isUa ? "bg-indigo-100 dark:bg-indigo-900" : "bg-gray-100 dark:bg-gray-800"} `}
+                    className={`mr-1 flex h-full w-14 items-center justify-center rounded-md transition-colors ${isUa ? "bg-primary/10" : "bg-muted"} `}
                   >
                     <ComputerDesktopIcon
-                      className={`h-1/2 w-1/2 ${isUa ? "text-indigo-600 dark:text-indigo-400" : "text-gray-500 dark:text-gray-400"} `}
+                      className={`h-1/2 w-1/2 ${isUa ? "text-primary" : "text-muted-foreground"} `}
                     />
                   </button>
                 </div>
@@ -106,7 +106,7 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
             <Button
               type="submit"
               isLoading={isLoading}
-              className="mt-6 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+              className="mt-6 flex w-full justify-center rounded-md bg-primary px-3 py-1.5 text-sm/6 font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
               {t("confirm")}
             </Button>

@@ -32,22 +32,22 @@ export default async function ProjectBanner() {
           "flex-col sm:flex-row",
           "gap-3 sm:gap-3",
           "rounded-2xl px-5 py-4 text-center text-lg font-semibold sm:px-6 sm:py-4 sm:text-xl",
-          "bg-gray-100/50 dark:bg-gray-400/20",
+          "bg-muted/50",
           "backdrop-blur-lg backdrop-saturate-150",
-          "text-gray-900 dark:text-white",
-          "shadow-lg shadow-gray-400/30 dark:shadow-gray-900/40",
-          "sm:hover:shadow-xl sm:hover:shadow-gray-500/40 dark:sm:hover:shadow-gray-900/60",
-          "sm:hover:bg-gray-200/60 dark:sm:hover:bg-gray-400/25",
+          "text-foreground",
+          "shadow-lg shadow-muted/30",
+          "sm:hover:shadow-xl sm:hover:shadow-muted/40",
+          "sm:hover:bg-muted/60",
           "transition-all duration-500 ease-out",
           "group overflow-hidden",
           "sm:hover:px-5 sm:hover:py-4",
-          "before:absolute before:inset-0 before:bg-gray-300/20 dark:before:bg-gray-600/10",
+          "before:absolute before:inset-0 before:bg-muted/20",
           "before:opacity-0 before:transition-opacity before:duration-500",
           "sm:hover:before:opacity-100",
           "w-auto max-w-[90vw]"
         )}
       >
-        <div className="absolute -inset-x-4 -inset-y-4 bg-gradient-to-r from-gray-300 to-gray-400 opacity-0 blur-3xl transition-opacity duration-1000 dark:from-gray-400 dark:to-gray-600 sm:group-hover:opacity-20 dark:sm:group-hover:opacity-10" />
+        <div className="absolute -inset-x-4 -inset-y-4 bg-gradient-to-r from-muted/30 to-muted/50 opacity-0 blur-3xl transition-opacity duration-1000 sm:group-hover:opacity-20" />
 
         <span className="relative z-10 flex items-center gap-2 transition-all duration-300">
           {t("viewProjects", { appCount })}
@@ -88,7 +88,7 @@ export default async function ProjectBanner() {
                     zIndex: displayProjects.length + 1 - index,
                   }}
                 >
-                  <div className="relative h-full w-full overflow-hidden rounded-full bg-gray-200">
+                  <div className="relative h-full w-full overflow-hidden rounded-full bg-muted">
                     <img
                       src={CLIENT_BACKEND + project.image}
                       alt={project.name}
@@ -110,14 +110,14 @@ export default async function ProjectBanner() {
                 "scale-105 sm:scale-100",
                 "sm:group-hover:scale-110",
                 "sm:group-hover:-ml-1",
-                "bg-gradient-to-r from-gray-500 to-gray-600",
+                "bg-gradient-to-r from-muted-foreground/60 to-muted-foreground/80",
                 "p-[2px]",
                 "flex items-center justify-center"
               )}
               style={{ zIndex: 0 }}
             >
-              <div className="flex h-full w-full items-center justify-center rounded-full bg-gray-600 dark:bg-gray-500">
-                <span className="text-xs font-semibold text-white">
+              <div className="flex h-full w-full items-center justify-center rounded-full bg-muted-foreground">
+                <span className="text-xs font-semibold text-background">
                   +{projects.length - displayCount}
                 </span>
               </div>

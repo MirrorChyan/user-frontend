@@ -117,7 +117,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
               <span>
                 {entry.value} {entry.payload.percentage}%{" "}
               </span>
-              <span className="text-gray-500">
+              <span className="text-muted-foreground">
                 {entry.payload.count}
                 {t("unit.count")} {entry.payload.amount.toFixed(2)}
                 {t("unit.amount")}
@@ -169,11 +169,11 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
       if (active && payload && payload.length) {
         const data = payload[0].payload;
         return (
-          <div className="rounded border bg-white p-2 shadow dark:border-gray-700 dark:bg-gray-800">
-            <p className="font-medium text-gray-900 dark:text-white">
+          <div className="rounded border border-border bg-card p-2 shadow">
+            <p className="font-medium text-card-foreground">
               {data.name} {data.percentage}%
             </p>
-            <p className="text-gray-700 dark:text-gray-300">
+            <p className="text-muted-foreground">
               {data.count}
               {t("unit.count")} {data.amount.toFixed(2)}
               {t("unit.amount")}
@@ -254,11 +254,11 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
   }
 
   return (
-    <div className="dark:bg-gray-900">
+    <div className="bg-background">
       <div className="mx-auto max-w-7xl p-6">
         {/* 标题区 */}
         <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <h1 className="flex-grow text-4xl font-bold dark:text-white">
+          <h1 className="flex-grow text-4xl font-bold text-foreground">
             {t("dashboardTitle", { rid, date })}
           </h1>
           {/* 导出按钮移动到标题右侧 */}
@@ -278,7 +278,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
             <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Card>
                 <div className="p-4 sm:p-8">
-                  <h3 className="text-gray-500">{t("monthlyCount")}</h3>
+                  <h3 className="text-muted-foreground">{t("monthlyCount")}</h3>
                   <p className="text-2xl font-bold sm:text-3xl">
                     {revenueData.reduce((acc, cur) => acc + Number(cur.buy_count), 0)}
                     {t("unit.count")}
@@ -287,7 +287,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
               </Card>
               <Card>
                 <div className="p-4 sm:p-8">
-                  <h3 className="text-gray-500">{t("monthlyAmount")}</h3>
+                  <h3 className="text-muted-foreground">{t("monthlyAmount")}</h3>
                   <p className="text-2xl font-bold sm:text-3xl">
                     {revenueData.reduce((acc, cur) => acc + Number(cur.amount), 0).toFixed(2)}
                     {t("unit.amount")}

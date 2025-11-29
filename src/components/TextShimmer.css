@@ -1,0 +1,56 @@
+.text-shimmer {
+  position: relative;
+  display: inline-block;
+  font-weight: 600;
+
+  /* 时尚(bushi) */
+  background-image: linear-gradient(
+    90deg,
+    hsl(var(--foreground)) 0%,
+    hsl(var(--foreground)) 40%,
+    #eea2a2 44%,
+    #bbc1bf 48%,
+    #57c6e1 52%,
+    #b49fda 56%,
+    #7ac5d8 60%,
+    hsl(var(--foreground)) 64%,
+    hsl(var(--foreground)) 100%
+  );
+
+  background-size: 200% 100%;
+  background-position: 0 100%;
+  /*background-position: -100% 0;*/
+
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: shimmer-flow 7s linear infinite;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dark .text-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    hsl(var(--foreground)) 0%,
+    hsl(var(--foreground)) 40%,
+    #ff5858 45%,
+    #f09819 55%,
+    hsl(var(--foreground)) 60%,
+    hsl(var(--foreground)) 100%
+  );
+}
+
+@keyframes shimmer-flow {
+  0% {
+    background-position: 140% 0;
+  }
+  /*50% {*/
+  /*  background-position: 100% 0;*/
+  /*}*/
+  100% {
+    background-position: 0 0;
+  }
+}

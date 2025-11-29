@@ -89,7 +89,8 @@
     "haveQuestion": "Problem with query?",
     "queryOrderId": "Query Order ID",
     "loading": "Querying please wait...",
-    "errorOrderFormat": "Incorrect order number format "
+    "errorOrderFormat": "Incorrect order number format ",
+    "inputPlaceholder": "Enter your order ID"
   },
   "ShowKey": {
     "orderInfo": "Order Information",
@@ -152,7 +153,8 @@
     "rewardFillInLeft": "Please fill in the redeem code on the left",
     "rewardUsedUp": "Redeem code has been used up",
     "rewardValidDays": "Can redeem for {valid_days} days",
-    "fromNotFound": "Invalid key, Please check!"
+    "fromNotFound": "Invalid key, Please check!",
+    "transferTip": "After transfer, the original CDK will expire. Please confirm."
   },
   "Component": {
     "CopyButton": {

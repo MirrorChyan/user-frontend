@@ -27,7 +27,7 @@ export default function ProjectCardView({ projects }: { projects: Array<ProjectC
       setShowDownloadModal(true);
       setIsLoadingAnimation(true);
 
-      // 安慰剂动画
+      // Simulated loading animation
       const timerId = setTimeout(() => {
         setIsLoadingAnimation(false);
       }, 1000);
@@ -74,7 +74,6 @@ export default function ProjectCardView({ projects }: { projects: Array<ProjectC
       >
         <ModalContent>
           <>
-            <ModalHeader className="flex flex-col gap-1"></ModalHeader>
             <ModalBody>
               <div className="space-y-6 py-8">
                 <div className="text-center">

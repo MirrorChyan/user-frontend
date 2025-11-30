@@ -92,6 +92,12 @@ export default function Transmission() {
       return;
     }
 
+    if (cdk === fromCdk) {
+      setToCdkDescription(t("sameCdk"));
+      setToCdkValid(false);
+      return;
+    }
+
     const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?cdk=${cdk}`);
     const { ec, msg, data } = await response.json();
     if (ec === 200) {

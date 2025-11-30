@@ -149,6 +149,7 @@
     "rewardUsedUp": "兑换码已发放完",
     "rewardValidDays": "可兑换 {valid_days} 天",
     "fromNotFound": "未找到可转移目标，请检查！",
+    "sameCdk": "目标CDK不能与来源CDK相同",
     "transferTip": "转移后原CDK时长将归零，请确认操作"
   },
   "Component": {

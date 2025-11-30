@@ -6,6 +6,8 @@ import { SERVER_BACKEND } from "@/app/requests/misc";
 import ProjectCardView from "@/components/ProjectCardView";
 import HomeButton from "@/components/HomeButton";
 import SourceTracker from "@/components/SourceTracker";
+import OrderInfoModalWrapper from "@/components/OrderInfoModalWrapper";
+import { Suspense } from "react";
 
 export default async function ProjectsPage({
   searchParams,
@@ -28,6 +30,9 @@ export default async function ProjectsPage({
   return (
     <>
       <SourceTracker source={source} />
+      <Suspense fallback={null}>
+        <OrderInfoModalWrapper />
+      </Suspense>
       <BackgroundLines className="min-h-screen">
         <div className="container mx-auto px-3 py-10">
           <HomeButton className="absolute" />

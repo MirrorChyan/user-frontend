@@ -154,6 +154,7 @@
     "rewardUsedUp": "Redeem code has been used up",
     "rewardValidDays": "Can redeem for {valid_days} days",
     "fromNotFound": "Invalid key, Please check!",
+    "sameCdk": "Target CDKey cannot be the same as source CDKey",
     "transferTip": "After transfer, the original CDK will expire. Please confirm."
   },
   "Component": {

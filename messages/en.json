@@ -1,4 +1,13 @@
 {
+  "Metadata": {
+    "getStart": "MirrorChyan",
+    "getKey": "Query CDK - MirrorChyan",
+    "checkout": "Checkout - MirrorChyan",
+    "transfer": "Transfer - MirrorChyan",
+    "download": "Download - MirrorChyan",
+    "projects": "Projects - MirrorChyan",
+    "dashboard": "Dashboard - MirrorChyan"
+  },
   "GetStart": {
     "title": "Update Your Application with MirrorChyan",
     "description": "MirrorChyan is a third-party application distribution platform<br></br>that makes updating open-source applications easier.<br></br>Users pay for access, and the revenue is shared with developers.<br></br>Plus, MirrorChyan itself is open source.",
@@ -9,7 +18,7 @@
     "openSource": "MirrorChyan Open Source",
     "subscribeNow": "Subscribe Now",
     "buyNow": "Buy Now",
-    "transfer": "Order Transfer",
+    "transfer": "Time Transfer",
     "LimitTimeOffer": "Ends in ",
     "planTitle": {
       "Mirror酱月卡": "Monthly Plan",
@@ -80,9 +89,14 @@
     "haveQuestion": "Problem with query?",
     "queryOrderId": "Query Order ID",
     "loading": "Querying please wait...",
-    "errorOrderFormat": "Incorrect order number format "
+    "errorOrderFormat": "Incorrect order number format ",
+    "inputPlaceholder": "Enter your order ID"
   },
   "ShowKey": {
+    "orderInfo": "Order Information",
+    "loading": "Loading...",
+    "orderNotFound": "Order not found",
+    "networkError": "Network error, please try again",
     "thanksForBuying": "Thanks for Sponsoring",
     "renewalSuccess": "Renewal Successful",
     "yourKey": "Your CDKey",
@@ -110,6 +124,7 @@
     "paymentSuccess": "Payment Successful",
     "copy": "Copy",
     "copySuccess": "Copied",
+    "copyFailed": "Copy failed, please copy manually",
     "lostCDK": "If you lose your CDK, you can go to MirrorChyan's website to check it again.",
     "joinQQGroup": "Feedback QQ Group",
     "viewProjects": "Project List"
@@ -138,7 +153,8 @@
     "rewardFillInLeft": "Please fill in the redeem code on the left",
     "rewardUsedUp": "Redeem code has been used up",
     "rewardValidDays": "Can redeem for {valid_days} days",
-    "fromNotFound": "Invalid key, Please check!"
+    "fromNotFound": "Invalid key, Please check!",
+    "transferTip": "After transfer, the original CDK will expire. Please confirm."
   },
   "Component": {
     "CopyButton": {
@@ -181,6 +197,7 @@
     "beta": "beta",
     "alpha": "alpha",
     "downloadStarted": "{name} {version} is Downloading",
+    "downloadStartedForShare": "Downloading",
     "downloadInProgress": "Please check the download manager to see the progress",
     "importantNote": "Important Note",
     "downloadWarning": "Please do not use multi-threaded downloaders such as Thunder. We recommend downloading directly using your browser.",

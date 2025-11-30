@@ -1,4 +1,13 @@
 {
+  "Metadata": {
+    "getStart": "Mirror酱",
+    "getKey": "查询CDK - Mirror酱",
+    "checkout": "收银台 - Mirror酱",
+    "transfer": "时长转移 - Mirror酱",
+    "download": "下载 - Mirror酱",
+    "projects": "项目列表 - Mirror酱",
+    "dashboard": "仪表盘 - Mirror酱"
+  },
   "GetStart": {
     "title": "使用Mirror酱更新你的App",
     "description": "Mirror酱是一个第三方应用分发平台，让开源应用的更新更简单。<br></br>用户付费使用，收益与开发者共享。此外，Mirror酱本身也是开源的。",
@@ -9,7 +18,7 @@
     "openSource": "Mirror酱源码",
     "subscribeNow": "前往赞助",
     "buyNow": "立即购买",
-    "transfer": "订单转换",
+    "transfer": "时长转换",
     "LimitTimeOffer": "剩余：",
     "priceSymbol": "¥ ",
     "priceFixed": "1",
@@ -75,9 +84,14 @@
     "queryOrderId": "查询订单号",
     "haveQuestion": "查询遇到问题？",
     "loading": "正在查询……",
-    "errorOrderFormat": "订单号格式不对哦~"
+    "errorOrderFormat": "订单号格式不对哦~",
+    "inputPlaceholder": "请输入订单号"
   },
   "ShowKey": {
+    "orderInfo": "订单信息",
+    "loading": "正在查询...",
+    "orderNotFound": "订单不存在",
+    "networkError": "网络错误，请重试",
     "thanksForBuying": "感谢赞助",
     "renewalSuccess": "续期成功",
     "yourKey": "你的CDKey",
@@ -105,6 +119,7 @@
     "paymentSuccess": "支付成功",
     "copy": "复制",
     "copySuccess": "复制成功",
+    "copyFailed": "复制失败，请手动复制",
     "lostCDK": "若遗失 CDK，可前往Mirror酱官网首页重新查询",
     "joinQQGroup": "售后QQ群",
     "viewProjects": "项目一览"
@@ -133,7 +148,8 @@
     "rewardFillInLeft": "兑换码请填写到左侧",
     "rewardUsedUp": "兑换码已发放完",
     "rewardValidDays": "可兑换 {valid_days} 天",
-    "fromNotFound": "未找到可转移目标，请检查！"
+    "fromNotFound": "未找到可转移目标，请检查！",
+    "transferTip": "转移后原CDK时长将归零，请确认操作"
   },
   "Component": {
     "CopyButton": {
@@ -176,6 +192,7 @@
     "beta": "公测版",
     "alpha": "内测版",
     "downloadStarted": "{name} {version} 正在下载中",
+    "downloadStartedForShare": "正在下载中",
     "downloadInProgress": "请检查下载管理器以查看进度",
     "importantNote": "重要提示",
     "downloadWarning": "请不要使用迅雷等多线程下载器，建议使用浏览器直接下载！",

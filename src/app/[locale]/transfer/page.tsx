@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import { ChangeEvent, useCallback, useState } from "react";
+import { ChangeEvent, useCallback, useRef, useState } from "react";
 import { Button, Input } from "@heroui/react";
 import { debounce } from "lodash";
 import moment from "moment";
@@ -25,6 +25,12 @@ export default function Transmission() {
   const [toCdkValid, setToCdkValid] = useState(false);
   const [showOrderId, setShowOrderId] = useState("");
   const [transfering, setTransfering] = useState(false);
+
+  // 使用 ref 存储最新值，解决 debounce 闭包问题
+  const fromCdkRef = useRef(fromCdk);
+  const toCdkRef = useRef(toCdk);
+  fromCdkRef.current = fromCdk;
+  toCdkRef.current = toCdk;
 
   async function handleReward(key: string) {
     const response = await fetch(`${CLIENT_BACKEND}/api/billing/reward?reward_key=${key}`);
@@ -63,7 +69,7 @@ export default function Transmission() {
       return;
     }
 
-    if (cdk === toCdk) {
+    if (cdk === toCdkRef.current) {
       setFromCdkDescription(t("sameCdk"));
       setFromCdkValid(false);
       return;
@@ -98,7 +104,7 @@ export default function Transmission() {
       return;
     }
 
-    if (cdk === fromCdk) {
+    if (cdk === fromCdkRef.current) {
       setToCdkDescription(t("sameCdk"));
       setToCdkValid(false);
       return;

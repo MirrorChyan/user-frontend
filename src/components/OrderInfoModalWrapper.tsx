@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "@/i18n/routing";
 import { useEffect, useState } from "react";
 import OrderInfoModal from "@/components/OrderInfoModal";
 import { useLocale } from "next-intl";

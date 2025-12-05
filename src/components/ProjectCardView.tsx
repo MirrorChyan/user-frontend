@@ -1,11 +1,11 @@
 "use client";
 
 import ProjectCard, { ProjectCardProps } from "@/components/ProjectCard";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
+import { Button, Modal, ModalBody, ModalContent, ModalFooter } from "@heroui/react";
 import { getGroupUrl } from "@/lib/utils/constant";
 
 export default function ProjectCardView({ projects }: { projects: Array<ProjectCardProps> }) {

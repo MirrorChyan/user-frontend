@@ -1,7 +1,6 @@
 "use client";
 
-import { useRouter } from "@/i18n/routing";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import LoadingState from "@/components/LoadingState";

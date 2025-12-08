@@ -35,6 +35,7 @@ export interface ProjectCardProps {
   osParam?: string | null;
   archParam?: string | null;
   channelParam?: string | null;
+  onCardClick?: (resource: string) => void;
 }
 
 export default function ProjectCard(props: ProjectCardProps) {
@@ -50,6 +51,7 @@ export default function ProjectCard(props: ProjectCardProps) {
     osParam,
     archParam,
     channelParam,
+    onCardClick,
   } = props;
 
   const avatarBgColor = useMemo(() => stringToColor(name), [name]);
@@ -271,6 +273,8 @@ export default function ProjectCard(props: ProjectCardProps) {
     return condition() ? children : <></>;
   };
   const openModal = () => {
+    onCardClick?.(resource);
+
     if (!download) {
       addToast({
         variant: "solid",

@@ -3,10 +3,35 @@
 import ProjectCard, { ProjectCardProps } from "@/components/ProjectCard";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
 import { getGroupUrl } from "@/lib/utils/constant";
+
+const COOKIE_NAME = "resourceClickCounts";
+const COOKIE_MAX_AGE = 3600 * 24 * 30; // 30天
+
+const getClickCounts = (): Record<string, number> => {
+  if (typeof document === "undefined") return {};
+  const cookieValue = document.cookie
+    .split("; ")
+    .find(row => row.startsWith(`${COOKIE_NAME}=`))
+    ?.split("=")[1];
+
+  if (cookieValue) {
+    try {
+      return JSON.parse(decodeURIComponent(cookieValue));
+    } catch {
+      return {};
+    }
+  }
+  return {};
+};
+
+const saveClickCountsToCookie = (counts: Record<string, number>) => {
+  if (typeof document === "undefined") return;
+  document.cookie = `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(counts))};max-age=${COOKIE_MAX_AGE};path=/`;
+};
 
 export default function ProjectCardView({ projects }: { projects: Array<ProjectCardProps> }) {
   const searchParams = useSearchParams();
@@ -18,6 +43,35 @@ export default function ProjectCardView({ projects }: { projects: Array<ProjectC
 
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [isLoadingAnimation, setIsLoadingAnimation] = useState(false);
+  const [clickCounts, setClickCounts] = useState<Record<string, number>>({});
+  const [isLoadingSort, setIsLoadingSort] = useState(true);
+
+  useEffect(() => {
+    setClickCounts(getClickCounts());
+    setIsLoadingSort(false);
+  }, []);
+
+  const handleCardClick = useCallback((resource: string) => {
+    const savedCounts = getClickCounts();
+    const currentCount = savedCounts[resource] ?? 0;
+    const newCounts = { ...savedCounts, [resource]: currentCount + 1 };
+    saveClickCountsToCookie(newCounts);
+  }, []);
+
+  // 最终权重 = 基础权重 / 2^点击次数
+  const sortedProjects = useMemo(() => {
+    return [...projects].sort((a, b) => {
+      const indexA = projects.indexOf(a);
+      const indexB = projects.indexOf(b);
+      const baseWeightA = indexA + 1;
+      const baseWeightB = indexB + 1;
+      const clickCountA = clickCounts[a.resource] ?? 0;
+      const clickCountB = clickCounts[b.resource] ?? 0;
+      const weightA = baseWeightA / Math.pow(2, clickCountA);
+      const weightB = baseWeightB / Math.pow(2, clickCountB);
+      return weightA - weightB;
+    });
+  }, [projects, clickCounts]);
 
   useEffect(() => {
     if (download) {
@@ -51,13 +105,40 @@ export default function ProjectCardView({ projects }: { projects: Array<ProjectC
 
   return (
     <>
-      {projects.map(project => (
+      {isLoadingSort && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/50 dark:bg-black/50">
+          <div className="flex flex-col items-center gap-3">
+            <svg
+              className="h-10 w-10 animate-spin text-primary-600 dark:text-primary-400"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+                className="opacity-25"
+              ></circle>
+              <path
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                className="opacity-75"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      )}
+
+      {sortedProjects.map(project => (
         <ProjectCard
           key={project.resource}
           showModal={project.download && rid === project.resource}
           osParam={searchParams.get("os")}
           archParam={searchParams.get("arch")}
           channelParam={searchParams.get("channel")}
+          onCardClick={handleCardClick}
           {...project}
         />
       ))}

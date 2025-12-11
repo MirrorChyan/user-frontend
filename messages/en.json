@@ -210,7 +210,8 @@
     "joinUs": "Join us",
     "contactUs": "Integrate MirrorChyan into your project",
     "openProjectHomepage": "Visit project website for detailed documentation and usage guide",
-    "onlyInternalUpdate": "{name} currently only be updated through the application itself"
+    "onlyInternalUpdate": "{name} currently only be updated through the application itself",
+    "dependencies": "Dependencies"
   },
   "Common": {
     "ok": "OK",

@@ -8,6 +8,10 @@ import HomeButton from "@/components/HomeButton";
 import SourceTracker from "@/components/SourceTracker";
 import OrderInfoModalWrapper from "@/components/OrderInfoModalWrapper";
 import { Suspense } from "react";
+import { Divider } from "@heroui/divider";
+
+const GAME_TOOLS_TYPE_ID = "GameTools";
+const DEPENDENCIES_TYPE_ID = "Dependencies";
 
 export default async function ProjectsPage({
   searchParams,
@@ -15,6 +19,7 @@ export default async function ProjectsPage({
   searchParams: Promise<{ source?: string }>;
 }) {
   const t = await getTranslations("GetStart");
+  const p = await getTranslations("Projects");
   const resp = await fetch(`${SERVER_BACKEND}/api/misc/project`);
   const projects: Array<ProjectCardProps> = [];
   try {
@@ -26,6 +31,9 @@ export default async function ProjectsPage({
     console.log(e);
   }
   const { source } = await searchParams;
+
+  const mainProjects = projects.filter(project => project.type_id === GAME_TOOLS_TYPE_ID);
+  const dependenciesProjects = projects.filter(project => project.type_id === DEPENDENCIES_TYPE_ID);
 
   return (
     <>
@@ -50,9 +58,25 @@ export default async function ProjectsPage({
           </div>
 
           <div className="mt-12 grid auto-rows-auto grid-cols-1 gap-4 sm:grid-cols-2 md:mt-10 md:grid-cols-3 lg:grid-cols-4">
-            <ProjectCardView projects={projects}></ProjectCardView>
+            <ProjectCardView projects={mainProjects} />
             <ProjectIntegratedCard />
           </div>
+
+          {dependenciesProjects.length > 0 && (
+            <>
+              <div className="my-12 flex items-center">
+                <Divider className="flex-1" />
+                <span className="mx-4 flex-shrink-0 text-lg font-medium text-gray-500 dark:text-gray-400">
+                  {p("dependencies")}
+                </span>
+                <Divider className="flex-1" />
+              </div>
+
+              <div className="grid auto-rows-auto grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                <ProjectCardView projects={dependenciesProjects} />
+              </div>
+            </>
+          )}
         </div>
       </BackgroundLines>
     </>

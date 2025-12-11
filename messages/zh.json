@@ -204,7 +204,8 @@
     "joinUs": "加入我们",
     "contactUs": "集成Mirror酱到您的项目",
     "openProjectHomepage": "访问项目官网查看详细文档和使用说明",
-    "onlyInternalUpdate": "{name} 目前只能通过应用本身更新"
+    "onlyInternalUpdate": "{name} 目前只能通过应用本身更新",
+    "dependencies": "依赖组件"
   },
   "Common": {
     "ok": "确定",

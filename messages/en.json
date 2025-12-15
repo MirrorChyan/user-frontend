@@ -231,7 +231,7 @@
     "tooltip": "Query through UserAgent",
     "confirm": "Confirm",
     "error": "Please confirm that you have entered the correct content",
-    "dashboardTitle": "MirrorChyan x {rid} {date} Sales Dashboard",
+    "dashboard": "MirrorChyan x {rid} Sales Dashboard",
     "export": "Export CSV file",
     "application": "Applications",
     "userAgent": "Checkin user agents",
@@ -248,6 +248,7 @@
     "count": "Deals",
     "monthlyCount": "Monthly Sales",
     "monthlyAmount": "Monthly Revenue",
+    "refreshSuccess": "Refresh was successful",
     "lineChart": {
       "toggleCount": "Click to switch to sales volume",
       "toggleAmount": "Click to switch to sales revenue",

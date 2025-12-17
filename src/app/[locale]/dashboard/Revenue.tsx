@@ -32,14 +32,25 @@ type SalesPieChartProps = {
 export default function Revenue({ revenueData, onLogOut, rid, date }: RevenueProps) {
   const t = useTranslations("Dashboard");
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const refundedCount = useMemo(
-    () => revenueData.reduce((acc, cur) => acc + (cur.blocked ? Number(cur.buy_count) : 0), 0),
-    [revenueData]
-  );
-  const refundedAmount = useMemo(
-    () => revenueData.reduce((acc, cur) => acc + (cur.blocked ? Number(cur.amount) : 0), 0),
-    [revenueData]
-  );
+  const { totalCount, totalAmount, refundedCount, refundedAmount } = useMemo(() => {
+    return revenueData.reduce(
+      (acc, cur) => {
+        const buyCount = Number(cur.buy_count) || 0;
+        const amount = Number(cur.amount) || 0;
+
+        acc.totalCount += buyCount;
+        acc.totalAmount += amount;
+
+        if (cur.blocked) {
+          acc.refundedCount += buyCount;
+          acc.refundedAmount += amount;
+        }
+
+        return acc;
+      },
+      { totalCount: 0, totalAmount: 0, refundedCount: 0, refundedAmount: 0 }
+    );
+  }, [revenueData]);
   useEffect(() => {
     if (!revenueData) {
       return onLogOut();
@@ -288,7 +299,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
                 <div className="p-4 sm:p-8">
                   <h3 className="text-gray-500">{t("monthlyCount")}</h3>
                   <p className="text-2xl font-bold sm:text-3xl">
-                    {revenueData.reduce((acc, cur) => acc + Number(cur.buy_count), 0)}
+                    {totalCount}
                     {t("unit.count")}
                     {refundedCount > 0 ? (
                       <span className="ml-2 text-sm font-normal text-gray-500">
@@ -302,7 +313,7 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
                 <div className="p-4 sm:p-8">
                   <h3 className="text-gray-500">{t("monthlyAmount")}</h3>
                   <p className="text-2xl font-bold sm:text-3xl">
-                    {revenueData.reduce((acc, cur) => acc + Number(cur.amount), 0).toFixed(2)}
+                    {totalAmount.toFixed(2)}
                     {t("unit.amount")}
                     {refundedAmount > 0 ? (
                       <span className="ml-2 text-sm font-normal text-gray-500">

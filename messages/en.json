@@ -248,6 +248,8 @@
     "count": "Deals",
     "monthlyCount": "Monthly Sales",
     "monthlyAmount": "Monthly Revenue",
+    "refundedCount": "(Refunded: {count} deals)",
+    "refundedAmount": "(Refunded: {amount} RMB)",
     "lineChart": {
       "toggleCount": "Click to switch to sales volume",
       "toggleAmount": "Click to switch to sales revenue",

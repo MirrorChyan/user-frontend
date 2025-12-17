@@ -9,6 +9,7 @@ export type RevenueType = {
   amount: string;
   application: string;
   buy_count: number;
+  blocked: boolean;
   plan: string;
   user_agent: string;
   platform: string;

@@ -32,6 +32,14 @@ type SalesPieChartProps = {
 export default function Revenue({ revenueData, onLogOut, rid, date }: RevenueProps) {
   const t = useTranslations("Dashboard");
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const refundedCount = useMemo(
+    () => revenueData.reduce((acc, cur) => acc + (cur.blocked ? Number(cur.buy_count) : 0), 0),
+    [revenueData]
+  );
+  const refundedAmount = useMemo(
+    () => revenueData.reduce((acc, cur) => acc + (cur.blocked ? Number(cur.amount) : 0), 0),
+    [revenueData]
+  );
   useEffect(() => {
     if (!revenueData) {
       return onLogOut();
@@ -134,11 +142,11 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
     const filename = `MirrorChyan Sales ${rid} ${date}.csv`;
     const csvContent =
       "\uFEFF" +
-      "activated_at,application,plan,user_agent,source,platform,amount\n" +
+      "activated_at,application,plan,user_agent,source,platform,amount,blocked\n" +
       revenueData
         .map(
           d =>
-            `${d.activated_at},${d.application},${d.plan},${d.user_agent},${d.source},${d.platform},${d.amount}`
+            `${d.activated_at},${d.application},${d.plan},${d.user_agent},${d.source},${d.platform},${d.amount},${d.blocked ? 1 : 0}`
         )
         .join("\n");
 
@@ -282,6 +290,11 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
                   <p className="text-2xl font-bold sm:text-3xl">
                     {revenueData.reduce((acc, cur) => acc + Number(cur.buy_count), 0)}
                     {t("unit.count")}
+                    {refundedCount > 0 ? (
+                      <span className="ml-2 text-sm font-normal text-gray-500">
+                        {t("refundedCount", { count: refundedCount })}
+                      </span>
+                    ) : null}
                   </p>
                 </div>
               </Card>
@@ -291,6 +304,11 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
                   <p className="text-2xl font-bold sm:text-3xl">
                     {revenueData.reduce((acc, cur) => acc + Number(cur.amount), 0).toFixed(2)}
                     {t("unit.amount")}
+                    {refundedAmount > 0 ? (
+                      <span className="ml-2 text-sm font-normal text-gray-500">
+                        {t("refundedAmount", { amount: refundedAmount.toFixed(2) })}
+                      </span>
+                    ) : null}
                   </p>
                 </div>
               </Card>

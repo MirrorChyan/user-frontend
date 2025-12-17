@@ -242,6 +242,8 @@
     "count": "销量",
     "monthlyCount": "月销售总量",
     "monthlyAmount": "月销售总额",
+    "refundedCount": "（已退款：{count}份）",
+    "refundedAmount": "（已退款：{amount}元）",
     "lineChart": {
       "toggleCount": "点击切换为销量",
       "toggleAmount": "点击切换为销售额",

@@ -13,6 +13,7 @@ export interface PaymentParams {
   platform: string;
   planId: string;
   payType?: string;
+  shouldOpenLink?: boolean;
 }
 
 export function getDefaultPaymentMethod(planInfo: PlanInfoDetail): PaymentMethod {
@@ -27,28 +28,22 @@ export function buildPaymentParams(
   let platform = "";
   let planId = "";
   let payType: string | undefined;
+  let shouldOpenLink = false;
 
-  if (usePayWithH5) {
-    if (paymentMethod === "alipay") {
-      platform = "alipay";
-      planId = planInfo.alipay_id;
-      payType = "H5";
-    } else if (paymentMethod === "wechatPay") {
-      platform = "yimapay";
-      planId = planInfo.yimapay_id;
-      payType = "WeChatH5";
-    }
-  } else {
-    if (paymentMethod === "alipay") {
-      platform = "alipay";
-      planId = planInfo.alipay_id;
-    } else if (paymentMethod === "wechatPay") {
-      platform = "weixin";
-      planId = planInfo.weixin_id;
-    }
+  if (usePayWithH5 && paymentMethod === "alipay") {
+    platform = "alipay";
+    planId = planInfo.alipay_id;
+    payType = "H5";
+    shouldOpenLink = true;
+  } else if (paymentMethod === "alipay") {
+    platform = "alipay";
+    planId = planInfo.alipay_id;
+  } else if (paymentMethod === "wechatPay") {
+    platform = "weixin";
+    planId = planInfo.weixin_id;
   }
 
-  return { platform, planId, payType };
+  return { platform, planId, payType, shouldOpenLink };
 }
 
 export function buildFallbackParams(
@@ -60,20 +55,12 @@ export function buildFallbackParams(
   let planId = "";
   let payType: string | undefined;
 
-  if (usePayWithH5) {
-    // H5 失败,降级为二维码
-    if (paymentMethod === "alipay") {
-      platform = "alipay";
-      planId = planInfo.alipay_id;
-    } else if (paymentMethod === "wechatPay") {
-      platform = "weixin";
-      planId = planInfo.weixin_id;
-    }
-  } else {
-    // 二维码失败,降级为 yimapay
-    platform = "yimapay";
-    planId = planInfo.yimapay_id;
-    payType = YmPayQrcode[paymentMethod];
+  if (paymentMethod === "alipay") {
+    platform = "alipay";
+    planId = planInfo.alipay_id;
+  } else if (paymentMethod === "wechatPay") {
+    platform = "weixin";
+    planId = planInfo.weixin_id;
   }
 
   return { platform, planId, payType };

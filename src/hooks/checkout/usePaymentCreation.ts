@@ -75,37 +75,21 @@ export function usePaymentCreation({
     setLoading(true);
     try {
       // 构建主要支付参数
-      const { platform, planId, payType } = buildPaymentParams(
+      const { platform, planId, payType, shouldOpenLink } = buildPaymentParams(
         paymentMethod,
         planInfo,
         usePayWithH5
       );
 
       const params = buildURLParams(planId, payType, renewCdk);
-      let shouldOpenLink = isMobile && usePayWithH5;
+      const response = await createOrder(platform, params);
 
-      // 第一次尝试创建订单
-      let response = await createOrder(platform, params);
-
-      // 如果失败，尝试降级方案
       if (response.code !== 0) {
-        shouldOpenLink = false;
-        const fallbackParams = buildFallbackParams(paymentMethod, planInfo, usePayWithH5);
-        const fallbackURLParams = buildURLParams(
-          fallbackParams.planId,
-          fallbackParams.payType,
-          renewCdk
-        );
-
-        response = await createOrder(fallbackParams.platform, fallbackURLParams);
-
-        if (response.code !== 0) {
-          addToast({
-            color: "warning",
-            description: t("createOrderError"),
-          });
-          return { success: false };
-        }
+        addToast({
+          color: "warning",
+          description: t("createOrderError"),
+        });
+        return { success: false };
       }
 
       const orderInfo = response.data as CreateOrderType;

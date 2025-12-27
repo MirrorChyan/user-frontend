@@ -74,7 +74,11 @@
     "cdkExpiredAt": "CDK 已在 {date} 前过期",
     "cdkExpiresAt": "CDK 将在 {date} 后过期",
     "cdkValidationError": "续期 CDK 错误",
-    "confirmButton": "确认"
+    "confirmButton": "确认",
+    "inAppBrowserWarningTitle": "当前浏览器不支持支付宝",
+    "inAppBrowserWarningDesc": "检测到您正在使用应用内置浏览器，可能无法正常完成支付宝付款。请使用系统浏览器打开本页面，或切换到微信支付。",
+    "switchToWechatPay": "使用微信支付",
+    "understood": "我知道了"
   },
   "GetKey": {
     "title": "欢迎使用Mirror酱",

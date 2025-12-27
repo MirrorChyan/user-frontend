@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { ArrowLeft } from "lucide-react";
 import { isMobile } from "react-device-detect";
-import { shouldUseQRCodePayment } from "@/lib/utils/browserDetection";
+import { isInAppBrowser, shouldUseQRCodePayment } from "@/lib/utils/browserDetection";
 import NoOrder from "@/app/[locale]/checkout/NoOrder";
 import RenewalCdkInput, { RenewalCdkInputRef } from "@/components/checkout/RenewalCdkInput";
 import OrderSummaryCard from "@/components/checkout/OrderSummaryCard";
@@ -13,6 +13,7 @@ import PaymentMethodSelector from "@/components/checkout/PaymentMethodSelector";
 import PaymentButton from "@/components/checkout/PaymentButton";
 import SecurityFooter from "@/components/checkout/SecurityFooter";
 import PaymentModalsContainer from "@/components/checkout/PaymentModalsContainer";
+import InAppBrowserWarningModal from "@/components/checkout/InAppBrowserWarningModal";
 import Spinner from "@/components/checkout/Spinner";
 import { usePlanInfo } from "@/hooks/checkout/usePlanInfo";
 import { usePriceCalculation } from "@/hooks/checkout/usePriceCalculation";
@@ -52,6 +53,7 @@ export default function Checkout(params: CheckoutProps) {
   const [paymentHtml, setPaymentHtml] = useState<string>("");
   const [customOrderId, setCustomOrderId] = useState<string>();
   const [renewCdk, setRenewCdk] = useState("");
+  const [showInAppWarning, setShowInAppWarning] = useState(false);
 
   // 判断是否使用H5支付
   const usePayWithH5 = shouldUseQRCodePayment() ? false : isMobile;
@@ -100,6 +102,12 @@ export default function Checkout(params: CheckoutProps) {
       return;
     }
 
+    // 在移动端的 App 内浏览器中使用支付宝时，弹出警告提示
+    if (isMobile && isInAppBrowser() && paymentMethod === "alipay") {
+      setShowInAppWarning(true);
+      return;
+    }
+
     if (paymentMethod === "afdian") {
       handleAfdianPayment();
       return;
@@ -130,6 +138,10 @@ export default function Checkout(params: CheckoutProps) {
 
   const handleCloseModal = () => {
     setShowModal("none");
+  };
+
+  const handleSwitchToWechat = () => {
+    setPaymentMethod("wechatPay");
   };
 
   // 参数校验
@@ -212,6 +224,13 @@ export default function Checkout(params: CheckoutProps) {
           isPolling={isPolling}
           usePayWithH5={usePayWithH5}
           onClose={handleCloseModal}
+        />
+
+        {/* App内浏览器警告弹窗 */}
+        <InAppBrowserWarningModal
+          open={showInAppWarning}
+          onClose={() => setShowInAppWarning(false)}
+          onSwitchToWechat={planInfo?.weixin_id ? handleSwitchToWechat : undefined}
         />
       </div>
     </div>

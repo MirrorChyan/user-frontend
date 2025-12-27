@@ -5,7 +5,7 @@ import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { addToast } from "@heroui/toast";
 import { getSource } from "@/components/SourceTracker";
 import { isMobile } from "react-device-detect";
-import { buildFallbackParams, buildPaymentParams, PaymentMethod } from "@/lib/utils/payment";
+import { buildPaymentParams, PaymentMethod } from "@/lib/utils/payment";
 
 interface CreateOrderType {
   pay_url?: string;

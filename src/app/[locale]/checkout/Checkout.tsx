@@ -35,7 +35,6 @@ export interface PlanInfoDetail {
     plan_id: string;
     sku_id: string;
   };
-  yimapay_id: string;
   weixin_id: string;
   alipay_id: string;
 }

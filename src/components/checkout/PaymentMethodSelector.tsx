@@ -27,7 +27,7 @@ export default function PaymentMethodSelector({
       </h3>
 
       <div className="space-y-4">
-        {(planInfo.alipay_id || planInfo.yimapay_id) && (
+        {planInfo.alipay_id && (
           <PaymentOption
             checked={value === "alipay"}
             onClick={() => onChange("alipay")}
@@ -39,7 +39,7 @@ export default function PaymentMethodSelector({
           </PaymentOption>
         )}
 
-        {(planInfo.weixin_id || planInfo.yimapay_id) && (
+        {planInfo.weixin_id && (
           <PaymentOption
             checked={value === "wechatPay"}
             onClick={() => onChange("wechatPay")}

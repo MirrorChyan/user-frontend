@@ -44,5 +44,5 @@ export function isInAppBrowser(): boolean {
 }
 
 export function shouldUseQRCodePayment(): boolean {
-  return isSafariBrowser() || isInAppBrowser();
+  return isSafariBrowser();
 }

@@ -53,7 +53,7 @@ export default function Checkout(params: CheckoutProps) {
   const [paymentHtml, setPaymentHtml] = useState<string>("");
   const [customOrderId, setCustomOrderId] = useState<string>();
   const [renewCdk, setRenewCdk] = useState("");
-  const [showInAppWarning, setShowInAppWarning] = useState(true);
+  const [showInAppWarning, setShowInAppWarning] = useState(false);
 
   // 判断是否使用H5支付
   const usePayWithH5 = shouldUseQRCodePayment() ? false : isMobile;

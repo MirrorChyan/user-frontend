@@ -80,9 +80,11 @@
     "cdkExpiresAt": "CDK expires on {date}",
     "cdkValidationError": "Invalid CDK",
     "confirmButton": "Confirm",
-    "inAppBrowserWarningTitle": "Alipay Not Supported in This Browser",
-    "inAppBrowserWarningDesc": "You're using an in-app browser which may not complete Alipay payments properly. Please open this page in your system browser, or switch to WeChat Pay.",
+    "inAppBrowserWarningTitle": "In-app browser not supported for Alipay",
+    "inAppBrowserWarningDesc": "Please open this page in your system browser, or switch to WeChat Pay.",
     "switchToWechatPay": "Switch to WeChat Pay",
+    "copyPageLink": "Copy Current Page Link",
+    "linkCopied": "Link Copied",
     "understood": "Got it"
   },
   "GetKey": {

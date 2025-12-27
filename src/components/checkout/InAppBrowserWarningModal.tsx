@@ -2,10 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
-import { Fragment } from "react";
-import { AlertTriangle, X } from "lucide-react";
+import { Fragment, useState } from "react";
+import { AlertTriangle, X, Link, Check } from "lucide-react";
 import { Button } from "@heroui/react";
-import PaymentIcon from "./PaymentIcon";
 
 interface InAppBrowserWarningModalProps {
   open: boolean;
@@ -20,9 +19,29 @@ export default function InAppBrowserWarningModal({
 }: InAppBrowserWarningModalProps) {
   const t = useTranslations("Checkout");
 
+  const [copied, setCopied] = useState(false);
+
   const handleSwitchToWechat = () => {
     onSwitchToWechat?.();
     onClose();
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // 降级方案：使用 execCommand
+      const textArea = document.createElement("textarea");
+      textArea.value = window.location.href;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   return (
@@ -88,18 +107,25 @@ export default function InAppBrowserWarningModal({
                       onPress={handleSwitchToWechat}
                       className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#15BA11] p-4 text-base font-medium text-white transition-colors hover:bg-[#0fa00d]"
                     >
-                      <PaymentIcon type="wechat" className="h-5 w-5" />
                       {t("switchToWechatPay")}
                     </Button>
                   )}
 
                   <Button
+                    onPress={handleCopyLink}
+                    variant="bordered"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-blue-200 bg-blue-50 p-4 text-base font-medium text-blue-700 transition-colors hover:bg-blue-100 dark:border-blue-600 dark:bg-blue-900/20 dark:text-blue-300 dark:hover:bg-blue-900/40"
+                  >
+                    {copied ? <>{t("linkCopied")}</> : <>{t("copyPageLink")}</>}
+                  </Button>
+
+                  {/* <Button
                     onPress={onClose}
                     variant="bordered"
                     className="flex w-full items-center justify-center rounded-xl border-2 border-gray-200 p-4 text-base font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
                   >
                     {t("understood")}
-                  </Button>
+                  </Button> */}
                 </div>
               </DialogPanel>
             </TransitionChild>

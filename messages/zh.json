@@ -75,9 +75,11 @@
     "cdkExpiresAt": "CDK 将在 {date} 后过期",
     "cdkValidationError": "续期 CDK 错误",
     "confirmButton": "确认",
-    "inAppBrowserWarningTitle": "当前浏览器不支持支付宝",
-    "inAppBrowserWarningDesc": "检测到您正在使用应用内置浏览器，可能无法正常完成支付宝付款。请使用系统浏览器打开本页面，或切换到微信支付。",
+    "inAppBrowserWarningTitle": "内置浏览器不支持支付宝",
+    "inAppBrowserWarningDesc": "请使用系统浏览器打开本页面，或切换到微信支付。",
     "switchToWechatPay": "使用微信支付",
+    "copyPageLink": "复制当前页面链接",
+    "linkCopied": "链接已复制",
     "understood": "我知道了"
   },
   "GetKey": {

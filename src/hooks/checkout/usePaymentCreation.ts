@@ -4,7 +4,6 @@ import { PlanInfoDetail } from "@/app/[locale]/checkout/Checkout";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { addToast } from "@heroui/toast";
 import { getSource } from "@/components/SourceTracker";
-import { isMobile } from "react-device-detect";
 import { buildPaymentParams, PaymentMethod } from "@/lib/utils/payment";
 
 interface CreateOrderType {
@@ -18,7 +17,7 @@ interface CreateOrderType {
 interface UsePaymentCreationProps {
   planInfo: PlanInfoDetail | undefined;
   paymentMethod: PaymentMethod;
-  usePayWithH5: boolean;
+  canTryH5: boolean;
   renewCdk: string;
 }
 
@@ -26,7 +25,7 @@ interface UsePaymentCreationResult {
   createPayment: () => Promise<{
     success: boolean;
     data?: CreateOrderType;
-    shouldOpenLink?: boolean;
+    payOnNewPage?: boolean;
   }>;
   loading: boolean;
 }
@@ -61,7 +60,7 @@ async function createOrder(
 export function usePaymentCreation({
   planInfo,
   paymentMethod,
-  usePayWithH5,
+  canTryH5,
   renewCdk,
 }: UsePaymentCreationProps): UsePaymentCreationResult {
   const t = useTranslations("Checkout");
@@ -75,10 +74,10 @@ export function usePaymentCreation({
     setLoading(true);
     try {
       // 构建主要支付参数
-      const { platform, planId, payType, shouldOpenLink } = buildPaymentParams(
+      const { platform, planId, payType, payOnNewPage } = buildPaymentParams(
         paymentMethod,
         planInfo,
-        usePayWithH5
+        canTryH5
       );
 
       const params = buildURLParams(planId, payType, renewCdk);
@@ -92,12 +91,10 @@ export function usePaymentCreation({
         return { success: false };
       }
 
-      const orderInfo = response.data as CreateOrderType;
-
       return {
         success: true,
-        data: orderInfo,
-        shouldOpenLink: shouldOpenLink && !!orderInfo.pay_url,
+        data: response.data as CreateOrderType,
+        payOnNewPage,
       };
     } catch (error) {
       console.log(error);
@@ -109,7 +106,7 @@ export function usePaymentCreation({
     } finally {
       setLoading(false);
     }
-  }, [planInfo, paymentMethod, usePayWithH5, renewCdk, t]);
+  }, [planInfo, paymentMethod, canTryH5, renewCdk, t]);
 
   return { createPayment, loading };
 }

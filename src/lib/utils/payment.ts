@@ -6,7 +6,7 @@ export interface PaymentParams {
   platform: string;
   planId: string;
   payType?: string;
-  shouldOpenLink?: boolean;
+  payOnNewPage: boolean;
 }
 
 export function getDefaultPaymentMethod(planInfo: PlanInfoDetail): PaymentMethod {
@@ -16,18 +16,18 @@ export function getDefaultPaymentMethod(planInfo: PlanInfoDetail): PaymentMethod
 export function buildPaymentParams(
   paymentMethod: PaymentMethod,
   planInfo: PlanInfoDetail,
-  usePayWithH5: boolean
+  canTryH5: boolean
 ): PaymentParams {
   let platform = "";
   let planId = "";
   let payType: string | undefined;
-  let shouldOpenLink = false;
+  let payOnNewPage = false;
 
-  if (usePayWithH5 && paymentMethod === "alipay") {
+  if (canTryH5 && paymentMethod === "alipay") {
     platform = "alipay";
     planId = planInfo.alipay_id;
     payType = "H5";
-    shouldOpenLink = true;
+    payOnNewPage = true;
   } else if (paymentMethod === "alipay") {
     platform = "alipay";
     planId = planInfo.alipay_id;
@@ -36,5 +36,5 @@ export function buildPaymentParams(
     planId = planInfo.weixin_id;
   }
 
-  return { platform, planId, payType, shouldOpenLink };
+  return { platform, planId, payType, payOnNewPage };
 }

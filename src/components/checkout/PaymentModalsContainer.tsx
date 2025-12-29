@@ -22,7 +22,7 @@ interface PaymentModalsContainerProps {
   rate: number;
   orderInfo: OrderInfoType | undefined;
   isPolling: boolean;
-  usePayWithH5: boolean;
+  payOnNewPage: boolean;
   onClose: () => void;
 }
 
@@ -34,7 +34,7 @@ export default function PaymentModalsContainer({
   rate,
   orderInfo,
   isPolling,
-  usePayWithH5,
+  payOnNewPage,
   onClose,
 }: PaymentModalsContainerProps) {
   const t = useTranslations("Checkout");
@@ -42,7 +42,7 @@ export default function PaymentModalsContainer({
 
   return (
     <>
-      {!usePayWithH5 && (
+      {!payOnNewPage && (
         <>
           <HtmlFormPayModal
             qrCodeCircleColor="bg-[#009FE8] border-2 border-[#009FE8]"
@@ -81,7 +81,7 @@ export default function PaymentModalsContainer({
           />
         </>
       )}
-      {usePayWithH5 && (
+      {payOnNewPage && (
         <>
           <WaitForPayModal
             open={showModal === "wechatPay"}

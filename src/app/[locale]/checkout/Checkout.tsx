@@ -54,9 +54,8 @@ export default function Checkout(params: CheckoutProps) {
   const [customOrderId, setCustomOrderId] = useState<string>();
   const [renewCdk, setRenewCdk] = useState("");
   const [showInAppWarning, setShowInAppWarning] = useState(false);
-
-  // 判断是否使用H5支付
-  const usePayWithH5 = shouldUseQRCodePayment() ? false : isMobile;
+  const [payOnNewPage, setPayOnNewPage] = useState(false);
+  const canTryH5 = shouldUseQRCodePayment() ? false : isMobile;
 
   const renewalCdkInputRef = useRef<RenewalCdkInputRef>(null);
 
@@ -66,7 +65,7 @@ export default function Checkout(params: CheckoutProps) {
   const { createPayment, loading: paymentLoading } = usePaymentCreation({
     planInfo,
     paymentMethod,
-    usePayWithH5,
+    canTryH5,
     renewCdk,
   });
 
@@ -119,9 +118,10 @@ export default function Checkout(params: CheckoutProps) {
     }
 
     const orderInfo = result.data;
+    setPayOnNewPage(result.payOnNewPage ?? false);
 
     // 如果是移动端H5支付且有支付链接，自动打开
-    if (result.shouldOpenLink && orderInfo.pay_url) {
+    if (result.payOnNewPage && orderInfo.pay_url) {
       window.open(orderInfo.pay_url, "_blank");
     }
 
@@ -222,7 +222,7 @@ export default function Checkout(params: CheckoutProps) {
           rate={params.rate}
           orderInfo={orderInfo}
           isPolling={isPolling}
-          usePayWithH5={usePayWithH5}
+          payOnNewPage={payOnNewPage}
           onClose={handleCloseModal}
         />
 

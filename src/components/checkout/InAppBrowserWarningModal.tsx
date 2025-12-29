@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
 import { Fragment, useState } from "react";
-import { AlertTriangle, X, Link, Check } from "lucide-react";
+import { AlertTriangle, X } from "lucide-react";
 import { Button } from "@heroui/react";
 
 interface InAppBrowserWarningModalProps {
@@ -75,7 +75,7 @@ export default function InAppBrowserWarningModal({
                 <button
                   onClick={onClose}
                   className="absolute right-4 top-4 rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
-                  aria-label={t("backToHome")}
+                  aria-label={t("close")}
                 >
                   <X className="h-5 w-5" />
                 </button>

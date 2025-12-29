@@ -35,10 +35,10 @@ export function isInAppBrowser(): boolean {
   return (
     userAgent.includes("MicroMessenger") || // 微信
     userAgent.includes("QQ/") || // QQ
-    userAgent.includes("MQQBrowser") || // QQ浏览器
+    // userAgent.includes("MQQBrowser") || // QQ浏览器
     userAgent.includes("Weibo") || // 微博
     userAgent.includes("BytedanceWebview") || // 抖音/头条
-    userAgent.includes("AlipayClient") || // 支付宝
+    // userAgent.includes("AlipayClient") || // 支付宝
     userAgent.includes("DingTalk") // 钉钉
   );
 }

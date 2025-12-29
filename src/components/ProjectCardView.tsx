@@ -1,7 +1,7 @@
 "use client";
 
 import ProjectCard, { ProjectCardProps } from "@/components/ProjectCard";
-import { useSearchParams } from "@/i18n/routing";
+import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { CLIENT_BACKEND } from "@/app/requests/misc";

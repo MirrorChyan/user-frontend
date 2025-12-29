@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { ArrowLeft } from "lucide-react";
 import { isMobile } from "react-device-detect";
-import { shouldUseQRCodePayment } from "@/lib/utils/browserDetection";
+import { isInAppBrowser, shouldUseQRCodePayment } from "@/lib/utils/browserDetection";
 import NoOrder from "@/app/[locale]/checkout/NoOrder";
 import RenewalCdkInput, { RenewalCdkInputRef } from "@/components/checkout/RenewalCdkInput";
 import OrderSummaryCard from "@/components/checkout/OrderSummaryCard";
@@ -13,12 +13,13 @@ import PaymentMethodSelector from "@/components/checkout/PaymentMethodSelector";
 import PaymentButton from "@/components/checkout/PaymentButton";
 import SecurityFooter from "@/components/checkout/SecurityFooter";
 import PaymentModalsContainer from "@/components/checkout/PaymentModalsContainer";
+import InAppBrowserWarningModal from "@/components/checkout/InAppBrowserWarningModal";
 import Spinner from "@/components/checkout/Spinner";
 import { usePlanInfo } from "@/hooks/checkout/usePlanInfo";
 import { usePriceCalculation } from "@/hooks/checkout/usePriceCalculation";
 import { useOrderPolling } from "@/hooks/checkout/useOrderPolling";
 import { usePaymentCreation } from "@/hooks/checkout/usePaymentCreation";
-import { getDefaultPaymentMethod, PaymentMethod } from "@/lib/utils/payment";
+import { ApiPaymentMethod, getDefaultPaymentMethod, PaymentMethod } from "@/lib/utils/payment";
 
 export interface CheckoutProps {
   planId: Array<string>;
@@ -35,7 +36,6 @@ export interface PlanInfoDetail {
     plan_id: string;
     sku_id: string;
   };
-  yimapay_id: string;
   weixin_id: string;
   alipay_id: string;
 }
@@ -53,19 +53,20 @@ export default function Checkout(params: CheckoutProps) {
   const [paymentHtml, setPaymentHtml] = useState<string>("");
   const [customOrderId, setCustomOrderId] = useState<string>();
   const [renewCdk, setRenewCdk] = useState("");
-
-  // 判断是否使用H5支付
-  const usePayWithH5 = shouldUseQRCodePayment() ? false : isMobile;
+  const [showInAppWarning, setShowInAppWarning] = useState(false);
+  const [payOnNewPage, setPayOnNewPage] = useState(false);
+  const canTryH5 = shouldUseQRCodePayment() ? false : isMobile;
 
   const renewalCdkInputRef = useRef<RenewalCdkInputRef>(null);
 
   const { planInfo, loading: planInfoLoading, hasError } = usePlanInfo({ planId });
   const priceInfo = usePriceCalculation({ planInfo, rate: params.rate });
   const { orderInfo, isPolling } = useOrderPolling({ customOrderId, renewCdk });
+  // afdian 支付在 handlePurchase 中单独处理，不会调用 createPayment
   const { createPayment, loading: paymentLoading } = usePaymentCreation({
     planInfo,
-    paymentMethod,
-    usePayWithH5,
+    paymentMethod: paymentMethod as ApiPaymentMethod,
+    canTryH5,
     renewCdk,
   });
 
@@ -101,6 +102,12 @@ export default function Checkout(params: CheckoutProps) {
       return;
     }
 
+    // 在移动端的 App 内浏览器中使用支付宝时，弹出警告提示
+    if (isMobile && isInAppBrowser() && paymentMethod === "alipay") {
+      setShowInAppWarning(true);
+      return;
+    }
+
     if (paymentMethod === "afdian") {
       handleAfdianPayment();
       return;
@@ -112,9 +119,10 @@ export default function Checkout(params: CheckoutProps) {
     }
 
     const orderInfo = result.data;
+    setPayOnNewPage(result.payOnNewPage ?? false);
 
     // 如果是移动端H5支付且有支付链接，自动打开
-    if (result.shouldOpenLink && orderInfo.pay_url) {
+    if (result.payOnNewPage && orderInfo.pay_url) {
       window.open(orderInfo.pay_url, "_blank");
     }
 
@@ -131,6 +139,10 @@ export default function Checkout(params: CheckoutProps) {
 
   const handleCloseModal = () => {
     setShowModal("none");
+  };
+
+  const handleSwitchToWechat = () => {
+    setPaymentMethod("wechatPay");
   };
 
   // 参数校验
@@ -211,8 +223,15 @@ export default function Checkout(params: CheckoutProps) {
           rate={params.rate}
           orderInfo={orderInfo}
           isPolling={isPolling}
-          usePayWithH5={usePayWithH5}
+          payOnNewPage={payOnNewPage}
           onClose={handleCloseModal}
+        />
+
+        {/* App内浏览器警告弹窗 */}
+        <InAppBrowserWarningModal
+          open={showInAppWarning}
+          onClose={() => setShowInAppWarning(false)}
+          onSwitchToWechat={planInfo?.weixin_id ? handleSwitchToWechat : undefined}
         />
       </div>
     </div>

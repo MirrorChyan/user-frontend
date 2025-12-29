@@ -4,8 +4,7 @@ import { PlanInfoDetail } from "@/app/[locale]/checkout/Checkout";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { addToast } from "@heroui/toast";
 import { getSource } from "@/components/SourceTracker";
-import { isMobile } from "react-device-detect";
-import { buildFallbackParams, buildPaymentParams, PaymentMethod } from "@/lib/utils/payment";
+import { ApiPaymentMethod, buildPaymentParams } from "@/lib/utils/payment";
 
 interface CreateOrderType {
   pay_url?: string;
@@ -17,8 +16,8 @@ interface CreateOrderType {
 
 interface UsePaymentCreationProps {
   planInfo: PlanInfoDetail | undefined;
-  paymentMethod: PaymentMethod;
-  usePayWithH5: boolean;
+  paymentMethod: ApiPaymentMethod;
+  canTryH5: boolean;
   renewCdk: string;
 }
 
@@ -26,7 +25,7 @@ interface UsePaymentCreationResult {
   createPayment: () => Promise<{
     success: boolean;
     data?: CreateOrderType;
-    shouldOpenLink?: boolean;
+    payOnNewPage?: boolean;
   }>;
   loading: boolean;
 }
@@ -61,7 +60,7 @@ async function createOrder(
 export function usePaymentCreation({
   planInfo,
   paymentMethod,
-  usePayWithH5,
+  canTryH5,
   renewCdk,
 }: UsePaymentCreationProps): UsePaymentCreationResult {
   const t = useTranslations("Checkout");
@@ -75,45 +74,27 @@ export function usePaymentCreation({
     setLoading(true);
     try {
       // 构建主要支付参数
-      const { platform, planId, payType } = buildPaymentParams(
+      const { platform, planId, payType, payOnNewPage } = buildPaymentParams(
         paymentMethod,
         planInfo,
-        usePayWithH5
+        canTryH5
       );
 
       const params = buildURLParams(planId, payType, renewCdk);
-      let shouldOpenLink = isMobile && usePayWithH5;
+      const response = await createOrder(platform, params);
 
-      // 第一次尝试创建订单
-      let response = await createOrder(platform, params);
-
-      // 如果失败，尝试降级方案
       if (response.code !== 0) {
-        shouldOpenLink = false;
-        const fallbackParams = buildFallbackParams(paymentMethod, planInfo, usePayWithH5);
-        const fallbackURLParams = buildURLParams(
-          fallbackParams.planId,
-          fallbackParams.payType,
-          renewCdk
-        );
-
-        response = await createOrder(fallbackParams.platform, fallbackURLParams);
-
-        if (response.code !== 0) {
-          addToast({
-            color: "warning",
-            description: t("createOrderError"),
-          });
-          return { success: false };
-        }
+        addToast({
+          color: "warning",
+          description: t("createOrderError"),
+        });
+        return { success: false };
       }
-
-      const orderInfo = response.data as CreateOrderType;
 
       return {
         success: true,
-        data: orderInfo,
-        shouldOpenLink: shouldOpenLink && !!orderInfo.pay_url,
+        data: response.data as CreateOrderType,
+        payOnNewPage,
       };
     } catch (error) {
       console.log(error);
@@ -125,7 +106,7 @@ export function usePaymentCreation({
     } finally {
       setLoading(false);
     }
-  }, [planInfo, paymentMethod, usePayWithH5, renewCdk, t]);
+  }, [planInfo, paymentMethod, canTryH5, renewCdk, t]);
 
   return { createPayment, loading };
 }

@@ -79,7 +79,13 @@
     "cdkExpiredAt": "CDK expired on {date}",
     "cdkExpiresAt": "CDK expires on {date}",
     "cdkValidationError": "Invalid CDK",
-    "confirmButton": "Confirm"
+    "confirmButton": "Confirm",
+    "inAppBrowserWarningTitle": "In-app browser not supported for Alipay",
+    "inAppBrowserWarningDesc": "Please open this page in your system browser, or switch to WeChat Pay.",
+    "switchToWechatPay": "Switch to WeChat Pay",
+    "copyPageLink": "Copy Current Page Link",
+    "linkCopied": "Link Copied",
+    "understood": "Got it"
   },
   "GetKey": {
     "title": "Welcome to MirrorChyan",

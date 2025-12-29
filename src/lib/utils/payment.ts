@@ -1,18 +1,15 @@
 import { PlanInfoDetail } from "@/app/[locale]/checkout/Checkout";
 
 export type PaymentMethod = "alipay" | "wechatPay" | "afdian";
-export type YmPayType = "AlipayQRCode" | "WeChatQRCode" | "AlipayH5" | "WeChatH5";
 
-export const YmPayQrcode: Record<PaymentMethod, YmPayType> = {
-  alipay: "AlipayQRCode",
-  wechatPay: "WeChatQRCode",
-  afdian: "AlipayQRCode", // fallback, not used
-};
+// 用于 API 支付创建的支付方式（不包括 afdian，因为它有独立的处理流程）
+export type ApiPaymentMethod = Exclude<PaymentMethod, "afdian">;
 
 export interface PaymentParams {
   platform: string;
   planId: string;
   payType?: string;
+  payOnNewPage: boolean;
 }
 
 export function getDefaultPaymentMethod(planInfo: PlanInfoDetail): PaymentMethod {
@@ -20,61 +17,27 @@ export function getDefaultPaymentMethod(planInfo: PlanInfoDetail): PaymentMethod
 }
 
 export function buildPaymentParams(
-  paymentMethod: PaymentMethod,
+  paymentMethod: ApiPaymentMethod,
   planInfo: PlanInfoDetail,
-  usePayWithH5: boolean
+  canTryH5: boolean
 ): PaymentParams {
   let platform = "";
   let planId = "";
   let payType: string | undefined;
+  let payOnNewPage = false;
 
-  if (usePayWithH5) {
-    if (paymentMethod === "alipay") {
-      platform = "alipay";
-      planId = planInfo.alipay_id;
-      payType = "H5";
-    } else if (paymentMethod === "wechatPay") {
-      platform = "yimapay";
-      planId = planInfo.yimapay_id;
-      payType = "WeChatH5";
-    }
-  } else {
-    if (paymentMethod === "alipay") {
-      platform = "alipay";
-      planId = planInfo.alipay_id;
-    } else if (paymentMethod === "wechatPay") {
-      platform = "weixin";
-      planId = planInfo.weixin_id;
-    }
+  if (canTryH5 && paymentMethod === "alipay") {
+    platform = "alipay";
+    planId = planInfo.alipay_id;
+    payType = "H5";
+    payOnNewPage = true;
+  } else if (paymentMethod === "alipay") {
+    platform = "alipay";
+    planId = planInfo.alipay_id;
+  } else if (paymentMethod === "wechatPay") {
+    platform = "weixin";
+    planId = planInfo.weixin_id;
   }
 
-  return { platform, planId, payType };
-}
-
-export function buildFallbackParams(
-  paymentMethod: PaymentMethod,
-  planInfo: PlanInfoDetail,
-  usePayWithH5: boolean
-): PaymentParams {
-  let platform = "";
-  let planId = "";
-  let payType: string | undefined;
-
-  if (usePayWithH5) {
-    // H5 失败,降级为二维码
-    if (paymentMethod === "alipay") {
-      platform = "alipay";
-      planId = planInfo.alipay_id;
-    } else if (paymentMethod === "wechatPay") {
-      platform = "weixin";
-      planId = planInfo.weixin_id;
-    }
-  } else {
-    // 二维码失败,降级为 yimapay
-    platform = "yimapay";
-    planId = planInfo.yimapay_id;
-    payType = YmPayQrcode[paymentMethod];
-  }
-
-  return { platform, planId, payType };
+  return { platform, planId, payType, payOnNewPage };
 }

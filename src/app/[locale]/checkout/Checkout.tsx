@@ -19,7 +19,7 @@ import { usePlanInfo } from "@/hooks/checkout/usePlanInfo";
 import { usePriceCalculation } from "@/hooks/checkout/usePriceCalculation";
 import { useOrderPolling } from "@/hooks/checkout/useOrderPolling";
 import { usePaymentCreation } from "@/hooks/checkout/usePaymentCreation";
-import { getDefaultPaymentMethod, PaymentMethod } from "@/lib/utils/payment";
+import { ApiPaymentMethod, getDefaultPaymentMethod, PaymentMethod } from "@/lib/utils/payment";
 
 export interface CheckoutProps {
   planId: Array<string>;
@@ -62,9 +62,10 @@ export default function Checkout(params: CheckoutProps) {
   const { planInfo, loading: planInfoLoading, hasError } = usePlanInfo({ planId });
   const priceInfo = usePriceCalculation({ planInfo, rate: params.rate });
   const { orderInfo, isPolling } = useOrderPolling({ customOrderId, renewCdk });
+  // afdian 支付在 handlePurchase 中单独处理，不会调用 createPayment
   const { createPayment, loading: paymentLoading } = usePaymentCreation({
     planInfo,
-    paymentMethod,
+    paymentMethod: paymentMethod as ApiPaymentMethod,
     canTryH5,
     renewCdk,
   });

@@ -4,7 +4,7 @@ import { PlanInfoDetail } from "@/app/[locale]/checkout/Checkout";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { addToast } from "@heroui/toast";
 import { getSource } from "@/components/SourceTracker";
-import { buildPaymentParams, PaymentMethod } from "@/lib/utils/payment";
+import { ApiPaymentMethod, buildPaymentParams } from "@/lib/utils/payment";
 
 interface CreateOrderType {
   pay_url?: string;
@@ -16,7 +16,7 @@ interface CreateOrderType {
 
 interface UsePaymentCreationProps {
   planInfo: PlanInfoDetail | undefined;
-  paymentMethod: PaymentMethod;
+  paymentMethod: ApiPaymentMethod;
   canTryH5: boolean;
   renewCdk: string;
 }

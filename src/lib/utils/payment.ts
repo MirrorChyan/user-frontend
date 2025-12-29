@@ -2,6 +2,9 @@ import { PlanInfoDetail } from "@/app/[locale]/checkout/Checkout";
 
 export type PaymentMethod = "alipay" | "wechatPay" | "afdian";
 
+// 用于 API 支付创建的支付方式（不包括 afdian，因为它有独立的处理流程）
+export type ApiPaymentMethod = Exclude<PaymentMethod, "afdian">;
+
 export interface PaymentParams {
   platform: string;
   planId: string;
@@ -14,7 +17,7 @@ export function getDefaultPaymentMethod(planInfo: PlanInfoDetail): PaymentMethod
 }
 
 export function buildPaymentParams(
-  paymentMethod: PaymentMethod,
+  paymentMethod: ApiPaymentMethod,
   planInfo: PlanInfoDetail,
   canTryH5: boolean
 ): PaymentParams {

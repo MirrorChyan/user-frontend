@@ -75,7 +75,7 @@ export default function InAppBrowserWarningModal({
                 <button
                   onClick={onClose}
                   className="absolute right-4 top-4 rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
-                  aria-label={t("close")}
+                  aria-label={"close"}
                 >
                   <X className="h-5 w-5" />
                 </button>

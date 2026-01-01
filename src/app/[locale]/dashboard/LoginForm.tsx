@@ -71,12 +71,12 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
     <div className="flex min-h-screen flex-col items-center justify-center">
       <div className="min-w-[40vw] text-center">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-center text-4xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
+          <h2 className="text-center text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
             {t("title")}
           </h2>
 
           <form
-            className="mt-12 flex flex-col gap-5 text-balance text-lg leading-8 text-gray-600 dark:text-gray-400"
+            className="mt-12 flex flex-col gap-5 text-lg leading-8 text-balance text-gray-600 dark:text-gray-400"
             onSubmit={onSubmit}
           >
             <YearMonthPicker onChange={handleMonthChange} />

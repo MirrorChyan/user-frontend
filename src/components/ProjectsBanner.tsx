@@ -47,7 +47,7 @@ export default async function ProjectBanner() {
           "w-auto max-w-[90vw]"
         )}
       >
-        <div className="absolute -inset-x-4 -inset-y-4 bg-gradient-to-r from-gray-300 to-gray-400 opacity-0 blur-3xl transition-opacity duration-1000 dark:from-gray-400 dark:to-gray-600 sm:group-hover:opacity-20 dark:sm:group-hover:opacity-10" />
+        <div className="absolute -inset-x-4 -inset-y-4 bg-gradient-to-r from-gray-300 to-gray-400 opacity-0 blur-3xl transition-opacity duration-1000 sm:group-hover:opacity-20 dark:from-gray-400 dark:to-gray-600 dark:sm:group-hover:opacity-10" />
 
         <span className="relative z-10 flex items-center gap-2 transition-all duration-300">
           {t("viewProjects", { appCount })}
@@ -67,7 +67,7 @@ export default async function ProjectBanner() {
         </span>
 
         {/* 图片容器 */}
-        <div className="relative z-10 mr-0 flex items-center justify-center gap-1 transition-all duration-300 sm:ml-2 sm:mr-1 sm:justify-end sm:gap-0 sm:group-hover:gap-1">
+        <div className="relative z-10 mr-0 flex items-center justify-center gap-1 transition-all duration-300 sm:mr-1 sm:ml-2 sm:justify-end sm:gap-0 sm:group-hover:gap-1">
           {displayProjects.map(
             (project, index) =>
               project.image && (

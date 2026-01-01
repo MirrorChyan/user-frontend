@@ -24,7 +24,7 @@ export default function PaymentOption({
       onClick={onClick}
     >
       {recommend && (
-        <div className="absolute -right-2 -top-2 flex items-center rounded-full bg-emerald-500 px-2 py-1 text-xs text-white shadow-sm">
+        <div className="absolute -top-2 -right-2 flex items-center rounded-full bg-emerald-500 px-2 py-1 text-xs text-white shadow-sm">
           <ThumbsUp className="mr-1 h-3 w-3" />
           <span>{t("recommend")}</span>
         </div>
@@ -51,7 +51,7 @@ export default function PaymentOption({
         <span className="font-medium text-gray-900 dark:text-white">{name}</span>
       </div>
       <div
-        className={`ml-6 mr-3 flex h-5 w-5 items-center justify-center rounded-full border-2 ${checked ? "border-indigo-600" : "border-gray-300 dark:border-gray-600"}`}
+        className={`mr-3 ml-6 flex h-5 w-5 items-center justify-center rounded-full border-2 ${checked ? "border-indigo-600" : "border-gray-300 dark:border-gray-600"}`}
       >
         {checked && <div className="h-3 w-3 rounded-full bg-indigo-600"></div>}
       </div>

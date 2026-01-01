@@ -113,7 +113,7 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
           className="mb-4 flex items-center justify-between rounded-lg bg-gray-50 p-4 dark:bg-gray-700"
           onClick={copyToClipboard}
         >
-          <span className="cursor-pointer select-all font-mono text-indigo-600 dark:text-indigo-400">
+          <span className="cursor-pointer font-mono text-indigo-600 select-all dark:text-indigo-400">
             {info.cdk}
           </span>
           <button className="ml-2 text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400">
@@ -123,7 +123,7 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
         {info.expired_at && (
           <div className="mb-4">
             {showConfetti ? (
-              <span className="whitespace-pre-line text-sm text-gray-500 dark:text-gray-400">
+              <span className="text-sm whitespace-pre-line text-gray-500 dark:text-gray-400">
                 {t.rich("timeConfettiAfter", {
                   addDay: extraDays,
                   time: expiredTime.format("YYYY-MM-DD HH:mm:ss"),

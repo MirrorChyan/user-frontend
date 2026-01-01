@@ -51,7 +51,8 @@ export default function PaymentMethodSelector({
           </PaymentOption>
         )}
 
-        {false && planInfo.afdian_info && (
+        {/* TODO: 爱发电支付暂时禁用
+        {planInfo.afdian_info && (
           <PaymentOption
             checked={value === "afdian"}
             onClick={() => onChange("afdian")}
@@ -60,6 +61,7 @@ export default function PaymentMethodSelector({
             <PaymentIcon type="afdian" className="mr-3 h-10 w-10" />
           </PaymentOption>
         )}
+        */}
       </div>
     </div>
   );

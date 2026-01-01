@@ -53,7 +53,7 @@ export default function YearMonthPicker({ onChange }: PropsType) {
         defaultSelectedKeys={[currentYear.toString()]} // 设置默认选中
       >
         {years.map(year => (
-          <SelectItem key={year} value={year} textValue={String(year)}>
+          <SelectItem key={year} textValue={String(year)}>
             {year}
           </SelectItem>
         ))}
@@ -67,7 +67,7 @@ export default function YearMonthPicker({ onChange }: PropsType) {
         defaultSelectedKeys={[currentMonth]} // 设置默认选中
       >
         {months.map(month => (
-          <SelectItem key={month} value={month} textValue={String(month)}>
+          <SelectItem key={month} textValue={String(month)}>
             {month}
           </SelectItem>
         ))}

@@ -141,7 +141,7 @@ export default function SalesList({ listData, date }: PropsType) {
 
   return (
     <>
-      <Table isVirtualized isHeaderSticky className="h-full overflow-y-scroll p-0 scrollbar-hide">
+      <Table isVirtualized isHeaderSticky className="scrollbar-hide h-full overflow-y-scroll p-0">
         <TableHeader columns={columns} className="relative">
           {column => (
             <TableColumn key={column.key} className="relative text-center">
@@ -151,7 +151,7 @@ export default function SalesList({ listData, date }: PropsType) {
                   setSortBy(column.key);
                   setSortOrder(sortOrder === "asc" ? "desc" : "asc");
                 }}
-                className="absolute right-0 top-1 mr-2 mt-2 cursor-pointer transition hover:rotate-180 hover:text-gray-400 hover:shadow-sm"
+                className="absolute top-1 right-0 mt-2 mr-2 cursor-pointer transition hover:rotate-180 hover:text-gray-400 hover:shadow-sm"
               >
                 <UpDownIcon />
               </div>

@@ -18,7 +18,7 @@ export default function PaymentButton({ onClick, loading, disabled = false }: Pa
     >
       {loading ? (
         <>
-          <Spinner size="sm" className="-ml-1 mr-3 text-white" />
+          <Spinner size="sm" className="mr-3 -ml-1 text-white" />
           {t("processing")}
         </>
       ) : (

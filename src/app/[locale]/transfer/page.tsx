@@ -209,10 +209,10 @@ export default function Transmission() {
               </div>
 
               {/* 标题 */}
-              <h2 className="mb-2 text-center text-2xl font-bold tracking-tight text-gray-900 dark:text-white md:text-3xl">
+              <h2 className="mb-2 text-center text-2xl font-bold tracking-tight text-gray-900 md:text-3xl dark:text-white">
                 {t("title")}
               </h2>
-              <p className="mb-8 text-center text-sm text-gray-500 dark:text-gray-400 md:text-base">
+              <p className="mb-8 text-center text-sm text-gray-500 md:text-base dark:text-gray-400">
                 {t("description")}
               </p>
 

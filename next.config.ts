@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["@heroui/react", "lucide-react", "lodash", "date-fns"],
   },
   async rewrites() {
-    if (isProduction) {
+    if (!isProduction) {
       return [
         {
           source: "/api/:path*",

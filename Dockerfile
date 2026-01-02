@@ -1,4 +1,4 @@
-FROM oven/bun:1-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
@@ -20,4 +20,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["bun", "run", "server.js"]
+CMD ["node", "server.js"]

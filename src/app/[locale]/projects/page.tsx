@@ -46,7 +46,7 @@ export default async function ProjectsPage({
           <HomeButton className="absolute" />
           <div className="px-6 py-12 sm:px-6 sm:py-8 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl dark:text-white">
+              <h2 className="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
                 {t("title")}
               </h2>
               <p className="mx-auto mt-6 max-w-xl text-lg/8 text-pretty text-gray-600">

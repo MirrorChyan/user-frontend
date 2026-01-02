@@ -21,10 +21,8 @@ body {
 
 html {
   scrollbar-width: thin;
-  scrollbar-gutter: stable;
-  /* 为滚动条预留空间，防止抖动 */
-  overflow-y: auto;
-  /* 正常显示滚动条 */
+  overflow-y: scroll;
+  /* 始终显示滚动条，防止抖动（兼容不支持 scrollbar-gutter 的浏览器） */
 }
 
 .custom-scrollbar {

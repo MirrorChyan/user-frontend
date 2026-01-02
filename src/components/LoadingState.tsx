@@ -15,9 +15,7 @@ export default function LoadingState({ title, description }: LoadingStateProps) 
         <div className="px-6 py-24 sm:px-6 sm:py-32 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             {title && (
-              <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-                {title}
-              </h2>
+              <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h2>
             )}
             {description && (
               <div className="mt-6 text-lg/8 text-pretty text-gray-600">{description}</div>

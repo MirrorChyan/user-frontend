@@ -30,7 +30,7 @@ export default function GetKey() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="w-full max-w-[420px]"
       >
-        <div className="w-full overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 shadow-xl shadow-black/5 dark:border-gray-700 dark:bg-gray-800 md:p-10">
+        <div className="w-full overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 shadow-xl shadow-black/5 md:p-10 dark:border-gray-700 dark:bg-gray-800">
           {/* Header Section */}
           <div className="">
             <div className="relative mb-3 flex items-center">
@@ -55,7 +55,7 @@ export default function GetKey() {
             <div className="group relative">
               <label
                 htmlFor="key"
-                className="mb-2 mt-5 block text-xs font-medium uppercase tracking-wider text-gray-600 dark:text-white"
+                className="mt-5 mb-2 block text-xs font-medium tracking-wider text-gray-600 uppercase dark:text-white"
               >
                 {t("inputPlaceholder")}
               </label>
@@ -68,7 +68,7 @@ export default function GetKey() {
                 onChange={e => setInputOrderId(e.target.value)}
                 className={cn(
                   "block w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3.5 text-base text-gray-900 transition-all dark:border-gray-600 dark:bg-gray-700 dark:text-white",
-                  "placeholder:text-gray-500 focus:border-indigo-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:placeholder:text-gray-400 dark:focus:bg-gray-700"
+                  "placeholder:text-gray-500 focus:border-indigo-600 focus:bg-white focus:ring-1 focus:ring-indigo-600 focus:outline-none dark:placeholder:text-gray-400 dark:focus:bg-gray-700"
                 )}
               />
             </div>

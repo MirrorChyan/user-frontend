@@ -87,7 +87,7 @@ export default function ProjectCardView({ projects }: { projects: Array<ProjectC
                     >
                       {isLoadingAnimation ? (
                         <svg
-                          className="h-8 w-8 animate-spin text-primary-600 dark:text-primary-400"
+                          className="text-primary-600 dark:text-primary-400 h-8 w-8 animate-spin"
                           fill="none"
                           viewBox="0 0 24 24"
                         >

@@ -14,7 +14,7 @@ export default function Download() {
   useEffect(() => {
     const params = new URLSearchParams();
 
-    Array.from(searchParams.entries()).forEach(([key, value]) => {
+    searchParams.forEach((value: string, key: string) => {
       params.set(key, value);
     });
 

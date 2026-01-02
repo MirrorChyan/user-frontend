@@ -117,7 +117,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm" />
+          <div className="bg-opacity-25 fixed inset-0 bg-black backdrop-blur-sm" />
         </TransitionChild>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -135,7 +135,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
                 <div className="mb-6 flex items-center justify-between">
                   <DialogTitle
                     as="h3"
-                    className="text-xl font-medium leading-6 text-gray-900 dark:text-white"
+                    className="text-xl leading-6 font-medium text-gray-900 dark:text-white"
                   >
                     {t("orderInfo")}
                   </DialogTitle>
@@ -188,7 +188,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
                       className="mb-4 flex cursor-pointer items-center justify-between rounded-lg bg-gray-50 p-4 dark:bg-gray-700"
                       onClick={copyToClipboard}
                     >
-                      <span className="select-all font-mono text-indigo-600 dark:text-indigo-400">
+                      <span className="font-mono text-indigo-600 select-all dark:text-indigo-400">
                         {orderInfo.cdk}
                       </span>
                       <button className="ml-2 text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400">

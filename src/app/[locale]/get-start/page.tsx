@@ -38,10 +38,10 @@ export default async function GetStart({
         <div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="px-6 py-12 sm:px-6 sm:py-8 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-balance text-4xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
+              <h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl dark:text-white">
                 {t("title")}
               </h2>
-              <p className="mx-auto mt-6 max-w-xl text-pretty text-lg/8 text-gray-600">
+              <p className="mx-auto mt-6 max-w-xl text-lg/8 text-pretty text-gray-600">
                 {t.rich("description", {
                   br: () => <br />,
                 })}
@@ -81,6 +81,7 @@ export default async function GetStart({
               href="https://github.com/MirrorChyan/docs"
               target="_blank"
               className="text-sm/6 font-semibold text-gray-900 dark:text-white"
+              rel="noreferrer"
             >
               {t("apiDoc")}
               <span aria-hidden="true">&nbsp;</span>
@@ -89,6 +90,7 @@ export default async function GetStart({
               href="https://github.com/MirrorChyan/user-frontend"
               target="_blank"
               className="text-sm/6 font-semibold text-gray-900 dark:text-white"
+              rel="noreferrer"
             >
               {t("openSource")}
               <span aria-hidden="true">&nbsp;</span>

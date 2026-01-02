@@ -319,12 +319,12 @@ export default function ProjectCard(props: ProjectCardProps) {
   return (
     <div
       className={
-        "group relative transform cursor-pointer overflow-hidden rounded-lg border border-gray-100 bg-gradient-to-br from-white to-gray-50 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-gray-600 dark:from-gray-800 dark:to-gray-900 dark:hover:shadow-primary-500/30"
+        "group dark:hover:shadow-primary-500/30 relative transform cursor-pointer overflow-hidden rounded-lg border border-gray-100 bg-gradient-to-br from-white to-gray-50 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-gray-600 dark:from-gray-800 dark:to-gray-900"
       }
       onClick={openModal}
     >
       {url && (
-        <div className="absolute right-2 top-2 z-10">
+        <div className="absolute top-2 right-2 z-10">
           <Tooltip
             content={<span className="px-1 py-2">{p("openProjectHomepage")}</span>}
             showArrow={true}
@@ -337,7 +337,7 @@ export default function ProjectCard(props: ProjectCardProps) {
               onClick={e => e.stopPropagation()}
               className="flex h-8 w-8 items-center justify-center transition-colors duration-200"
             >
-              <ArrowTopRightOnSquareIcon className="h-4 w-4 text-gray-600 group-hover:text-primary-600 dark:text-gray-300 dark:group-hover:text-primary-400" />
+              <ArrowTopRightOnSquareIcon className="group-hover:text-primary-600 dark:group-hover:text-primary-400 h-4 w-4 text-gray-600 dark:text-gray-300" />
             </a>
           </Tooltip>
         </div>
@@ -367,7 +367,7 @@ export default function ProjectCard(props: ProjectCardProps) {
           </div>
         )}
         <div className="flex flex-col justify-center">
-          <h3 className="text-lg font-semibold text-gray-900 transition-colors duration-300 group-hover:text-primary-600 dark:text-white dark:group-hover:text-primary-400">
+          <h3 className="group-hover:text-primary-600 dark:group-hover:text-primary-400 text-lg font-semibold text-gray-900 transition-colors duration-300 dark:text-white">
             {name}
           </h3>
         </div>
@@ -407,7 +407,7 @@ export default function ProjectCard(props: ProjectCardProps) {
                       >
                         {isLoadingAnimation ? (
                           <svg
-                            className="h-8 w-8 animate-spin text-primary-600 dark:text-primary-400"
+                            className="text-primary-600 dark:text-primary-400 h-8 w-8 animate-spin"
                             fill="none"
                             viewBox="0 0 24 24"
                           >
@@ -557,7 +557,7 @@ export default function ProjectCard(props: ProjectCardProps) {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={e => e.stopPropagation()}
-                            className="inline-flex items-center gap-1 text-sm text-primary-600 transition-colors hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+                            className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 inline-flex items-center gap-1 text-sm transition-colors"
                           >
                             <ArrowTopRightOnSquareIcon className="h-4 w-4" />
                             {p("openProjectHomepage")}
@@ -577,9 +577,7 @@ export default function ProjectCard(props: ProjectCardProps) {
                         selectedKeys={[channel]}
                       >
                         {availableChannel.map(channelOption => (
-                          <SelectItem key={channelOption} value={channelOption}>
-                            {t(channelOption)}
-                          </SelectItem>
+                          <SelectItem key={channelOption}>{t(channelOption)}</SelectItem>
                         ))}
                       </Select>
                     </div>

@@ -46,7 +46,7 @@ export default function WaitForPayModal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm" />
+          <div className="bg-opacity-25 fixed inset-0 bg-black backdrop-blur-sm" />
         </TransitionChild>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -64,7 +64,7 @@ export default function WaitForPayModal({
                 <div className="mb-6 flex items-center justify-between">
                   <DialogTitle
                     as="h3"
-                    className="text-xl font-medium leading-6 text-gray-900 dark:text-white"
+                    className="text-xl leading-6 font-medium text-gray-900 dark:text-white"
                   >
                     {paymentType}
                   </DialogTitle>
@@ -83,7 +83,7 @@ export default function WaitForPayModal({
                 {isLoading ? (
                   <>
                     <div className="flex flex-col items-center justify-center py-10">
-                      <div className="mb-4 h-16 w-16 animate-spin rounded-full border-b-2 border-t-2 border-pink-500"></div>
+                      <div className="mb-4 h-16 w-16 animate-spin rounded-full border-t-2 border-b-2 border-pink-500"></div>
                       <p className="text-base text-gray-500 dark:text-gray-400">
                         {orderT("ProcessingOrder")}
                       </p>

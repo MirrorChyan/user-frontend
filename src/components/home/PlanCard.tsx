@@ -68,7 +68,7 @@ export default function PlanCard({ plan, C2URate }: PropsType) {
         className={cn(
           plan.popular
             ? "bg-indigo-600 text-white shadow-sm hover:bg-indigo-500"
-            : "text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300 dark:text-white",
+            : "text-indigo-600 ring-1 ring-indigo-200 ring-inset hover:ring-indigo-300 dark:text-white",
           "mt-6 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         )}
       >

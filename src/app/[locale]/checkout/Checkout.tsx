@@ -152,7 +152,7 @@ export default function Checkout(params: CheckoutProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white dark:from-gray-900 dark:to-gray-800">
-      <div className="mx-auto max-w-4xl px-4 pb-16 pt-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl px-4 pt-10 pb-16 sm:px-6 lg:px-8">
         {/* 返回按钮 */}
         <div className="mb-8">
           <button

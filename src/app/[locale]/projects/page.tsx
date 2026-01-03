@@ -7,6 +7,7 @@ import ProjectCardView from "@/components/ProjectCardView";
 import HomeButton from "@/components/HomeButton";
 import SourceTracker from "@/components/SourceTracker";
 import OrderInfoModalWrapper from "@/components/OrderInfoModalWrapper";
+import DownloadModalWrapper from "@/components/DownloadModalWrapper";
 import { Suspense } from "react";
 import { Divider } from "@heroui/divider";
 
@@ -40,6 +41,7 @@ export default async function ProjectsPage({
       <SourceTracker source={source} />
       <Suspense fallback={null}>
         <OrderInfoModalWrapper />
+        <DownloadModalWrapper />
       </Suspense>
       <BackgroundLines className="min-h-screen">
         <div className="container mx-auto px-3 py-10">

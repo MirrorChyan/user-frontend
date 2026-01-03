@@ -49,7 +49,7 @@ export default async function ProjectsPage({
               <h2 className="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
                 {t("title")}
               </h2>
-              <p className="mx-auto mt-6 max-w-xl text-lg/8 text-pretty text-gray-600">
+              <p className="mx-auto mt-6 max-w-xl text-lg/8 text-gray-600">
                 {t.rich("description", {
                   br: () => <br />,
                 })}

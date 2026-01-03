@@ -13,16 +13,22 @@
   }
 }
 
+html {
+  scrollbar-width: thin;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
-}
-
-html {
-  scrollbar-width: thin;
   overflow-y: scroll;
   /* 始终显示滚动条，防止抖动（兼容不支持 scrollbar-gutter 的浏览器） */
+}
+
+/* 渐变遮罩工具类（兼容需要 -webkit- 前缀的旧版浏览器） */
+.radial-mask-fade {
+  -webkit-mask-image: radial-gradient(900px at center, transparent 30%, white);
+  mask-image: radial-gradient(900px at center, transparent 30%, white);
 }
 
 .custom-scrollbar {

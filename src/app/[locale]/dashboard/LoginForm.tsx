@@ -76,7 +76,7 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
           </h2>
 
           <form
-            className="mt-12 flex flex-col gap-5 text-lg leading-8 text-balance text-gray-600 dark:text-gray-400"
+            className="mt-12 flex flex-col gap-5 text-lg leading-8 text-gray-600 dark:text-gray-400"
             onSubmit={onSubmit}
           >
             <YearMonthPicker onChange={handleMonthChange} />

@@ -20,9 +20,11 @@ export default function Transmission() {
   const [fromCdk, setFromCdk] = useState("");
   const [fromCdkDescription, setFromCdkDescription] = useState("");
   const [fromCdkValid, setFromCdkValid] = useState(false);
+  const [fromCdkHasSameError, setFromCdkHasSameError] = useState(false);
   const [toCdk, setToCdk] = useState("");
   const [toCdkDescription, setToCdkDescription] = useState("");
   const [toCdkValid, setToCdkValid] = useState(false);
+  const [toCdkHasSameError, setToCdkHasSameError] = useState(false);
   const [showOrderId, setShowOrderId] = useState("");
   const [transfering, setTransfering] = useState(false);
 
@@ -72,6 +74,7 @@ export default function Transmission() {
     if (cdk === toCdkRef.current) {
       setFromCdkDescription(t("sameCdk"));
       setFromCdkValid(false);
+      setFromCdkHasSameError(true);
       return;
     }
 
@@ -107,6 +110,7 @@ export default function Transmission() {
     if (cdk === fromCdkRef.current) {
       setToCdkDescription(t("sameCdk"));
       setToCdkValid(false);
+      setToCdkHasSameError(true);
       return;
     }
 
@@ -136,6 +140,14 @@ export default function Transmission() {
     setFromCdk(value);
     setFromCdkDescription("");
     setFromCdkValid(false);
+    setFromCdkHasSameError(false);
+    // 如果目标CDK之前因为"相同CDK"而报错，现在来源改变了需要重新验证
+    if (toCdkHasSameError && toCdkRef.current) {
+      setToCdkDescription("");
+      setToCdkValid(false);
+      setToCdkHasSameError(false);
+      requestToCdkDebounced(toCdkRef.current);
+    }
     requestFromCdkDebounced(value);
   }
 
@@ -144,6 +156,14 @@ export default function Transmission() {
     setToCdk(value);
     setToCdkDescription("");
     setToCdkValid(false);
+    setToCdkHasSameError(false);
+    // 如果来源CDK之前因为"相同CDK"而报错，现在目标改变了需要重新验证
+    if (fromCdkHasSameError && fromCdkRef.current) {
+      setFromCdkDescription("");
+      setFromCdkValid(false);
+      setFromCdkHasSameError(false);
+      requestFromCdkDebounced(fromCdkRef.current);
+    }
     requestToCdkDebounced(value);
   }
 

@@ -7,6 +7,7 @@ import ProjectCardView from "@/components/ProjectCardView";
 import HomeButton from "@/components/HomeButton";
 import SourceTracker from "@/components/SourceTracker";
 import OrderInfoModalWrapper from "@/components/OrderInfoModalWrapper";
+import DownloadModalWrapper from "@/components/DownloadModalWrapper";
 import { Suspense } from "react";
 import { Divider } from "@heroui/divider";
 
@@ -40,16 +41,17 @@ export default async function ProjectsPage({
       <SourceTracker source={source} />
       <Suspense fallback={null}>
         <OrderInfoModalWrapper />
+        <DownloadModalWrapper />
       </Suspense>
       <BackgroundLines className="min-h-screen">
         <div className="container mx-auto px-3 py-10">
           <HomeButton className="absolute" />
           <div className="px-6 py-12 sm:px-6 sm:py-8 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl dark:text-white">
+              <h2 className="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
                 {t("title")}
               </h2>
-              <p className="mx-auto mt-6 max-w-xl text-lg/8 text-pretty text-gray-600">
+              <p className="mx-auto mt-6 max-w-xl text-lg/8 text-gray-600">
                 {t.rich("description", {
                   br: () => <br />,
                 })}

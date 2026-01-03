@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { Button, Modal, ModalBody, ModalContent, ModalFooter } from "@heroui/react";
@@ -12,7 +12,6 @@ export default function DownloadModalWrapper() {
   const download = searchParams.get("download");
   const t = useTranslations("Download");
   const common = useTranslations("Common");
-  const locale = useLocale();
 
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [isLoadingAnimation, setIsLoadingAnimation] = useState(false);
@@ -34,9 +33,10 @@ export default function DownloadModalWrapper() {
 
       const s = new URLSearchParams(window.location.search);
       s.delete("download");
-      window.history.replaceState(null, "", `/${locale}/projects?${s}`);
+      const newUrl = s.toString() ? `${window.location.pathname}?${s}` : window.location.pathname;
+      window.history.replaceState(null, "", newUrl);
     }
-  }, [download, locale]);
+  }, [download]);
 
   // 单独处理加载动画的 timer，避免 React 严格模式下 cleanup 导致 timer 被清除
   useEffect(() => {
@@ -166,8 +166,9 @@ export default function DownloadModalWrapper() {
                       />
                     </svg>
                   </div>
-                  <a
-                    className="group cursor-pointer"
+                  <button
+                    type="button"
+                    className="group cursor-pointer text-left"
                     onClick={() => {
                       getGroupUrl().then(url => {
                         window.open(url, "_blank");
@@ -184,7 +185,7 @@ export default function DownloadModalWrapper() {
                         </ul>
                       </div>
                     </div>
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>

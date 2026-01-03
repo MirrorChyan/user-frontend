@@ -54,7 +54,7 @@ export default function HtmlFormPayModal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="bg-opacity-25 fixed inset-0 bg-black backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-black/25 backdrop-blur-sm" />
         </TransitionChild>
 
         <div className="fixed inset-0 overflow-y-auto">

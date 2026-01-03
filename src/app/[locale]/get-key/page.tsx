@@ -68,7 +68,7 @@ export default function GetKey() {
                 onChange={e => setInputOrderId(e.target.value)}
                 className={cn(
                   "block w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3.5 text-base text-gray-900 transition-all dark:border-gray-600 dark:bg-gray-700 dark:text-white",
-                  "placeholder:text-gray-500 focus:border-indigo-600 focus:bg-white focus:ring-1 focus:ring-indigo-600 focus:outline-none dark:placeholder:text-gray-400 dark:focus:bg-gray-700"
+                  "placeholder:text-gray-500 focus:border-indigo-600 focus:bg-white focus:shadow-[0_0_0_1px_#4f46e5] focus:outline-none dark:placeholder:text-gray-400 dark:focus:bg-gray-700"
                 )}
               />
             </div>

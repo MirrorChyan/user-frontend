@@ -24,7 +24,7 @@ export default function PlanCard({ plan, C2URate }: PropsType) {
     <div
       key={plan.plan_id}
       className={cn(
-        plan.popular ? "ring-2 ring-indigo-600" : "ring-1 ring-gray-200",
+        plan.popular ? "border-2 border-indigo-600" : "border border-gray-200 dark:border-gray-700",
         "flex flex-col rounded-3xl bg-white p-8 shadow-sm dark:bg-white/5"
       )}
     >
@@ -68,7 +68,7 @@ export default function PlanCard({ plan, C2URate }: PropsType) {
         className={cn(
           plan.popular
             ? "bg-indigo-600 text-white shadow-sm hover:bg-indigo-500"
-            : "text-indigo-600 ring-1 ring-indigo-200 ring-inset hover:ring-indigo-300 dark:text-white",
+            : "border border-indigo-200 text-indigo-600 hover:border-indigo-300 dark:border-indigo-400 dark:text-white dark:hover:border-indigo-300",
           "mt-6 block rounded-md px-3 py-2 text-center text-sm/6 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         )}
       >

@@ -3,9 +3,9 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - '**'
+      - "**"
     tags:
-      - 'v*'
+      - "v*"
   pull_request:
   workflow_dispatch:
 
@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -61,3 +61,5 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

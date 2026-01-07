@@ -37,13 +37,14 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
+        <meta name="renderer" content="webkit" />
         <Script strategy="afterInteractive" id="baidu-analytics">
           {`
 var _hmt = _hmt || [];
 (function() {
   var hm = document.createElement("script");
   hm.src = "https://hm.baidu.com/hm.js?a4f105236f1f9b2f14ad1653d2a45723";
-  var s = document.getElementsByTagName("script")[0]; 
+  var s = document.getElementsByTagName("script")[0];
   s.parentNode.insertBefore(hm, s);
 })();`}
         </Script>

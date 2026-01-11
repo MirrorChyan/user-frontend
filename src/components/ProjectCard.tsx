@@ -387,6 +387,7 @@ export default function ProjectCard(props: ProjectCardProps) {
         size="2xl"
         placement="center"
         scrollBehavior="inside"
+        shouldBlockScroll={false}
       >
         <ModalContent>
           <>

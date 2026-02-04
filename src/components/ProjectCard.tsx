@@ -92,8 +92,19 @@ export default function ProjectCard(props: ProjectCardProps) {
 
   const supportOptions = useMemo(() => {
     return support.map(item => {
-      const parts = item.split("-");
+      // 检查是否包含 /，例如 OtherRid/stable-windows-x64
+      let rid: string | null = null;
+      let platformPart = item;
+
+      if (item.includes("/")) {
+        const slashIndex = item.indexOf("/");
+        rid = item.substring(0, slashIndex);
+        platformPart = item.substring(slashIndex + 1);
+      }
+
+      const parts = platformPart.split("-");
       return {
+        rid, // 新的 rid，如果没有则为 null，使用原 resource
         channel: parts[0],
         os: parts[1],
         arch: parts[2],
@@ -190,7 +201,17 @@ export default function ProjectCard(props: ProjectCardProps) {
       type: type,
     });
     try {
-      const dl = `${CLIENT_BACKEND}/api/resources/${resource}/latest?os=${os}&arch=${arch}&channel=${channel}&cdk=${cdk}&user_agent=mirrorchyan_web`;
+      // 根据当前选择的 channel、os、arch 找到对应的 supportOption，获取其 rid
+      const currentOption = supportOptions.find(
+        item =>
+          item.channel === channel &&
+          (item.os === os || item.os === "any") &&
+          (item.arch === arch || item.arch === "any")
+      );
+      // 如果 supportOption 中有自定义的 rid，使用它；否则使用原始的 resource
+      const targetResource = currentOption?.rid || resource;
+
+      const dl = `${CLIENT_BACKEND}/api/resources/${targetResource}/latest?os=${os}&arch=${arch}&channel=${channel}&cdk=${cdk}&user_agent=mirrorchyan_web`;
       const response = await fetch(dl);
 
       const { code, msg, data } = await response.json();

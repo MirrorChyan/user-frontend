@@ -59,10 +59,16 @@ export default function SalesList({ listData, date }: PropsType) {
       30,
       31,
     ];
-    const currentMonth = new Date().getMonth() + 1;
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
 
     const dates: number[] = [];
-    const lastDay = currentMonth === targetMonth ? new Date().getDate() : month[targetMonth - 1];
+    // 只有当年份和月份都匹配当前时间时，才使用当前日期作为最后一天
+    const lastDay =
+      currentYear === targetYear && currentMonth === targetMonth
+        ? now.getDate()
+        : month[targetMonth - 1];
 
     for (let i = 1; i <= lastDay; i++) {
       dates.push(i);

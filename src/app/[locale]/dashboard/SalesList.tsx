@@ -45,20 +45,9 @@ export default function SalesList({ listData, date }: PropsType) {
   const generateDateRange = () => {
     const targetYear = Number(date.slice(0, 4));
     const targetMonth = Number(date.slice(4));
-    const month = [
-      31,
-      (targetYear % 4 === 0 && targetYear % 100 !== 0) || targetYear % 400 === 0 ? 29 : 28,
-      31,
-      30,
-      31,
-      30,
-      31,
-      31,
-      30,
-      31,
-      30,
-      31,
-    ];
+    // 使用 Date 对象计算该月的天数（月份传入下一个月，日期传0会回到上个月最后一天）
+    const daysInMonth = new Date(targetYear, targetMonth, 0).getDate();
+
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
@@ -68,7 +57,7 @@ export default function SalesList({ listData, date }: PropsType) {
     const lastDay =
       currentYear === targetYear && currentMonth === targetMonth
         ? now.getDate()
-        : month[targetMonth - 1];
+        : daysInMonth;
 
     for (let i = 1; i <= lastDay; i++) {
       dates.push(i);

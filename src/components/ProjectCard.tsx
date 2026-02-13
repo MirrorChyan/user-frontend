@@ -147,19 +147,44 @@ export default function ProjectCard(props: ProjectCardProps) {
     return !(value.length === 0 || (value.length === 1 && value[0].value === "any"));
   };
 
+  const updateUrlParams = (newChannel: string, newOs: string, newArch: string) => {
+    const s = new URLSearchParams(window.location.search);
+    if (s.has("rid")) {
+      if (newChannel) {
+        s.set("channel", newChannel);
+      } else {
+        s.delete("channel");
+      }
+      if (newOs) {
+        s.set("os", newOs);
+      } else {
+        s.delete("os");
+      }
+      if (newArch) {
+        s.set("arch", newArch);
+      } else {
+        s.delete("arch");
+      }
+      window.history.replaceState(null, "", `/${locale}/projects?${s}`);
+    }
+  };
+
   const handleChannelChange = (value: any) => {
     setChannel(value);
     setOs("");
     setArch("");
+    updateUrlParams(value, "", "");
   };
 
   const handleOSChange = (value: any) => {
     setOs(value);
     setArch("");
+    updateUrlParams(channel, value, "");
   };
 
   const handleArchChange = (value: any) => {
     setArch(value);
+    updateUrlParams(channel, os, value);
   };
 
   // 互斥的状态

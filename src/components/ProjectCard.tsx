@@ -77,16 +77,16 @@ export default function ProjectCard(props: ProjectCardProps) {
 
   useLayoutEffect(() => {
     if (showModal) {
-      if (osParam !== null && osParam !== undefined) {
+      if (osParam != null) {
         setOs(osParam);
       }
-      if (archParam !== null && archParam !== undefined) {
+      if (archParam != null) {
         setArch(archParam);
-      } else if (osParam !== null && osParam !== undefined) {
+      } else if (osParam != null) {
         // URL 中指定了 os 但没有 arch 参数时，清空 arch 以避免残留不匹配的默认值
         setArch("");
       }
-      if (channelParam !== null && channelParam !== undefined) {
+      if (channelParam != null) {
         setChannel(channelParam);
       }
       onOpen();
@@ -148,6 +148,7 @@ export default function ProjectCard(props: ProjectCardProps) {
   };
 
   const updateUrlParams = (newChannel: string, newOs: string, newArch: string) => {
+    if (typeof window === "undefined") return;
     const s = new URLSearchParams(window.location.search);
     if (s.has("rid")) {
       if (newChannel) {
@@ -165,7 +166,7 @@ export default function ProjectCard(props: ProjectCardProps) {
       } else {
         s.delete("arch");
       }
-      window.history.replaceState(null, "", `/${locale}/projects?${s}`);
+      window.history.replaceState(null, "", `${window.location.pathname}?${s}`);
     }
   };
 

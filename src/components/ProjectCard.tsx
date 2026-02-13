@@ -77,13 +77,13 @@ export default function ProjectCard(props: ProjectCardProps) {
 
   useLayoutEffect(() => {
     if (showModal) {
-      if (osParam) {
+      if (osParam !== null && osParam !== undefined) {
         setOs(osParam);
       }
-      if (archParam) {
+      if (archParam !== null && archParam !== undefined) {
         setArch(archParam);
       }
-      if (channelParam) {
+      if (channelParam !== null && channelParam !== undefined) {
         setChannel(channelParam);
       }
       onOpen();

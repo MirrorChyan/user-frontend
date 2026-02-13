@@ -437,6 +437,10 @@ export default function ProjectCard(props: ProjectCardProps) {
         placement="center"
         scrollBehavior="inside"
         shouldBlockScroll={false}
+        classNames={{
+          wrapper: "sm:items-center",
+          base: "max-sm:my-2 max-sm:mx-2 max-sm:max-h-[calc(100vh-1rem)] max-sm:h-[calc(100vh-1rem)]",
+        }}
       >
         <ModalContent>
           <>
@@ -616,7 +620,7 @@ export default function ProjectCard(props: ProjectCardProps) {
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-row gap-4">
+                  <div className="flex flex-col gap-4 sm:flex-row">
                     <div className="flex-1">
                       <Select
                         label={t("channel")}

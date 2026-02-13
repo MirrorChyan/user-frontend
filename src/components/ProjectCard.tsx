@@ -77,13 +77,16 @@ export default function ProjectCard(props: ProjectCardProps) {
 
   useLayoutEffect(() => {
     if (showModal) {
-      if (osParam) {
+      if (osParam != null) {
         setOs(osParam);
       }
-      if (archParam) {
+      if (archParam != null) {
         setArch(archParam);
+      } else if (osParam != null) {
+        // URL 中指定了 os 但没有 arch 参数时，清空 arch 以避免残留不匹配的默认值
+        setArch("");
       }
-      if (channelParam) {
+      if (channelParam != null) {
         setChannel(channelParam);
       }
       onOpen();
@@ -144,19 +147,45 @@ export default function ProjectCard(props: ProjectCardProps) {
     return !(value.length === 0 || (value.length === 1 && value[0].value === "any"));
   };
 
+  const updateUrlParams = (newChannel: string, newOs: string, newArch: string) => {
+    if (typeof window === "undefined") return;
+    const s = new URLSearchParams(window.location.search);
+    if (s.has("rid")) {
+      if (newChannel) {
+        s.set("channel", newChannel);
+      } else {
+        s.delete("channel");
+      }
+      if (newOs) {
+        s.set("os", newOs);
+      } else {
+        s.delete("os");
+      }
+      if (newArch) {
+        s.set("arch", newArch);
+      } else {
+        s.delete("arch");
+      }
+      window.history.replaceState(null, "", `${window.location.pathname}?${s}`);
+    }
+  };
+
   const handleChannelChange = (value: any) => {
     setChannel(value);
     setOs("");
     setArch("");
+    updateUrlParams(value, "", "");
   };
 
   const handleOSChange = (value: any) => {
     setOs(value);
     setArch("");
+    updateUrlParams(channel, value, "");
   };
 
   const handleArchChange = (value: any) => {
     setArch(value);
+    updateUrlParams(channel, os, value);
   };
 
   // 互斥的状态
@@ -409,6 +438,10 @@ export default function ProjectCard(props: ProjectCardProps) {
         placement="center"
         scrollBehavior="inside"
         shouldBlockScroll={false}
+        classNames={{
+          wrapper: "sm:items-center",
+          base: "max-sm:my-2 max-sm:mx-2 max-sm:max-h-[calc(100vh-1rem)] max-sm:h-[calc(100vh-1rem)]",
+        }}
       >
         <ModalContent>
           <>
@@ -588,7 +621,7 @@ export default function ProjectCard(props: ProjectCardProps) {
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-row gap-4">
+                  <div className="flex flex-col gap-4 sm:flex-row">
                     <div className="flex-1">
                       <Select
                         label={t("channel")}

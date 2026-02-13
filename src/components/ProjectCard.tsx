@@ -82,6 +82,9 @@ export default function ProjectCard(props: ProjectCardProps) {
       }
       if (archParam !== null && archParam !== undefined) {
         setArch(archParam);
+      } else if (osParam !== null && osParam !== undefined) {
+        // URL 中指定了 os 但没有 arch 参数时，清空 arch 以避免残留不匹配的默认值
+        setArch("");
       }
       if (channelParam !== null && channelParam !== undefined) {
         setChannel(channelParam);

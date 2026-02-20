@@ -6,8 +6,9 @@ export interface HtmlFormPayPageProps {
 }
 
 export default function HtmlFormPayPage({ paymentHtml }: HtmlFormPayPageProps) {
-  const [imageSrc, setImageSrc] = useState<string>("");
+  const [ready, setReady] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const blob = new Blob([paymentHtml], { type: "text/html" });
@@ -42,9 +43,18 @@ export default function HtmlFormPayPage({ paymentHtml }: HtmlFormPayPageProps) {
           windowWidth: 200,
           windowHeight: 200,
         });
-        setImageSrc(canvas.toDataURL("image/png"));
+
+        const container = canvasContainerRef.current;
+        if (container) {
+          canvas.style.width = "100%";
+          canvas.style.height = "100%";
+          canvas.style.display = "block";
+          container.innerHTML = "";
+          container.appendChild(canvas);
+          setReady(true);
+        }
       } catch {
-        // 截图失败时回退显示 iframe
+        // 截图失败时保持 loading 状态
       }
     };
 
@@ -71,14 +81,12 @@ export default function HtmlFormPayPage({ paymentHtml }: HtmlFormPayPageProps) {
           visibility: "hidden",
         }}
       />
-      {imageSrc ? (
-        <img
-          src={imageSrc}
-          alt="支付二维码"
-          style={{ display: "block", width: 240, height: 240 }}
-        />
-      ) : (
-        <div className="flex h-[240px] w-[240px] items-center justify-center rounded-lg bg-gray-100 p-4 dark:bg-gray-700">
+      <div
+        ref={canvasContainerRef}
+        className={`box-border h-60 w-60 p-1 ${ready ? "" : "hidden"}`}
+      />
+      {!ready && (
+        <div className="flex h-60 w-60 items-center justify-center rounded-lg bg-gray-100 p-4 dark:bg-gray-700">
           <div className="flex flex-col items-center">
             <svg
               className="mb-2 h-16 w-16 animate-spin text-indigo-600"

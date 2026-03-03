@@ -236,6 +236,7 @@
     "token": "Token",
     "tooltip": "Query through UserAgent",
     "confirm": "Confirm",
+    "requiredFields": "Please enter RID and Token",
     "error": "Please confirm that you have entered the correct content",
     "dashboardTitle": "MirrorChyan x {rid} {date} Sales Dashboard",
     "export": "Export CSV file",

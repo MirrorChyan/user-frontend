@@ -18,23 +18,29 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
 
   // Form state
   const [month, setMonth] = useState<string>("");
-  const [rid, setRid] = useState<string>("");
-  const [token, setToken] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isUa, setIsUa] = useState<boolean>(false);
 
   // Event handlers
   const handleMonthChange = (value: string) => setMonth(value);
-  const handleRidChange = (e: React.ChangeEvent<HTMLInputElement>) => setRid(e.target.value.trim());
-  const handleTokenChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setToken(e.target.value.trim());
   const toggleUa = () => setIsUa(!isUa);
 
   // Form submission
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!rid || !token) return;
+    const formData = new FormData(e.currentTarget);
+    const rid = (formData.get("rid") as string)?.trim();
+    const token = (formData.get("token") as string)?.trim();
+
+    if (!rid || !token) {
+      closeAll();
+      addToast({
+        description: t("requiredFields"),
+        color: "warning",
+      });
+      return;
+    }
 
     try {
       setIsLoading(true);
@@ -78,12 +84,13 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
           <form
             className="mt-12 flex flex-col gap-5 text-lg leading-8 text-gray-600 dark:text-gray-400"
             onSubmit={onSubmit}
+            autoComplete="off"
           >
             <YearMonthPicker onChange={handleMonthChange} />
 
             <div className="flex h-14 items-center gap-2">
               <div className="flex-grow">
-                <Input label={t("rid")} name="rid" type="text" onChange={handleRidChange} />
+                <Input label={t("rid")} name="rid" type="text" />
               </div>
 
               <Tooltip content={t("tooltip")}>
@@ -101,7 +108,7 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
               </Tooltip>
             </div>
 
-            <Input label={t("token")} name="token" type="password" onChange={handleTokenChange} />
+            <Input label={t("token")} name="token" type="password" autoComplete="off" />
 
             <Button
               type="submit"

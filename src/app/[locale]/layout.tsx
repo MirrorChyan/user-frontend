@@ -10,6 +10,7 @@ import { routing } from "@/i18n/routing";
 import { Providers } from "./provider";
 
 import "@/app/globals.css";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export const metadata: Metadata = {
   title: "Mirror酱",
@@ -51,7 +52,10 @@ var _hmt = _hmt || [];
       </head>
       <body>
         <Providers>
-          <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+          <NextIntlClientProvider messages={messages}>
+            <LanguageSwitcher />
+            {children}
+          </NextIntlClientProvider>
         </Providers>
       </body>
     </html>

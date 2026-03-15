@@ -437,7 +437,6 @@ export default function ProjectCard(props: ProjectCardProps) {
         size="2xl"
         placement="center"
         scrollBehavior="inside"
-        shouldBlockScroll={false}
         classNames={{
           wrapper: "sm:items-center",
           base: "max-sm:my-2 max-sm:mx-2 max-sm:max-h-[calc(100vh-1rem)] max-sm:h-[calc(100vh-1rem)]",

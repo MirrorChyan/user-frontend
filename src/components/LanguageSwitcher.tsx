@@ -39,7 +39,7 @@ export default function LanguageSwitcher() {
       onClick={toggleLocale}
       disabled={isPending}
       aria-label="Switch language"
-      className="fixed top-4 right-4 z-50 flex h-8 items-center gap-1 rounded-full border border-gray-200/60 bg-white/70 px-1 shadow-lg backdrop-blur-md transition-all hover:shadow-xl dark:border-gray-700/60 dark:bg-gray-900/70"
+      className="fixed top-4 right-4 z-50 flex h-8 items-center gap-1 rounded-full border border-gray-200/60 bg-white/70 px-1 backdrop-blur-md transition-all dark:border-gray-700/60 dark:bg-gray-900/70"
     >
       {isPending ? (
         <span className="flex items-center px-2">
@@ -63,14 +63,18 @@ export default function LanguageSwitcher() {
         <>
           <span
             className={`rounded-full px-2 py-0.5 text-xs font-semibold transition-all ${
-              isZh ? "bg-primary-500 text-white shadow-sm" : "text-gray-400 dark:text-gray-500"
+              isZh
+                ? "bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300"
+                : "text-gray-400 dark:text-gray-500"
             }`}
           >
             中
           </span>
           <span
             className={`rounded-full px-2 py-0.5 text-xs font-semibold transition-all ${
-              !isZh ? "bg-primary-500 text-white shadow-sm" : "text-gray-400 dark:text-gray-500"
+              !isZh
+                ? "bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300"
+                : "text-gray-400 dark:text-gray-500"
             }`}
           >
             EN

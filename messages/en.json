@@ -257,6 +257,20 @@
     "monthlyAmount": "Monthly Revenue",
     "refundedCount": "(Refunded: {count} deals)",
     "refundedAmount": "(Refunded: {amount} RMB)",
+    "estimatedRevenue": "Estimated Revenue",
+    "estimatedRevenueDesc": "50% share after platform fees",
+    "clickToViewDetail": "(Click for details)",
+    "estimatedRevenueDetail": {
+      "platform": "Platform",
+      "feeRate": "Fee Rate",
+      "sales": "Sales",
+      "platformFee": "Platform Fee",
+      "received": "Received",
+      "dividend": "Dividend",
+      "shareRate": "Share Rate",
+      "total": "Total Estimated Revenue",
+      "disclaimer": "* Estimated based on current sales data for reference only. Actual revenue is subject to final settlement."
+    },
     "lineChart": {
       "toggleCount": "Click to switch to sales volume",
       "toggleAmount": "Click to switch to sales revenue",

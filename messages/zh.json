@@ -252,7 +252,6 @@
     "refundedCount": "（已退款：{count}份）",
     "refundedAmount": "（已退款：{amount}元）",
     "estimatedRevenue": "预计收益",
-    "estimatedRevenueDesc": "扣除平台费后按50%分成",
     "clickToViewDetail": "（点击查看详情）",
     "estimatedRevenueDetail": {
       "platform": "平台",

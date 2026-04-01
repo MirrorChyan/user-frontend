@@ -20,6 +20,11 @@ import { RevenueType, StatData } from "@/app/[locale]/dashboard/page";
 import SalesList from "@/app/[locale]/dashboard/SalesList";
 import SalesLineChart from "@/app/[locale]/dashboard/SalesLineChart";
 import StatLineChartCard from "@/app/[locale]/dashboard/StatLineChartCard";
+import {
+  formatDashboardDayKeyFromDate,
+  getDashboardMonth,
+  parseDashboardAmount,
+} from "@/app/[locale]/dashboard/utils";
 
 type RevenueProps = {
   date: string;
@@ -45,6 +50,26 @@ type SalesPieChartProps = {
   title: string;
 };
 
+type LegendPayloadEntry = {
+  color?: string;
+  payload: ChartDataItem;
+  value: string;
+};
+
+const PLATFORM_FEE_RATES: Record<string, number> = {
+  yimapay: 0.02,
+  afdian: 0.06,
+  weixin: 0.01,
+  alipay: 0.006,
+};
+
+const PLATFORM_LABELS: Record<string, string> = {
+  yimapay: "易码付",
+  afdian: "爱发电",
+  weixin: "微信",
+  alipay: "支付宝",
+};
+
 export default function Revenue({ revenueData, statData, onLogOut, rid, date }: RevenueProps) {
   const t = useTranslations("Dashboard");
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -52,6 +77,8 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
   const [filters, setFilters] = useState<FilterMap>({});
   const [filterDate, setFilterDate] = useState<string | null>(null);
   const hasFilters = Object.keys(filters).length > 0 || filterDate !== null;
+  const isSalesTab = activeTab === "sales";
+  const targetMonth = getDashboardMonth(date);
 
   const FILTER_FIELD_LABELS: Record<FilterField, string> = {
     application: t("application"),
@@ -93,21 +120,19 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
     }
 
     if (filterDate) {
-      const targetMonth = Number(date.slice(4));
       data = data.filter(item => {
-        const d = new Date(item.activated_at);
-        return `${targetMonth}-${d.getDate()}` === filterDate;
+        return formatDashboardDayKeyFromDate(item.activated_at, targetMonth) === filterDate;
       });
     }
 
     return data;
-  }, [revenueData, filters, filterDate, date]);
+  }, [revenueData, filters, filterDate, targetMonth]);
 
   const { totalCount, totalAmount, refundedCount, refundedAmount } = useMemo(() => {
     return filteredData.reduce(
       (acc, cur) => {
         const buyCount = Number(cur.buy_count) || 0;
-        const amount = Number(cur.amount) || 0;
+        const amount = parseDashboardAmount(cur.amount);
 
         acc.totalCount += buyCount;
         acc.totalAmount += amount;
@@ -124,12 +149,16 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
   }, [filteredData]);
   useEffect(() => {
     if (!revenueData) {
-      return onLogOut();
+      onLogOut();
+      return;
     }
-    setTimeout(() => {
+
+    const timeoutId = window.setTimeout(() => {
       setIsLoading(false);
     }, 1000);
-  }, []);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [onLogOut, revenueData]);
 
   // Prepare chart data
   const applicationData = useMemo(() => {
@@ -152,20 +181,6 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
     return calculatePercentages(data);
   }, [filteredData]);
 
-  const PLATFORM_FEE_RATES: Record<string, number> = {
-    yimapay: 0.02,
-    afdian: 0.06,
-    weixin: 0.01,
-    alipay: 0.006,
-  };
-
-  const PLATFORM_LABELS: Record<string, string> = {
-    yimapay: "易码付",
-    afdian: "爱发电",
-    weixin: "微信",
-    alipay: "支付宝",
-  };
-
   const estimatedRevenue = useMemo(() => {
     const platformMap: Record<
       string,
@@ -176,7 +191,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
       if (item.blocked) return;
 
       const platform = item.platform;
-      const amount = parseFloat(item.amount);
+      const amount = parseDashboardAmount(item.amount);
       const feeRate = PLATFORM_FEE_RATES[platform] ?? 0;
 
       if (!platformMap[platform]) {
@@ -229,7 +244,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
     const grouped: Record<string, { amount: number; count: number }> = data.reduce(
       (acc, item) => {
         const keyValue = String(item[key]);
-        const amount = parseFloat(item.amount);
+        const amount = parseDashboardAmount(item.amount);
         const count = Number(item.buy_count);
 
         if (!acc[keyValue]) {
@@ -308,34 +323,40 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
 
     const legendContent = ({ payload }: Props) => {
       if (!payload) return null;
+
+      const legendEntries = payload as unknown as LegendPayloadEntry[];
+
       return (
         <ul className="text-xs">
-          {payload.map((entry: any, index: number) => {
+          {legendEntries.map((entry, index) => {
             const isActive = activeValue === entry.value;
             return (
-              <li
-                key={`item-${index}`}
-                className={`mb-1 flex cursor-pointer items-center rounded px-1 py-0.5 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                  isActive
-                    ? "bg-blue-100 ring-1 ring-blue-300 dark:bg-blue-900/30 dark:ring-blue-700"
-                    : ""
-                }`}
-                onClick={() => handleFilterToggle(pieChartProps.field, entry.value)}
-              >
-                <span
-                  className="mr-1 inline-block h-3 w-3 shrink-0"
-                  style={{ backgroundColor: entry.color }}
-                />
-                <div className="flex flex-col">
-                  <span>
-                    {entry.value} {entry.payload.percentage}%{" "}
-                  </span>
-                  <span className="text-gray-500">
-                    {entry.payload.count}
-                    {t("unit.count")} {entry.payload.amount.toFixed(2)}
-                    {t("unit.amount")}
-                  </span>
-                </div>
+              <li key={`item-${index}`} className="mb-1">
+                <button
+                  type="button"
+                  className={`flex w-full items-center rounded px-1 py-0.5 text-left transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:hover:bg-gray-700 ${
+                    isActive
+                      ? "bg-blue-100 ring-1 ring-blue-300 dark:bg-blue-900/30 dark:ring-blue-700"
+                      : ""
+                  }`}
+                  onClick={() => handleFilterToggle(pieChartProps.field, entry.value)}
+                  aria-pressed={isActive}
+                >
+                  <span
+                    className="mr-1 inline-block h-3 w-3 shrink-0"
+                    style={{ backgroundColor: entry.color }}
+                  />
+                  <div className="flex flex-col">
+                    <span>
+                      {entry.value} {entry.payload.percentage}%{" "}
+                    </span>
+                    <span className="text-gray-500">
+                      {entry.payload.count}
+                      {t("unit.count")} {entry.payload.amount.toFixed(2)}
+                      {t("unit.amount")}
+                    </span>
+                  </div>
+                </button>
               </li>
             );
           })}
@@ -437,18 +458,20 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
                 <Tab key="stat" title={t("statChart.title")} />
               </Tabs>
             ) : null}
-            <Button
-              className="w-full sm:w-auto"
-              color="secondary"
-              variant="ghost"
-              onClick={handleExport}
-            >
-              {t("export")}
-            </Button>
+            {isSalesTab ? (
+              <Button
+                className="w-full sm:w-auto"
+                color="secondary"
+                variant="ghost"
+                onClick={handleExport}
+              >
+                {t("export")}
+              </Button>
+            ) : null}
           </div>
         </div>
 
-        {hasFilters && (
+        {isSalesTab && hasFilters && (
           <div className="mb-4 flex flex-wrap items-center gap-2">
             {(Object.entries(filters) as [FilterField, string][]).map(([field, value]) => (
               <Chip key={field} variant="flat" color="primary" onClose={() => removeFilter(field)}>

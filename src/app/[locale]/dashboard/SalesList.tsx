@@ -1,5 +1,11 @@
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
 import { RevenueType } from "@/app/[locale]/dashboard/page";
+import {
+  formatDashboardDayKey,
+  formatDashboardDayKeyFromDate,
+  getDashboardMonth,
+  parseDashboardAmount,
+} from "@/app/[locale]/dashboard/utils";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { groupBy } from "lodash";
@@ -7,6 +13,8 @@ import { groupBy } from "lodash";
 type PropsType = {
   listData: RevenueType[];
   date: string;
+  activeDate?: string | null;
+  onDateClick?: (date: string) => void;
 };
 
 type DataType = {
@@ -37,12 +45,13 @@ const UpDownIcon = () => {
   );
 };
 
-export default function SalesList({ listData, date }: PropsType) {
+export default function SalesList({ listData, date, activeDate, onDateClick }: PropsType) {
   const t = useTranslations("Dashboard");
   const [sortBy, setSortBy] = useState<string>("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const targetMonth = getDashboardMonth(date);
 
-  const generateDateRange = () => {
+  const dateRange = useMemo(() => {
     const targetYear = Number(date.slice(0, 4));
     const targetMonth = Number(date.slice(4));
     // 使用 Date 对象计算该月的天数（月份传入下一个月，日期传0会回到上个月最后一天）
@@ -55,30 +64,27 @@ export default function SalesList({ listData, date }: PropsType) {
     const dates: number[] = [];
     // 只有当年份和月份都匹配当前时间时，才使用当前日期作为最后一天
     const lastDay =
-      currentYear === targetYear && currentMonth === targetMonth
-        ? now.getDate()
-        : daysInMonth;
+      currentYear === targetYear && currentMonth === targetMonth ? now.getDate() : daysInMonth;
 
     for (let i = 1; i <= lastDay; i++) {
       dates.push(i);
     }
     return dates;
-  };
+  }, [date]);
 
   // 初始化日期范围
   const resolveData = useMemo(() => {
     const groupedData = groupBy(
       listData.map(item => ({
         ...item,
-        activated_at: `${Number(date.slice(4))}-${new Date(item.activated_at).getDate()}`,
+        activated_at: formatDashboardDayKeyFromDate(item.activated_at, targetMonth),
       })),
       item => item.activated_at
     );
     const dateMap = new Map<string, DataType>();
-    const dateRange = generateDateRange();
 
     dateRange.forEach(day => {
-      const key = `${Number(date.slice(4))}-${day}`;
+      const key = formatDashboardDayKey(targetMonth, day);
 
       if (groupedData[key] === undefined) {
         dateMap.set(key, {
@@ -89,7 +95,7 @@ export default function SalesList({ listData, date }: PropsType) {
       } else {
         const count = Number(groupedData[key].reduce((acc, cur) => acc + Number(cur.buy_count), 0));
         const amount = groupedData[key]
-          .reduce((acc, cur) => acc + Number(cur.amount), 0)
+          .reduce((acc, cur) => acc + parseDashboardAmount(cur.amount), 0)
           .toFixed(2);
         dateMap.set(key, {
           count,
@@ -99,16 +105,13 @@ export default function SalesList({ listData, date }: PropsType) {
       }
     });
     return Array.from(dateMap.values());
-  }, [listData]);
+  }, [dateRange, listData, targetMonth]);
 
   const processedData = useMemo(() => {
-    return [...resolveData].sort((a, b) => {
+    const data = activeDate ? resolveData.filter(d => d.date === activeDate) : resolveData;
+    return [...data].sort((a, b) => {
       if (sortBy === "date") {
-        return Number(
-          sortOrder === "asc"
-            ? Number(new Date(a.date)) - Number(new Date(b.date))
-            : Number(new Date(b.date)) - Number(new Date(a.date))
-        );
+        return sortOrder === "asc" ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date);
       } else if (sortBy === "amount") {
         return sortOrder === "asc"
           ? Number(a.amount) - Number(b.amount)
@@ -117,7 +120,7 @@ export default function SalesList({ listData, date }: PropsType) {
         return sortOrder === "asc" ? a.count - b.count : b.count - a.count;
       }
     });
-  }, [resolveData, sortBy, sortOrder]);
+  }, [resolveData, sortBy, sortOrder, activeDate]);
 
   const columns = [
     {
@@ -136,12 +139,20 @@ export default function SalesList({ listData, date }: PropsType) {
 
   return (
     <>
-      <Table isVirtualized isHeaderSticky className="scrollbar-hide h-full overflow-y-scroll p-0">
+      <Table
+        isVirtualized
+        isHeaderSticky
+        aria-label={t("list.title")}
+        onRowAction={onDateClick ? key => onDateClick(String(key)) : undefined}
+        className="scrollbar-hide h-full overflow-y-scroll p-0"
+      >
         <TableHeader columns={columns} className="relative">
           {column => (
             <TableColumn key={column.key} className="relative text-center">
               {column.label}
-              <div
+              <button
+                type="button"
+                aria-label={String(column.label)}
                 onClick={() => {
                   setSortBy(column.key);
                   setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -149,7 +160,7 @@ export default function SalesList({ listData, date }: PropsType) {
                 className="absolute top-1 right-0 mt-2 mr-2 cursor-pointer transition hover:rotate-180 hover:text-gray-400 hover:shadow-sm"
               >
                 <UpDownIcon />
-              </div>
+              </button>
             </TableColumn>
           )}
         </TableHeader>
@@ -157,7 +168,9 @@ export default function SalesList({ listData, date }: PropsType) {
           {item => (
             <TableRow
               key={String(item.date)}
-              className="hover:bg-gray-100 dark:text-white dark:hover:bg-gray-800"
+              className={`${onDateClick ? "cursor-pointer" : ""} transition-colors hover:bg-gray-100 dark:text-white dark:hover:bg-gray-800 ${
+                activeDate === item.date ? "bg-blue-50 dark:bg-blue-900/20" : ""
+              }`}
             >
               <TableCell className="text-center">{item.date}</TableCell>
               <TableCell className="text-center">{item.count}</TableCell>

@@ -251,6 +251,19 @@
     "monthlyAmount": "月销售总额",
     "refundedCount": "（已退款：{count}份）",
     "refundedAmount": "（已退款：{amount}元）",
+    "estimatedRevenue": "预计收益",
+    "clickToViewDetail": "（点击查看详情）",
+    "estimatedRevenueDetail": {
+      "platform": "平台",
+      "feeRate": "费率",
+      "sales": "销售额",
+      "platformFee": "平台费用",
+      "received": "到账金额",
+      "dividend": "分成金额",
+      "shareRate": "分成比例",
+      "total": "预计收益合计",
+      "disclaimer": "* 以上数据基于当前销售记录预估，仅供参考，实际收益以最终结算账单为准。"
+    },
     "lineChart": {
       "toggleCount": "点击切换为销量",
       "toggleAmount": "点击切换为销售额",
@@ -265,6 +278,7 @@
       "amount": "销售额",
       "title": "日销售记录"
     },
+    "resetFilter": "全部重置",
     "statChart": {
       "title": "7天资源统计",
       "request": "日活",

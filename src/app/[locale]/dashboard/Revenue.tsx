@@ -2,19 +2,21 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Button, Card, Skeleton } from "@heroui/react";
+import { Button, Card, Skeleton, Tab, Tabs } from "@heroui/react";
 import { debounce } from "lodash";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, TooltipProps } from "recharts";
 import { Props } from "recharts/types/component/DefaultLegendContent";
-import { RevenueType } from "@/app/[locale]/dashboard/page";
+import { RevenueType, StatData } from "@/app/[locale]/dashboard/page";
 import SalesList from "@/app/[locale]/dashboard/SalesList";
 import SalesLineChart from "@/app/[locale]/dashboard/SalesLineChart";
+import StatLineChartCard from "@/app/[locale]/dashboard/StatLineChartCard";
 
 type RevenueProps = {
-  revenueData: RevenueType[];
-  onLogOut: () => void;
   date: string;
+  onLogOut: () => void;
+  revenueData: RevenueType[];
   rid: string;
+  statData: StatData;
 };
 
 type ChartDataItem = {
@@ -29,9 +31,10 @@ type SalesPieChartProps = {
   title: string;
 };
 
-export default function Revenue({ revenueData, onLogOut, rid, date }: RevenueProps) {
+export default function Revenue({ revenueData, statData, onLogOut, rid, date }: RevenueProps) {
   const t = useTranslations("Dashboard");
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<string>("sales");
   const { totalCount, totalAmount, refundedCount, refundedAmount } = useMemo(() => {
     return revenueData.reduce(
       (acc, cur) => {
@@ -272,98 +275,117 @@ export default function Revenue({ revenueData, onLogOut, rid, date }: RevenuePro
     );
   }
 
+  const hasStatData = Object.keys(statData).length > 0;
+
   return (
-    <div className="dark:bg-gray-900">
+    <div className="min-h-screen dark:bg-gray-900">
       <div className="mx-auto max-w-7xl p-6">
         {/* 标题区 */}
         <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <h1 className="flex-grow text-4xl font-bold dark:text-white">
             {t("dashboardTitle", { rid, date })}
           </h1>
-          {/* 导出按钮移动到标题右侧 */}
-          <Button
-            className="w-full sm:w-auto"
-            color="secondary"
-            variant="ghost"
-            onClick={handleExport}
-          >
-            {t("export")}
-          </Button>
+          <div className="flex w-full items-center gap-3 sm:mr-8 sm:w-auto">
+            {hasStatData ? (
+              <Tabs
+                selectedKey={activeTab}
+                onSelectionChange={key => setActiveTab(key as string)}
+                size="sm"
+                variant="bordered"
+              >
+                <Tab key="sales" title={t("lineChart.title")} />
+                <Tab key="stat" title={t("statChart.title")} />
+              </Tabs>
+            ) : null}
+            <Button
+              className="w-full sm:w-auto"
+              color="secondary"
+              variant="ghost"
+              onClick={handleExport}
+            >
+              {t("export")}
+            </Button>
+          </div>
         </div>
 
-        <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="mx-auto w-full max-w-7xl lg:col-span-2">
-            {/* Stats cards */}
-            <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Card>
-                <div className="p-4 sm:p-8">
-                  <h3 className="text-gray-500">{t("monthlyCount")}</h3>
-                  <p className="text-2xl font-bold sm:text-3xl">
-                    {totalCount}
-                    {t("unit.count")}
-                    {refundedCount > 0 ? (
-                      <span className="ml-2 text-sm font-normal text-gray-500">
-                        {t("refundedCount", { count: refundedCount })}
-                      </span>
-                    ) : null}
-                  </p>
+        {activeTab === "stat" ? (
+          <StatLineChartCard statData={statData} />
+        ) : (
+          <>
+            <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <div className="mx-auto w-full max-w-7xl lg:col-span-2">
+                {/* Stats cards */}
+                <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Card>
+                    <div className="p-4 sm:p-8">
+                      <h3 className="text-gray-500">{t("monthlyCount")}</h3>
+                      <p className="text-2xl font-bold sm:text-3xl">
+                        {totalCount}
+                        {t("unit.count")}
+                        {refundedCount > 0 ? (
+                          <span className="ml-2 text-sm font-normal text-gray-500">
+                            {t("refundedCount", { count: refundedCount })}
+                          </span>
+                        ) : null}
+                      </p>
+                    </div>
+                  </Card>
+                  <Card>
+                    <div className="p-4 sm:p-8">
+                      <h3 className="text-gray-500">{t("monthlyAmount")}</h3>
+                      <p className="text-2xl font-bold sm:text-3xl">
+                        {totalAmount.toFixed(2)}
+                        {t("unit.amount")}
+                        {refundedAmount > 0 ? (
+                          <span className="ml-2 text-sm font-normal text-gray-500">
+                            {t("refundedAmount", { amount: refundedAmount.toFixed(2) })}
+                          </span>
+                        ) : null}
+                      </p>
+                    </div>
+                  </Card>
                 </div>
-              </Card>
-              <Card>
-                <div className="p-4 sm:p-8">
-                  <h3 className="text-gray-500">{t("monthlyAmount")}</h3>
-                  <p className="text-2xl font-bold sm:text-3xl">
-                    {totalAmount.toFixed(2)}
-                    {t("unit.amount")}
-                    {refundedAmount > 0 ? (
-                      <span className="ml-2 text-sm font-normal text-gray-500">
-                        {t("refundedAmount", { amount: refundedAmount.toFixed(2) })}
-                      </span>
-                    ) : null}
-                  </p>
-                </div>
-              </Card>
-            </div>
 
-            {/* Chart section */}
-            <div className="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2">
-              <Card>
-                <div className="p-2">
-                  <SalesPieChart data={applicationData} title={t("application")} />
+                {/* Chart section */}
+                <div className="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2">
+                  <Card>
+                    <div className="p-2">
+                      <SalesPieChart data={applicationData} title={t("application")} />
+                    </div>
+                  </Card>
+                  <Card>
+                    <div className="p-2">
+                      <SalesPieChart data={planData} title={t("plan")} />
+                    </div>
+                  </Card>
+                  <Card>
+                    <div className="p-2">
+                      <SalesPieChart data={userAgentData} title={t("userAgent")} />
+                    </div>
+                  </Card>
+                  <Card>
+                    <div className="p-2">
+                      <SalesPieChart data={sourceData} title={t("source")} />
+                    </div>
+                  </Card>
                 </div>
-              </Card>
-              <Card>
-                <div className="p-2">
-                  <SalesPieChart data={planData} title={t("plan")} />
-                </div>
-              </Card>
-              <Card>
-                <div className="p-2">
-                  <SalesPieChart data={userAgentData} title={t("userAgent")} />
-                </div>
-              </Card>
-              <Card>
-                <div className="p-2">
-                  <SalesPieChart data={sourceData} title={t("source")} />
-                </div>
-              </Card>
-            </div>
-          </div>
-          <Card className="mb-6 lg:col-span-1">
-            <div className="flex h-96 flex-col p-4 lg:h-[48.01rem]">
-              <h3>{t("list.title")}</h3>
-              <div className="custom-scrollbar flex-1 overflow-y-auto">
-                <SalesList listData={revenueData} date={date} />
               </div>
+              <Card className="mb-6 lg:col-span-1">
+                <div className="flex h-96 flex-col p-4 lg:h-[48.01rem]">
+                  <h3>{t("list.title")}</h3>
+                  <div className="custom-scrollbar flex-1 overflow-y-auto">
+                    <SalesList listData={revenueData} date={date} />
+                  </div>
+                </div>
+              </Card>
             </div>
-          </Card>
-        </div>
-        {/* 折线图 (桌面2列) */}
-        <Card>
-          <div className="h-96 w-full p-4 sm:h-80">
-            <SalesLineChart revenueData={revenueData} date={date} />
-          </div>
-        </Card>
+            <Card>
+              <div className="h-96 w-full p-4 sm:h-80">
+                <SalesLineChart revenueData={revenueData} date={date} />
+              </div>
+            </Card>
+          </>
+        )}
       </div>
     </div>
   );

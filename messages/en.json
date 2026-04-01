@@ -270,6 +270,13 @@
       "count": "Deals",
       "amount": "Revenue",
       "title": "Daily Sales Record"
+    },
+    "statChart": {
+      "title": "7-Day Resource Stats",
+      "request": "DAU",
+      "count": "Downloads",
+      "toggleCount": "Switch to Downloads",
+      "toggleRequest": "Switch to UV"
     }
   }
 }

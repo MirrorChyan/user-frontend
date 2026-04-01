@@ -264,6 +264,13 @@
       "count": "销量",
       "amount": "销售额",
       "title": "日销售记录"
+    },
+    "statChart": {
+      "title": "7天资源统计",
+      "request": "日活",
+      "count": "下载量",
+      "toggleCount": "切换为下载量",
+      "toggleRequest": "切换为UV"
     }
   }
 }

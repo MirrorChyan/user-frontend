@@ -279,6 +279,7 @@
       "amount": "销售额",
       "title": "日销售记录"
     },
+    "resetFilter": "全部重置",
     "statChart": {
       "title": "7天资源统计",
       "request": "日活",

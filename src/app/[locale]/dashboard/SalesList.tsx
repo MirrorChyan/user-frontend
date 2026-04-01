@@ -7,6 +7,8 @@ import { groupBy } from "lodash";
 type PropsType = {
   listData: RevenueType[];
   date: string;
+  activeDate?: string | null;
+  onDateClick?: (date: string) => void;
 };
 
 type DataType = {
@@ -37,7 +39,7 @@ const UpDownIcon = () => {
   );
 };
 
-export default function SalesList({ listData, date }: PropsType) {
+export default function SalesList({ listData, date, activeDate, onDateClick }: PropsType) {
   const t = useTranslations("Dashboard");
   const [sortBy, setSortBy] = useState<string>("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -55,9 +57,7 @@ export default function SalesList({ listData, date }: PropsType) {
     const dates: number[] = [];
     // 只有当年份和月份都匹配当前时间时，才使用当前日期作为最后一天
     const lastDay =
-      currentYear === targetYear && currentMonth === targetMonth
-        ? now.getDate()
-        : daysInMonth;
+      currentYear === targetYear && currentMonth === targetMonth ? now.getDate() : daysInMonth;
 
     for (let i = 1; i <= lastDay; i++) {
       dates.push(i);
@@ -102,7 +102,8 @@ export default function SalesList({ listData, date }: PropsType) {
   }, [listData]);
 
   const processedData = useMemo(() => {
-    return [...resolveData].sort((a, b) => {
+    const data = activeDate ? resolveData.filter(d => d.date === activeDate) : resolveData;
+    return [...data].sort((a, b) => {
       if (sortBy === "date") {
         return Number(
           sortOrder === "asc"
@@ -117,7 +118,7 @@ export default function SalesList({ listData, date }: PropsType) {
         return sortOrder === "asc" ? a.count - b.count : b.count - a.count;
       }
     });
-  }, [resolveData, sortBy, sortOrder]);
+  }, [resolveData, sortBy, sortOrder, activeDate]);
 
   const columns = [
     {
@@ -157,7 +158,10 @@ export default function SalesList({ listData, date }: PropsType) {
           {item => (
             <TableRow
               key={String(item.date)}
-              className="hover:bg-gray-100 dark:text-white dark:hover:bg-gray-800"
+              className={`cursor-pointer transition-colors hover:bg-gray-100 dark:text-white dark:hover:bg-gray-800 ${
+                activeDate === item.date ? "bg-blue-50 dark:bg-blue-900/20" : ""
+              }`}
+              onClick={() => onDateClick?.(item.date)}
             >
               <TableCell className="text-center">{item.date}</TableCell>
               <TableCell className="text-center">{item.count}</TableCell>

@@ -285,6 +285,7 @@
       "amount": "Revenue",
       "title": "Daily Sales Record"
     },
+    "resetFilter": "Reset All",
     "statChart": {
       "title": "7-Day Resource Stats",
       "request": "DAU",

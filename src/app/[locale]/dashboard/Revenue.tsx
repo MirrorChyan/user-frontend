@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Button,
   Card,
+  Chip,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -35,8 +36,12 @@ type ChartDataItem = {
   percentage?: number;
 };
 
+type FilterField = "application" | "plan" | "user_agent" | "source";
+type FilterMap = Partial<Record<FilterField, string>>;
+
 type SalesPieChartProps = {
   data: ChartDataItem[];
+  field: FilterField;
   title: string;
 };
 
@@ -44,8 +49,62 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
   const t = useTranslations("Dashboard");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<string>("sales");
+  const [filters, setFilters] = useState<FilterMap>({});
+  const [filterDate, setFilterDate] = useState<string | null>(null);
+  const hasFilters = Object.keys(filters).length > 0 || filterDate !== null;
+
+  const FILTER_FIELD_LABELS: Record<FilterField, string> = {
+    application: t("application"),
+    plan: t("plan"),
+    user_agent: t("userAgent"),
+    source: t("source"),
+  };
+
+  const handleFilterToggle = useCallback((field: FilterField, value: string) => {
+    setFilters(prev => {
+      const next = { ...prev };
+      if (next[field] === value) {
+        delete next[field];
+      } else {
+        next[field] = value;
+      }
+      return next;
+    });
+  }, []);
+
+  const removeFilter = useCallback((field: FilterField) => {
+    setFilters(prev => {
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  }, []);
+
+  const handleDateFilterToggle = useCallback((dateStr: string) => {
+    setFilterDate(prev => (prev === dateStr ? null : dateStr));
+  }, []);
+
+  const filteredData = useMemo(() => {
+    let data = revenueData;
+
+    const entries = Object.entries(filters) as [FilterField, string][];
+    if (entries.length > 0) {
+      data = data.filter(item => entries.every(([field, value]) => String(item[field]) === value));
+    }
+
+    if (filterDate) {
+      const targetMonth = Number(date.slice(4));
+      data = data.filter(item => {
+        const d = new Date(item.activated_at);
+        return `${targetMonth}-${d.getDate()}` === filterDate;
+      });
+    }
+
+    return data;
+  }, [revenueData, filters, filterDate, date]);
+
   const { totalCount, totalAmount, refundedCount, refundedAmount } = useMemo(() => {
-    return revenueData.reduce(
+    return filteredData.reduce(
       (acc, cur) => {
         const buyCount = Number(cur.buy_count) || 0;
         const amount = Number(cur.amount) || 0;
@@ -62,7 +121,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
       },
       { totalCount: 0, totalAmount: 0, refundedCount: 0, refundedAmount: 0 }
     );
-  }, [revenueData]);
+  }, [filteredData]);
   useEffect(() => {
     if (!revenueData) {
       return onLogOut();
@@ -74,24 +133,24 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
 
   // Prepare chart data
   const applicationData = useMemo(() => {
-    const data = prepareChartData(revenueData, "application");
+    const data = prepareChartData(filteredData, "application");
     return calculatePercentages(data);
-  }, [revenueData]);
+  }, [filteredData]);
 
   const userAgentData = useMemo(() => {
-    const data = prepareChartData(revenueData, "user_agent");
+    const data = prepareChartData(filteredData, "user_agent");
     return calculatePercentages(data);
-  }, [revenueData]);
+  }, [filteredData]);
 
   const planData = useMemo(() => {
-    const data = prepareChartData(revenueData, "plan");
+    const data = prepareChartData(filteredData, "plan");
     return calculatePercentages(data);
-  }, [revenueData]);
+  }, [filteredData]);
 
   const sourceData = useMemo(() => {
-    const data = prepareChartData(revenueData, "source");
+    const data = prepareChartData(filteredData, "source");
     return calculatePercentages(data);
-  }, [revenueData]);
+  }, [filteredData]);
 
   const PLATFORM_FEE_RATES: Record<string, number> = {
     yimapay: 0.02,
@@ -113,7 +172,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
       { amount: number; fee: number; received: number; dividend: number; feeRate: number }
     > = {};
 
-    revenueData.forEach(item => {
+    filteredData.forEach(item => {
       if (item.blocked) return;
 
       const platform = item.platform;
@@ -145,7 +204,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
     const total = parseFloat(platforms.reduce((sum, d) => sum + d.dividend, 0).toFixed(2));
 
     return { platforms, total };
-  }, [revenueData]);
+  }, [filteredData]);
 
   function calculatePercentages(data: ChartDataItem[]): ChartDataItem[] {
     const total = data.reduce((sum, item) => sum + item.count, 0);
@@ -190,37 +249,13 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
     }));
   }
 
-  // Function to render legend for pie chart
-  const renderLegend = ({ payload }: Props) => {
-    if (!payload) return null;
-    return (
-      <ul className="text-xs">
-        {payload.map((entry: any, index: number) => (
-          <li key={`item-${index}`} className="mb-1 flex items-center">
-            <span className="mr-1 inline-block h-3 w-3" style={{ backgroundColor: entry.color }} />
-            <div className="flex flex-col">
-              <span>
-                {entry.value} {entry.payload.percentage}%{" "}
-              </span>
-              <span className="text-gray-500">
-                {entry.payload.count}
-                {t("unit.count")} {entry.payload.amount.toFixed(2)}
-                {t("unit.amount")}
-              </span>
-            </div>
-          </li>
-        ))}
-      </ul>
-    );
-  };
-
   // CSV export handler
   const handleExport = debounce(async () => {
     const filename = `MirrorChyan Sales ${rid} ${date}.csv`;
     const csvContent =
       "\uFEFF" +
       "activated_at,application,plan,user_agent,source,platform,amount,blocked\n" +
-      revenueData
+      filteredData
         .map(
           d =>
             `${d.activated_at},${d.application},${d.plan},${d.user_agent},${d.source},${d.platform},${d.amount},${d.blocked ? 1 : 0}`
@@ -249,6 +284,8 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
       "#20B2AA",
     ];
 
+    const activeValue = filters[pieChartProps.field];
+
     const customTooltip = (toolTipProps: TooltipProps<number, string>) => {
       const { active, payload } = toolTipProps;
       if (active && payload && payload.length) {
@@ -269,9 +306,51 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
       return null;
     };
 
+    const legendContent = ({ payload }: Props) => {
+      if (!payload) return null;
+      return (
+        <ul className="text-xs">
+          {payload.map((entry: any, index: number) => {
+            const isActive = activeValue === entry.value;
+            return (
+              <li
+                key={`item-${index}`}
+                className={`mb-1 flex cursor-pointer items-center rounded px-1 py-0.5 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                  isActive
+                    ? "bg-blue-100 ring-1 ring-blue-300 dark:bg-blue-900/30 dark:ring-blue-700"
+                    : ""
+                }`}
+                onClick={() => handleFilterToggle(pieChartProps.field, entry.value)}
+              >
+                <span
+                  className="mr-1 inline-block h-3 w-3 shrink-0"
+                  style={{ backgroundColor: entry.color }}
+                />
+                <div className="flex flex-col">
+                  <span>
+                    {entry.value} {entry.payload.percentage}%{" "}
+                  </span>
+                  <span className="text-gray-500">
+                    {entry.payload.count}
+                    {t("unit.count")} {entry.payload.amount.toFixed(2)}
+                    {t("unit.amount")}
+                  </span>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      );
+    };
+
     return (
       <div className="h-full">
-        <h3 className="mb-2">{pieChartProps.title}</h3>
+        <h3 className="mb-2">
+          {pieChartProps.title}
+          {activeValue && (
+            <span className="ml-2 text-sm font-normal text-blue-500">({activeValue})</span>
+          )}
+        </h3>
         <ResponsiveContainer width="100%" height={250}>
           <PieChart>
             <Pie
@@ -296,7 +375,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
               layout="vertical"
               align="left"
               verticalAlign="top"
-              content={renderLegend}
+              content={legendContent}
               wrapperStyle={{
                 maxHeight: "240px",
                 overflowY: "auto",
@@ -368,6 +447,32 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
             </Button>
           </div>
         </div>
+
+        {hasFilters && (
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            {(Object.entries(filters) as [FilterField, string][]).map(([field, value]) => (
+              <Chip key={field} variant="flat" color="primary" onClose={() => removeFilter(field)}>
+                {FILTER_FIELD_LABELS[field]}: {value}
+              </Chip>
+            ))}
+            {filterDate && (
+              <Chip variant="flat" color="secondary" onClose={() => setFilterDate(null)}>
+                {t("list.date")}: {filterDate}
+              </Chip>
+            )}
+            <Button
+              size="sm"
+              variant="light"
+              color="danger"
+              onClick={() => {
+                setFilters({});
+                setFilterDate(null);
+              }}
+            >
+              {t("resetFilter")}
+            </Button>
+          </div>
+        )}
 
         {activeTab === "stat" ? (
           <StatLineChartCard statData={statData} />
@@ -487,37 +592,53 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:col-span-2">
                 <Card>
                   <div className="p-2">
-                    <SalesPieChart data={applicationData} title={t("application")} />
+                    <SalesPieChart
+                      data={applicationData}
+                      field="application"
+                      title={t("application")}
+                    />
                   </div>
                 </Card>
                 <Card>
                   <div className="p-2">
-                    <SalesPieChart data={planData} title={t("plan")} />
+                    <SalesPieChart data={planData} field="plan" title={t("plan")} />
                   </div>
                 </Card>
                 <Card>
                   <div className="p-2">
-                    <SalesPieChart data={userAgentData} title={t("userAgent")} />
+                    <SalesPieChart data={userAgentData} field="user_agent" title={t("userAgent")} />
                   </div>
                 </Card>
                 <Card>
                   <div className="p-2">
-                    <SalesPieChart data={sourceData} title={t("source")} />
+                    <SalesPieChart data={sourceData} field="source" title={t("source")} />
                   </div>
                 </Card>
               </div>
               <Card className="lg:col-span-1">
                 <div className="flex h-96 flex-col p-4 lg:h-full">
-                  <h3>{t("list.title")}</h3>
+                  <h3>
+                    {t("list.title")}
+                    {filterDate && (
+                      <span className="text-secondary ml-2 text-sm font-normal">
+                        ({filterDate})
+                      </span>
+                    )}
+                  </h3>
                   <div className="custom-scrollbar flex-1 overflow-y-auto">
-                    <SalesList listData={revenueData} date={date} />
+                    <SalesList
+                      listData={filteredData}
+                      date={date}
+                      activeDate={filterDate}
+                      onDateClick={handleDateFilterToggle}
+                    />
                   </div>
                 </div>
               </Card>
             </div>
             <Card>
               <div className="h-96 w-full p-4 sm:h-80">
-                <SalesLineChart revenueData={revenueData} date={date} />
+                <SalesLineChart revenueData={filteredData} date={date} />
               </div>
             </Card>
           </>

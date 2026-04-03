@@ -68,11 +68,15 @@ export default function StatLineChart({ statData }: Props) {
     return (
       <div className="rounded border bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
         <p className="mb-1 font-medium dark:text-white">{label}</p>
-        {payload.map((entry, i) => (
-          <p key={i} style={{ color: entry.color }} className="text-sm">
-            {entry.name}: {(entry.value as number).toLocaleString()}
-          </p>
-        ))}
+        <div className="max-h-48 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600">
+          {[...payload]
+            .sort((a, b) => (b.value as number) - (a.value as number))
+            .map((entry, i) => (
+              <p key={i} style={{ color: entry.color }} className="text-sm">
+                {entry.name}: {(entry.value as number).toLocaleString()}
+              </p>
+            ))}
+        </div>
       </div>
     );
   };
@@ -97,7 +101,7 @@ export default function StatLineChart({ statData }: Props) {
             tickLine={{ stroke: "#ccc" }}
             domain={[0, (dataMax: number) => Math.ceil(dataMax * 1.1)]}
           />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip />} wrapperStyle={{ pointerEvents: "auto" }} />
           {rids.map((rid, i) => (
             <Line
               key={rid}

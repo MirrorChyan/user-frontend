@@ -7,10 +7,10 @@ import { ComputerDesktopIcon } from "@heroicons/react/16/solid";
 import { addToast, closeAll } from "@heroui/toast";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import YearMonthPicker from "@/components/YearMonthPicker";
-import { RevenueResponse, RevenueType } from "@/app/[locale]/dashboard/page";
+import { RevenueResponse, RevenueType, StatData } from "@/app/[locale]/dashboard/page";
 
 type LoginFormProps = {
-  onLoginSuccess: (data: RevenueType[], rid: string, date: string) => void;
+  onLoginSuccess: (data: RevenueType[], rid: string, date: string, statData: StatData) => void;
 };
 
 export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
@@ -44,14 +44,18 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
 
     try {
       setIsLoading(true);
-      const response: RevenueResponse = await fetch(
-        `${CLIENT_BACKEND}/api/billing/revenue?rid=${rid}&date=${month}&is_ua=${+isUa}`,
-        {
+      const [revenueRes, statRes] = await Promise.all([
+        fetch(`${CLIENT_BACKEND}/api/billing/revenue?rid=${rid}&date=${month}&is_ua=${+isUa}`, {
           headers: { Authorization: token },
-        }
-      ).then(res => res.json());
+        }).then(res => res.json()) as Promise<RevenueResponse>,
+        fetch(`${CLIENT_BACKEND}/api/billing/stat/resources?rid=${rid}`, {
+          headers: { Authorization: token },
+        })
+          .then(res => res.json())
+          .catch(() => ({ ec: -1 })),
+      ]);
 
-      if (response.ec !== 200) {
+      if (revenueRes.ec !== 200) {
         closeAll();
         addToast({
           description: t("error"),
@@ -60,7 +64,8 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
         return;
       }
 
-      onLoginSuccess(response.data, rid, month);
+      const statData: StatData = statRes.ec === 200 ? (statRes.data ?? {}) : {};
+      onLoginSuccess(revenueRes.data, rid, month, statData);
     } catch (error) {
       console.error("Error:", error);
       closeAll();

@@ -21,14 +21,19 @@ export type RevenueResponse = {
   ec: number;
 };
 
+export type StatDayStat = { request: number; count: number };
+export type StatData = Record<string, Record<string, StatDayStat>>;
+
 export default function Dashboard() {
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [revenueData, setRevenueData] = useState<RevenueType[]>([]);
+  const [statData, setStatData] = useState<StatData>({});
   const [currentRid, setCurrentRid] = useState<string>("");
   const [currentDate, setCurrentDate] = useState<string>("");
 
-  const handleLoginSuccess = (data: RevenueType[], rid: string, date: string) => {
+  const handleLoginSuccess = (data: RevenueType[], rid: string, date: string, stat: StatData) => {
     setRevenueData(data);
+    setStatData(stat);
     setCurrentRid(rid);
     setCurrentDate(date);
     setIsLogin(true);
@@ -46,6 +51,7 @@ export default function Dashboard() {
       <Revenue
         onLogOut={handleLogOut}
         revenueData={revenueData}
+        statData={statData}
         date={currentDate}
         rid={currentRid}
       />

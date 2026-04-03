@@ -1,6 +1,7 @@
 "use client";
 
-import { useTransition, useEffect } from "react";
+import { useTransition, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/routing";
 
@@ -11,9 +12,14 @@ export default function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
+  const [mounted, setMounted] = useState(false);
 
   const isZh = locale === "zh";
   const otherLocale = isZh ? "en" : "zh";
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // 首次访问时，如果 localStorage 中有存储的语言偏好且与当前不同，自动切换
   useEffect(() => {
@@ -34,12 +40,14 @@ export default function LanguageSwitcher() {
     });
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <button
       onClick={toggleLocale}
       disabled={isPending}
       aria-label="Switch language"
-      className="fixed top-4 right-4 z-50 flex h-8 items-center gap-1 rounded-full border border-gray-200/60 bg-white/70 px-1 backdrop-blur-md transition-all dark:border-gray-700/60 dark:bg-gray-900/70"
+      className="absolute top-4 right-4 z-50 flex h-8 items-center gap-1 rounded-full border border-gray-200/60 bg-white/70 px-1 backdrop-blur-md transition-all dark:border-gray-700/60 dark:bg-gray-900/70"
     >
       {isPending ? (
         <span className="flex items-center px-2">
@@ -81,6 +89,7 @@ export default function LanguageSwitcher() {
           </span>
         </>
       )}
-    </button>
+    </button>,
+    document.body
   );
 }

@@ -238,7 +238,7 @@
     "confirm": "Confirm",
     "requiredFields": "Please enter RID and Token",
     "error": "Please confirm that you have entered the correct content",
-    "dashboardTitle": "MirrorChyan x {rid} {date} Sales Dashboard",
+    "dashboardTitle": "MirrorChyan x {rid} {date} Data Dashboard",
     "export": "Export CSV file",
     "application": "Applications",
     "userAgent": "Checkin user agents",

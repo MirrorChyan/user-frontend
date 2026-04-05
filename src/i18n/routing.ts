@@ -10,6 +10,9 @@ export const routing = defineRouting({
   // Used when no locale matches
   defaultLocale: "en",
   localePrefix: "always",
+  localeCookie: {
+    maxAge: 60 * 60 * 24 * 365,
+  },
 });
 
 // Lightweight wrappers around Next.js' navigation APIs

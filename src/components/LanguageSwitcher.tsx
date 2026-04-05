@@ -19,10 +19,6 @@ export default function LanguageSwitcher() {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    router.prefetch(pathname, { locale: otherLocale });
-  }, [pathname, otherLocale, router]);
-
   const toggleLocale = () => {
     startTransition(() => {
       router.replace(pathname, { locale: otherLocale });

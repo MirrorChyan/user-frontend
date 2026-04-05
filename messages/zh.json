@@ -270,7 +270,7 @@
       "labelAmount": "销售额 (元)",
       "slide": "← 左右滑动查看完整图表 →",
       "labelCount": "销量 (份)",
-      "title": "销售额/销量折线图"
+      "title": "销售统计"
     },
     "list": {
       "date": "日期",
@@ -280,7 +280,7 @@
     },
     "resetFilter": "全部重置",
     "statChart": {
-      "title": "7天资源统计",
+      "title": "请求统计",
       "request": "日活",
       "count": "下载量",
       "toggleCount": "切换为下载量",

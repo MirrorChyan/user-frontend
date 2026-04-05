@@ -447,6 +447,16 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
             {t("dashboardTitle", { rid, date })}
           </h1>
           <div className="flex w-full items-center gap-3 sm:mr-8 sm:w-auto">
+            {isSalesTab ? (
+              <Button
+                className="w-full sm:w-auto"
+                color="secondary"
+                variant="ghost"
+                onClick={handleExport}
+              >
+                {t("export")}
+              </Button>
+            ) : null}
             {hasStatData ? (
               <Tabs
                 selectedKey={activeTab}
@@ -457,16 +467,6 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
                 <Tab key="sales" title={t("lineChart.title")} />
                 <Tab key="stat" title={t("statChart.title")} />
               </Tabs>
-            ) : null}
-            {isSalesTab ? (
-              <Button
-                className="w-full sm:w-auto"
-                color="secondary"
-                variant="ghost"
-                onClick={handleExport}
-              >
-                {t("export")}
-              </Button>
             ) : null}
           </div>
         </div>

@@ -276,7 +276,7 @@
       "labelAmount": "Revenue (RMB)",
       "slide": "← Slide to see the full chart →",
       "labelCount": "Sales (deals)",
-      "title": "Sales Line Chart"
+      "title": "Sales Stats"
     },
     "list": {
       "date": "Date",
@@ -286,7 +286,7 @@
     },
     "resetFilter": "Reset All",
     "statChart": {
-      "title": "7-Day Resource Stats",
+      "title": "Requests Stats",
       "request": "DAU",
       "count": "Downloads",
       "toggleCount": "Switch to Downloads",

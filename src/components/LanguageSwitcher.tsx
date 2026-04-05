@@ -1,11 +1,9 @@
 "use client";
 
-import { useTransition, useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { createPortal } from "react-dom";
 import { useLocale } from "next-intl";
-import { useRouter, usePathname } from "@/i18n/routing";
-
-const LOCALE_STORAGE_KEY = "preferred-locale";
+import { usePathname, useRouter } from "@/i18n/routing";
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
@@ -21,20 +19,7 @@ export default function LanguageSwitcher() {
     setMounted(true);
   }, []);
 
-  // 首次访问时，如果 localStorage 中有存储的语言偏好且与当前不同，自动切换
-  useEffect(() => {
-    const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
-    if (stored && stored !== locale && (stored === "zh" || stored === "en")) {
-      router.replace(pathname, { locale: stored });
-    }
-  }, []);
-
-  useEffect(() => {
-    router.prefetch(pathname, { locale: otherLocale });
-  }, [pathname, otherLocale, router]);
-
   const toggleLocale = () => {
-    localStorage.setItem(LOCALE_STORAGE_KEY, otherLocale);
     startTransition(() => {
       router.replace(pathname, { locale: otherLocale });
     });

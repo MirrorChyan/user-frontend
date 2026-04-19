@@ -85,11 +85,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
         if (ec === 200) {
           const expired = moment(data.expired_at).isBefore(moment());
           setIsExpired(expired);
-          if (expired) {
-            setError("orderExpired");
-          } else {
-            setOrderInfo(data);
-          }
+          setOrderInfo(data);
         } else {
           setError(msg);
         }
@@ -174,12 +170,18 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
                 ) : orderInfo && orderInfo.cdk ? (
                   <div className="text-center">
                     <div className="mb-6 flex justify-center">
-                      <div className="rounded-full bg-green-100 p-3 dark:bg-green-900/30">
-                        <CheckCircle className="h-12 w-12 text-green-600" />
+                      <div
+                        className={`rounded-full p-3 ${isExpired ? "bg-amber-100 dark:bg-amber-900/30" : "bg-green-100 dark:bg-green-900/30"}`}
+                      >
+                        {isExpired ? (
+                          <AlertCircle className="h-12 w-12 text-amber-600" />
+                        ) : (
+                          <CheckCircle className="h-12 w-12 text-green-600" />
+                        )}
                       </div>
                     </div>
                     <h4 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
-                      {t("thanksForBuying")}
+                      {isExpired ? t("orderExpired") : t("thanksForBuying")}
                     </h4>
                     <p className="mb-2 text-base text-gray-600 dark:text-gray-300">
                       {t("yourKey")}
@@ -195,10 +197,12 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
                         {t("copy")}
                       </button>
                     </div>
-                    {orderInfo.expired_at && formattedTime && relativeTime && (
+                    {orderInfo.expired_at && formattedTime && (
                       <p className="mb-4 text-gray-600 dark:text-gray-300">
                         <span>{t("expireAt", { time: formattedTime })}</span>
-                        <span>{t("timeLeft", { relativeTime })}</span>
+                        {!isExpired && relativeTime && (
+                          <span>{t("timeLeft", { relativeTime })}</span>
+                        )}
                       </p>
                     )}
                     <p className="mt-6 text-center text-sm">
@@ -211,11 +215,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
                       <AlertCircle className="h-12 w-12 text-red-600 dark:text-red-400" />
                     </div>
                     <h4 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
-                      {isExpired
-                        ? t("orderExpired")
-                        : error
-                          ? t(`msg.${error}`)
-                          : t("orderNotFound")}
+                      {error ? t(`msg.${error}`) : t("orderNotFound")}
                     </h4>
                     <Link href="/get-key">
                       <button

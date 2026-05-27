@@ -129,23 +129,26 @@ export default function ProjectCard(props: ProjectCardProps) {
     }));
   }, [channel, supportOptions]);
 
+  const renderFixedSelect = (value: any[]) => {
+    return !(value.length === 0 || (value.length === 1 && value[0].value === "any"));
+  };
+
   const availableArch = useMemo(() => {
-    if (!channel || !os) return [];
+    if (!channel) return [];
+    // OS 全为 "any" 时 os 状态保持空字符串，此时用 "any" 作为过滤值
+    const effectiveOs = !renderFixedSelect(availableOS) ? "any" : os;
+    if (!effectiveOs) return [];
     return [
       ...new Set(
         supportOptions
-          .filter(item => item.channel === channel && item.os === os)
+          .filter(item => item.channel === channel && item.os === effectiveOs)
           .map(item => item.arch)
       ),
     ].map(item => ({
       label: item,
       value: item,
     }));
-  }, [channel, supportOptions, os]);
-
-  const renderFixedSelect = (value: any[]) => {
-    return !(value.length === 0 || (value.length === 1 && value[0].value === "any"));
-  };
+  }, [channel, supportOptions, os, availableOS]);
 
   const updateUrlParams = (newChannel: string, newOs: string, newArch: string) => {
     if (typeof window === "undefined") return;
@@ -240,7 +243,9 @@ export default function ProjectCard(props: ProjectCardProps) {
       // 如果 supportOption 中有自定义的 rid，使用它；否则使用原始的 resource
       const targetResource = currentOption?.rid || resource;
 
-      const dl = `${CLIENT_BACKEND}/api/resources/${targetResource}/latest?os=${os}&arch=${arch}&channel=${channel}&cdk=${cdk}&user_agent=mirrorchyan_web`;
+      const reqOs = os === "any" ? "" : os;
+      const reqArch = arch === "any" ? "" : arch;
+      const dl = `${CLIENT_BACKEND}/api/resources/${targetResource}/latest?os=${reqOs}&arch=${reqArch}&channel=${channel}&cdk=${cdk}&user_agent=mirrorchyan_web`;
       const response = await fetch(dl);
 
       const { code, msg, data } = await response.json();

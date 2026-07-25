@@ -1,0 +1,7 @@
+# pnpm 10 settings (moved out of package.json's "pnpm" field).
+# Security overrides for transitive dependencies pulled in by next.
+overrides:
+  # GHSA: postcss <8.5.18 — next 16.2.11 pins 8.4.31
+  postcss: ^8.5.23
+  # GHSA: sharp <0.35.0 — next optional dep
+  sharp: ^0.35.3

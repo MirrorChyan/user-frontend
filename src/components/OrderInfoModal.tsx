@@ -77,9 +77,10 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
     const fetchOrderInfo = async () => {
       try {
         setLoading(true);
-        const response = await fetch(
-          `${CLIENT_BACKEND}/api/billing/order/query?order_id=${orderId}`
-        );
+        const queryValue = orderId.trim();
+        const queryKey = queryValue.length === 24 ? "cdk" : "order_id";
+        const query = new URLSearchParams({ [queryKey]: queryValue });
+        const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?${query}`);
         const { ec, msg, data } = await response.json();
 
         if (ec === 200) {

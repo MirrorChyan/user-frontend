@@ -96,7 +96,7 @@
     "queryOrderId": "Query Order ID",
     "loading": "Querying please wait...",
     "errorOrderFormat": "Incorrect order number format ",
-    "inputPlaceholder": "Enter your order ID"
+    "inputPlaceholder": "Enter your order ID or CDK"
   },
   "ShowKey": {
     "orderInfo": "Order Information",

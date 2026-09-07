@@ -17,7 +17,7 @@ export default function GetKey() {
     e.preventDefault();
     const orderId = inputOrderId.trim();
     if (!orderId) return;
-    router.push(`/projects?order_id=${orderId}`);
+    router.push(`/projects?order_id=${encodeURIComponent(orderId)}`);
   };
 
   return (

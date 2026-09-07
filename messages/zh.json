@@ -91,7 +91,7 @@
     "haveQuestion": "查询遇到问题？",
     "loading": "正在查询……",
     "errorOrderFormat": "订单号格式不对哦~",
-    "inputPlaceholder": "请输入订单号"
+    "inputPlaceholder": "请输入订单号或 CDK"
   },
   "ShowKey": {
     "orderInfo": "订单信息",

@@ -9,6 +9,7 @@ const withNextIntl = createNextIntlPlugin();
 const isProduction = process.env.NODE_ENV === "production";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["*.*.*.*"],
   output: "standalone",
   poweredByHeader: false,
   reactCompiler: true,

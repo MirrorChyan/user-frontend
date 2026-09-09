@@ -21,6 +21,8 @@ import { addToast, ToastProps } from "@heroui/toast";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { ArrowTopRightOnSquareIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import { getGroupUrl } from "@/lib/utils/constant";
+import { detectPlatform } from "@/lib/utils/browserDetection";
+import { matchSupportSelection, parseSupportOptions } from "@/lib/utils/support";
 
 export interface ProjectCardProps {
   type_id: string;
@@ -59,11 +61,14 @@ export default function ProjectCard(props: ProjectCardProps) {
 
   const locale = useLocale();
 
-  const first = support?.[0]?.split("-") || [];
+  const supportOptions = useMemo(() => parseSupportOptions(support), [support]);
 
-  const [channel, setChannel] = useState(first[0] ?? "");
-  const [os, setOs] = useState(first[1] === "any" ? "" : (first[1] ?? ""));
-  const [arch, setArch] = useState(first[2] === "any" ? "" : (first[2] ?? ""));
+  // 取解析后的首项，避免带 rid 前缀的条目被 split("-") 拆错
+  const first = supportOptions[0];
+
+  const [channel, setChannel] = useState(first?.channel ?? "");
+  const [os, setOs] = useState(first?.os === "any" ? "" : (first?.os ?? ""));
+  const [arch, setArch] = useState(first?.arch === "any" ? "" : (first?.arch ?? ""));
 
   const [cdk, setCdk] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -76,6 +81,9 @@ export default function ProjectCard(props: ProjectCardProps) {
   const common = useTranslations("Common");
 
   useLayoutEffect(() => {
+    // URL 参数只对被 rid 命中、即将自动打开的卡片生效
+    const fromUrl = showModal && (osParam != null || archParam != null);
+
     if (showModal) {
       if (osParam != null) {
         setOs(osParam);
@@ -89,31 +97,21 @@ export default function ProjectCard(props: ProjectCardProps) {
       if (channelParam != null) {
         setChannel(channelParam);
       }
+    }
+
+    if (!fromUrl) {
+      const currentChannel = showModal && channelParam != null ? channelParam : channel;
+      const matched = matchSupportSelection(supportOptions, currentChannel, detectPlatform());
+      if (matched) {
+        setOs(matched.os);
+        setArch(matched.arch);
+      }
+    }
+
+    if (showModal) {
       onOpen();
     }
   }, []);
-
-  const supportOptions = useMemo(() => {
-    return support.map(item => {
-      // 检查是否包含 /，例如 OtherRid/stable-windows-x64
-      let rid: string | null = null;
-      let platformPart = item;
-
-      if (item.includes("/")) {
-        const slashIndex = item.indexOf("/");
-        rid = item.substring(0, slashIndex);
-        platformPart = item.substring(slashIndex + 1);
-      }
-
-      const parts = platformPart.split("-");
-      return {
-        rid, // 新的 rid，如果没有则为 null，使用原 resource
-        channel: parts[0],
-        os: parts[1],
-        arch: parts[2],
-      };
-    });
-  }, [support]);
 
   const availableChannel = useMemo(() => {
     return [...new Set(supportOptions.map(item => item.channel))];

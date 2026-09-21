@@ -135,7 +135,7 @@ export default function ProjectCard(props: ProjectCardProps) {
   const avatarText = useMemo(() => name.charAt(0).toUpperCase(), [name]);
 
   // 被 URL 中 rid 命中的卡片直接打开下载弹窗
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure({ defaultOpen: showModal });
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultOpen: showModal });
 
   const locale = useLocale();
 
@@ -417,21 +417,19 @@ export default function ProjectCard(props: ProjectCardProps) {
       if (selectedChannel) {
         s.set("channel", selectedChannel);
       }
-      window.history.replaceState(null, "", `/${locale}/projects?${s}`);
+      window.history.replaceState(null, "", `${window.location.pathname}?${s}`);
     }
   };
 
   const onModalClose = () => {
+    onClose();
     const s = new URLSearchParams(window.location.search);
     s.delete("rid");
-    s.delete("os");
-    s.delete("arch");
-    s.delete("channel");
     // URLSearchParams.size 在 Chrome 113 / Safari 17 以下不存在
     if (s.toString() === "") {
-      window.history.replaceState(null, "", `/${locale}/projects`);
+      window.history.replaceState(null, "", window.location.pathname);
     } else {
-      window.history.replaceState(null, "", `/${locale}/projects?${s}`);
+      window.history.replaceState(null, "", `${window.location.pathname}?${s}`);
     }
 
     setDownloadStarted(false);
@@ -504,8 +502,13 @@ export default function ProjectCard(props: ProjectCardProps) {
       <Modal
         isDismissable={false}
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        onClose={onModalClose}
+        onOpenChange={open => {
+          if (open) {
+            onOpen();
+          } else {
+            onModalClose();
+          }
+        }}
         backdrop="opaque"
         size="2xl"
         placement="center"
@@ -885,14 +888,7 @@ export default function ProjectCard(props: ProjectCardProps) {
                 </Button>
               ) : (
                 <>
-                  <Button
-                    color="danger"
-                    variant="light"
-                    onPress={() => {
-                      onClose();
-                      onModalClose();
-                    }}
-                  >
+                  <Button color="danger" variant="light" onPress={onModalClose}>
                     {common("cancel")}
                   </Button>
                   <Button

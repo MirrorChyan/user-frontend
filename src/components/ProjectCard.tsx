@@ -39,6 +39,12 @@ export interface ProjectCardProps {
   channelParam?: string | null;
 }
 
+// 锁定选项的只读展示：禁用鼠标交互，键盘聚焦时也不显示输入光标
+const lockedInputClassNames = {
+  inputWrapper: "pointer-events-none",
+  input: "caret-transparent",
+};
+
 export default function ProjectCard(props: ProjectCardProps) {
   const {
     name,
@@ -117,36 +123,51 @@ export default function ProjectCard(props: ProjectCardProps) {
     return [...new Set(supportOptions.map(item => item.channel))];
   }, [supportOptions]);
 
+  // 只有一个具体选项(非 any)时锁定为该值，不允许展开选择
+  const lockedValue = (items: { value: string }[]) =>
+    items.length === 1 && items[0].value !== "any" ? items[0].value : null;
+
+  const lockedChannel = availableChannel.length === 1 ? availableChannel[0] : null;
+  const selectedChannel = lockedChannel ?? channel;
+
   const availableOS = useMemo(() => {
-    if (!channel) return [];
+    if (!selectedChannel) return [];
     return [
-      ...new Set(supportOptions.filter(item => item.channel === channel).map(item => item.os)),
+      ...new Set(
+        supportOptions.filter(item => item.channel === selectedChannel).map(item => item.os)
+      ),
     ].map(item => ({
       label: item,
       value: item,
     }));
-  }, [channel, supportOptions]);
+  }, [selectedChannel, supportOptions]);
+
+  const lockedOs = lockedValue(availableOS);
+  const selectedOs = lockedOs ?? os;
 
   const renderFixedSelect = (value: any[]) => {
     return !(value.length === 0 || (value.length === 1 && value[0].value === "any"));
   };
 
   const availableArch = useMemo(() => {
-    if (!channel) return [];
+    if (!selectedChannel) return [];
     // OS 全为 "any" 时 os 状态保持空字符串，此时用 "any" 作为过滤值
-    const effectiveOs = !renderFixedSelect(availableOS) ? "any" : os;
+    const effectiveOs = !renderFixedSelect(availableOS) ? "any" : selectedOs;
     if (!effectiveOs) return [];
     return [
       ...new Set(
         supportOptions
-          .filter(item => item.channel === channel && item.os === effectiveOs)
+          .filter(item => item.channel === selectedChannel && item.os === effectiveOs)
           .map(item => item.arch)
       ),
     ].map(item => ({
       label: item,
       value: item,
     }));
-  }, [channel, supportOptions, os, availableOS]);
+  }, [selectedChannel, supportOptions, selectedOs, availableOS]);
+
+  const lockedArch = lockedValue(availableArch);
+  const selectedArch = lockedArch ?? arch;
 
   const updateUrlParams = (newChannel: string, newOs: string, newArch: string) => {
     if (typeof window === "undefined") return;
@@ -181,12 +202,12 @@ export default function ProjectCard(props: ProjectCardProps) {
   const handleOSChange = (value: any) => {
     setOs(value);
     setArch("");
-    updateUrlParams(channel, value, "");
+    updateUrlParams(selectedChannel, value, "");
   };
 
   const handleArchChange = (value: any) => {
     setArch(value);
-    updateUrlParams(channel, os, value);
+    updateUrlParams(selectedChannel, selectedOs, value);
   };
 
   // 互斥的状态
@@ -198,21 +219,21 @@ export default function ProjectCard(props: ProjectCardProps) {
   });
 
   const queryUrl = async (type: "Share" | "Download") => {
-    if (!channel) {
+    if (!selectedChannel) {
       addToast({
         description: t("noChannel"),
         color: "warning",
       });
       return;
     }
-    if (renderFixedSelect(availableOS) && os === "") {
+    if (renderFixedSelect(availableOS) && selectedOs === "") {
       addToast({
         description: t("noOs"),
         color: "warning",
       });
       return;
     }
-    if (renderFixedSelect(availableArch) && arch === "") {
+    if (renderFixedSelect(availableArch) && selectedArch === "") {
       addToast({
         description: t("noArch"),
         color: "warning",
@@ -234,16 +255,16 @@ export default function ProjectCard(props: ProjectCardProps) {
       // 根据当前选择的 channel、os、arch 找到对应的 supportOption，获取其 rid
       const currentOption = supportOptions.find(
         item =>
-          item.channel === channel &&
-          (item.os === os || item.os === "any") &&
-          (item.arch === arch || item.arch === "any")
+          item.channel === selectedChannel &&
+          (item.os === selectedOs || item.os === "any") &&
+          (item.arch === selectedArch || item.arch === "any")
       );
       // 如果 supportOption 中有自定义的 rid，使用它；否则使用原始的 resource
       const targetResource = currentOption?.rid || resource;
 
-      const reqOs = os === "any" ? "" : os;
-      const reqArch = arch === "any" ? "" : arch;
-      const dl = `${CLIENT_BACKEND}/api/resources/${targetResource}/latest?os=${reqOs}&arch=${reqArch}&channel=${channel}&cdk=${cdk}&user_agent=mirrorchyan_web`;
+      const reqOs = selectedOs === "any" ? "" : selectedOs;
+      const reqArch = selectedArch === "any" ? "" : selectedArch;
+      const dl = `${CLIENT_BACKEND}/api/resources/${targetResource}/latest?os=${reqOs}&arch=${reqArch}&channel=${selectedChannel}&cdk=${cdk}&user_agent=mirrorchyan_web`;
       const response = await fetch(dl);
 
       const { code, msg, data } = await response.json();
@@ -293,7 +314,7 @@ export default function ProjectCard(props: ProjectCardProps) {
       color: "primary",
     });
     console.log(
-      `shared key ${downloadKey} for ${name} tuple: ${os}-${arch}-${channel}${cdk ? ` cdk: ${cdk}` : ""}`
+      `shared key ${downloadKey} for ${name} tuple: ${selectedOs}-${selectedArch}-${selectedChannel}${cdk ? ` cdk: ${cdk}` : ""}`
     );
   };
 
@@ -340,14 +361,14 @@ export default function ProjectCard(props: ProjectCardProps) {
     if (!showModal) {
       const s = new URLSearchParams(window.location.search);
       s.set("rid", resource);
-      if (os) {
-        s.set("os", os);
+      if (selectedOs) {
+        s.set("os", selectedOs);
       }
-      if (arch) {
-        s.set("arch", arch);
+      if (selectedArch) {
+        s.set("arch", selectedArch);
       }
-      if (channel) {
-        s.set("channel", channel);
+      if (selectedChannel) {
+        s.set("channel", selectedChannel);
       }
       window.history.replaceState(null, "", `/${locale}/projects?${s}`);
     }
@@ -625,33 +646,53 @@ export default function ProjectCard(props: ProjectCardProps) {
                   </div>
                   <div className="flex flex-col gap-4 sm:flex-row">
                     <div className="flex-1">
-                      <Select
-                        label={t("channel")}
-                        placeholder={t("noChannel")}
-                        onChange={e => handleChannelChange(e.target.value)}
-                        className="w-full"
-                        isDisabled={availableChannel.length === 0}
-                        selectedKeys={[channel]}
-                      >
-                        {availableChannel.map(channelOption => (
-                          <SelectItem key={channelOption}>{t(channelOption)}</SelectItem>
-                        ))}
-                      </Select>
+                      {lockedChannel ? (
+                        <Input
+                          label={t("channel")}
+                          value={t(lockedChannel)}
+                          isReadOnly
+                          className="w-full"
+                          classNames={lockedInputClassNames}
+                        />
+                      ) : (
+                        <Select
+                          label={t("channel")}
+                          placeholder={t("noChannel")}
+                          onChange={e => handleChannelChange(e.target.value)}
+                          className="w-full"
+                          isDisabled={availableChannel.length === 0}
+                          selectedKeys={[selectedChannel]}
+                        >
+                          {availableChannel.map(channelOption => (
+                            <SelectItem key={channelOption}>{t(channelOption)}</SelectItem>
+                          ))}
+                        </Select>
+                      )}
                     </div>
 
                     <>
                       <Conditioned condition={() => renderFixedSelect(availableOS)}>
                         <div className="flex-1">
-                          <Select
-                            label={t("os")}
-                            placeholder={t("noOs")}
-                            onChange={e => handleOSChange(e.target.value)}
-                            className="w-full"
-                            items={availableOS}
-                            selectedKeys={[os]}
-                          >
-                            {item => <SelectItem key={item.value}>{item.label}</SelectItem>}
-                          </Select>
+                          {lockedOs ? (
+                            <Input
+                              label={t("os")}
+                              value={lockedOs}
+                              isReadOnly
+                              className="w-full"
+                              classNames={lockedInputClassNames}
+                            />
+                          ) : (
+                            <Select
+                              label={t("os")}
+                              placeholder={t("noOs")}
+                              onChange={e => handleOSChange(e.target.value)}
+                              className="w-full"
+                              items={availableOS}
+                              selectedKeys={[selectedOs]}
+                            >
+                              {item => <SelectItem key={item.value}>{item.label}</SelectItem>}
+                            </Select>
+                          )}
                         </div>
                       </Conditioned>
                     </>
@@ -659,16 +700,26 @@ export default function ProjectCard(props: ProjectCardProps) {
                     <>
                       <Conditioned condition={() => renderFixedSelect(availableArch)}>
                         <div className="flex-1">
-                          <Select
-                            label={t("arch")}
-                            placeholder={t("noArch")}
-                            onChange={e => handleArchChange(e.target.value)}
-                            className="w-full"
-                            items={availableArch}
-                            selectedKeys={[arch]}
-                          >
-                            {item => <SelectItem key={item.value}>{item.label}</SelectItem>}
-                          </Select>
+                          {lockedArch ? (
+                            <Input
+                              label={t("arch")}
+                              value={lockedArch}
+                              isReadOnly
+                              className="w-full"
+                              classNames={lockedInputClassNames}
+                            />
+                          ) : (
+                            <Select
+                              label={t("arch")}
+                              placeholder={t("noArch")}
+                              onChange={e => handleArchChange(e.target.value)}
+                              className="w-full"
+                              items={availableArch}
+                              selectedKeys={[selectedArch]}
+                            >
+                              {item => <SelectItem key={item.value}>{item.label}</SelectItem>}
+                            </Select>
+                          )}
                         </div>
                       </Conditioned>
                     </>

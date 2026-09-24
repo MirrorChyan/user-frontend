@@ -12,8 +12,16 @@ import {
   Tab,
   Tabs,
 } from "@heroui/react";
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, TooltipProps } from "recharts";
-import { Props } from "recharts/types/component/DefaultLegendContent";
+import {
+  Cell,
+  DefaultLegendContentProps,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  TooltipContentProps,
+} from "recharts";
 import { RevenueType, StatData } from "@/app/[locale]/dashboard/page";
 import SalesList from "@/app/[locale]/dashboard/SalesList";
 import SalesLineChart from "@/app/[locale]/dashboard/SalesLineChart";
@@ -128,9 +136,7 @@ const PIE_COLORS = [
 // 饼图需要定义在组件外部，否则父组件每次渲染都会让它重新挂载并重播动画
 function SalesPieChart({ data, field, title, activeValue, onToggle }: SalesPieChartProps) {
   const t = useTranslations("Dashboard");
-  const [activeSliceIndex, setActiveSliceIndex] = useState<number | undefined>(undefined);
-
-  const customTooltip = (toolTipProps: TooltipProps<number, string>) => {
+  const customTooltip = (toolTipProps: TooltipContentProps) => {
     const { active, payload } = toolTipProps;
     if (active && payload && payload.length) {
       const data = payload[0].payload;
@@ -150,7 +156,7 @@ function SalesPieChart({ data, field, title, activeValue, onToggle }: SalesPieCh
     return null;
   };
 
-  const legendContent = ({ payload }: Props) => {
+  const legendContent = ({ payload }: DefaultLegendContentProps) => {
     if (!payload) return null;
 
     const legendEntries = payload as unknown as LegendPayloadEntry[];
@@ -212,15 +218,11 @@ function SalesPieChart({ data, field, title, activeValue, onToggle }: SalesPieCh
             innerRadius={30}
             fill="#8884d8"
             dataKey="count"
-            activeIndex={activeSliceIndex}
-            onMouseEnter={(_, index) => setActiveSliceIndex(index)}
-            onMouseLeave={() => setActiveSliceIndex(undefined)}
           >
             {data.map((_entry, index) => (
               <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
             ))}
           </Pie>
-          <Tooltip content={customTooltip} />
           <Legend
             layout="vertical"
             align="left"
@@ -235,8 +237,9 @@ function SalesPieChart({ data, field, title, activeValue, onToggle }: SalesPieCh
               scrollbarWidth: "none" /* Firefox */,
               msOverflowStyle: "none" /* Internet Explorer 10+ */,
             }}
-            className="no-scrollbar"
           />
+          {/* recharts 3 按 JSX 顺序决定层级，Tooltip 放在图例之后才不会被遮挡 */}
+          <Tooltip content={customTooltip} />
         </PieChart>
       </ResponsiveContainer>
     </div>

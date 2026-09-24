@@ -7,7 +7,7 @@ import {
   LineChart,
   ResponsiveContainer,
   Tooltip,
-  TooltipProps,
+  TooltipContentProps,
   XAxis,
   YAxis,
 } from "recharts";
@@ -30,6 +30,24 @@ const COLORS = [
   "#9370DB",
   "#20B2AA",
 ];
+
+function renderTooltip({ active, payload, label }: TooltipContentProps) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded border bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+      <p className="mb-1 font-medium dark:text-white">{label}</p>
+      <div className="max-h-48 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600">
+        {[...payload]
+          .sort((a, b) => (b.value as number) - (a.value as number))
+          .map((entry, i) => (
+            <p key={i} style={{ color: entry.color }} className="text-sm">
+              {entry.name}: {(entry.value as number).toLocaleString()}
+            </p>
+          ))}
+      </div>
+    </div>
+  );
+}
 
 export default function StatLineChart({ statData }: Props) {
   const t = useTranslations("Dashboard");
@@ -63,24 +81,6 @@ export default function StatLineChart({ statData }: Props) {
   const yTickFormatter = (value: number) =>
     value >= 1000 ? `${(value / 1000).toFixed(0)}k` : String(value);
 
-  const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
-    if (!active || !payload?.length) return null;
-    return (
-      <div className="rounded border bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
-        <p className="mb-1 font-medium dark:text-white">{label}</p>
-        <div className="max-h-48 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600">
-          {[...payload]
-            .sort((a, b) => (b.value as number) - (a.value as number))
-            .map((entry, i) => (
-              <p key={i} style={{ color: entry.color }} className="text-sm">
-                {entry.name}: {(entry.value as number).toLocaleString()}
-              </p>
-            ))}
-        </div>
-      </div>
-    );
-  };
-
   const renderChart = (data: object[], title: string) => (
     <div>
       <h3 className="mb-2 text-center text-sm font-medium text-gray-600 dark:text-gray-300">
@@ -101,7 +101,6 @@ export default function StatLineChart({ statData }: Props) {
             tickLine={{ stroke: "#ccc" }}
             domain={[0, (dataMax: number) => Math.ceil(dataMax * 1.1)]}
           />
-          <Tooltip content={<CustomTooltip />} wrapperStyle={{ pointerEvents: "auto" }} />
           {rids.map((rid, i) => (
             <Line
               key={rid}
@@ -113,6 +112,8 @@ export default function StatLineChart({ statData }: Props) {
               activeDot={{ r: 6, fill: "#fff", stroke: COLORS[i % COLORS.length], strokeWidth: 2 }}
             />
           ))}
+          {/* recharts 3 按 JSX 顺序决定层级，Tooltip 放在最后才不会被折线遮挡 */}
+          <Tooltip content={renderTooltip} wrapperStyle={{ pointerEvents: "auto" }} />
         </LineChart>
       </ResponsiveContainer>
     </div>

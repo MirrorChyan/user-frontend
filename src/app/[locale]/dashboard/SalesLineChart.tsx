@@ -6,7 +6,7 @@ import {
   LineChart,
   ResponsiveContainer,
   Tooltip,
-  TooltipProps,
+  TooltipContentProps,
   XAxis,
   YAxis,
 } from "recharts";
@@ -148,7 +148,7 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
   }, [revenueData, timeRange, date]);
 
   // 自定义 Tooltip，以渲染函数传给 recharts，避免在组件内定义组件
-  const renderTooltip = ({ active, payload }: TooltipProps<number, string>) => {
+  const renderTooltip = ({ active, payload }: TooltipContentProps) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload as DataType;
       return (
@@ -230,7 +230,9 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
         }}
       >
         <ResponsiveContainer width={"100%"} height={220} debounce={200}>
+          {/* 切换时间粒度时数据长度和 Brush 区间都会变化，重新挂载避免过渡帧计算出 NaN 坐标 */}
           <LineChart
+            key={timeRange}
             data={processedData}
             margin={{
               left: 0,
@@ -241,16 +243,13 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
           >
             <CartesianGrid strokeDasharray="3 3" />
 
-            {/* X轴添加缩放控制 */}
+            {/* 数据已按天/小时补齐为连续序列，用分类轴即可等距排布（recharts 3 不再支持分类轴配合 time 比例尺） */}
             <XAxis
               dataKey="time"
               tickFormatter={timeFormatter}
               minTickGap={20}
-              scale="time"
-              domain={["auto", "auto"]}
               tick={{ fill: "#666", fontSize: 12 }}
               tickLine={{ stroke: "#ccc" }}
-              allowDataOverflow
             />
 
             <YAxis
@@ -263,7 +262,7 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
               }}
               tick={{ fill: "#666", fontSize: 12 }}
               tickLine={{ stroke: "#ccc" }}
-              domain={[0, (dataMax: number) => (dataMax * 1.1).toFixed(2)]}
+              domain={[0, (dataMax: number) => Number((dataMax * 1.1).toFixed(2))]}
             />
 
             <Brush
@@ -273,11 +272,6 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
               stroke="#8884d8"
               tickFormatter={timeFormatter}
               className="dark:[&_rect:first-child]:fill-gray-800"
-            />
-
-            <Tooltip
-              content={renderTooltip}
-              cursor={{ strokeWidth: 0, className: "dark:text-gray-200" }}
             />
 
             <Line
@@ -298,6 +292,12 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
                 stroke: "#8884d8",
                 strokeWidth: 2,
               }}
+            />
+
+            {/* recharts 3 按 JSX 顺序决定层级，Tooltip 放在最后才不会被折线遮挡 */}
+            <Tooltip
+              content={renderTooltip}
+              cursor={{ strokeWidth: 0, className: "dark:text-gray-200" }}
             />
           </LineChart>
         </ResponsiveContainer>

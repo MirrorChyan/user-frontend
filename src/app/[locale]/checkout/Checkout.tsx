@@ -138,10 +138,13 @@ export default function Checkout(params: CheckoutProps) {
     setShowModal(paymentMethod);
   };
 
+  // 用户关闭支付弹窗即取消本次支付：停止轮询并清空支付信息，回到结账表单
   const handleCloseModal = () => {
     setShowModal("none");
-    // 关闭弹窗后停止轮询订单状态
     setCustomOrderId(undefined);
+    // 表单支付弹窗按 paymentHtml 是否为空决定显示，需要一并清空
+    setPaymentUrl("");
+    setPaymentHtml("");
   };
 
   const handleSwitchToWechat = () => {

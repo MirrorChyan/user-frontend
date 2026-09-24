@@ -18,7 +18,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@headlessui/react": "^2.2.10",
     "@heroicons/react": "^2.2.0",
     "@heroui/react": "^2.8.10",
     "@heroui/system": "^2.4.28",

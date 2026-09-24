@@ -6,7 +6,7 @@ import {
   LineChart,
   ResponsiveContainer,
   Tooltip,
-  TooltipProps,
+  TooltipContentProps,
   XAxis,
   YAxis,
 } from "recharts";
@@ -35,15 +35,19 @@ type DataType = {
   time: Date;
 };
 
-type TooltipType = TooltipProps<number, string> & {
-  payload?: {
-    payload: {
-      time: Date;
-      amount: number;
-      count: number;
-    };
-  }[];
-};
+// 时间格式化
+function formatTime(date: Date, timeRange: string) {
+  switch (timeRange) {
+    case "minute":
+      return format(date, "MM-dd HH:00");
+    case "hour":
+      return format(date, "MM-dd HH:00");
+    case "day":
+      return format(date, "yyyy-MM-dd");
+    default:
+      return format(date, "MM-dd HH:mm");
+  }
+}
 
 export default function SalesLineChart({ revenueData, date }: PropsType) {
   const t = useTranslations("Dashboard");
@@ -51,19 +55,7 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
   const [showSales, setShowSales] = useState(true);
   const [timeRange, setTimeRange] = useState<string>("day");
 
-  // 时间格式化
-  function timeFormatter(date: Date) {
-    switch (timeRange) {
-      case "minute":
-        return format(date, "MM-dd HH:00");
-      case "hour":
-        return format(date, "MM-dd HH:00");
-      case "day":
-        return format(date, "yyyy-MM-dd");
-      default:
-        return format(date, "MM-dd HH:mm");
-    }
-  }
+  const timeFormatter = (value: Date) => formatTime(value, timeRange);
 
   // 处理原始数据
   const processedData = useMemo(() => {
@@ -72,7 +64,7 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
     function createDataMap(data: DataType[]): Map<string, DataType> {
       const map = new Map<string, DataType>();
       data.forEach(item => {
-        map.set(timeFormatter(item.time), {
+        map.set(formatTime(item.time, timeRange), {
           amount: item.amount,
           count: item.count,
           time: item.time,
@@ -97,29 +89,16 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
     function fillTimeSeries(originalData: DataType[]): DataType[] {
       const currentYear = Number(date.slice(0, 4));
       const currentMonth = Number(date.slice(4));
-      const month = [
-        31,
-        (currentYear % 4 === 0 && currentYear % 100 !== 0) || currentYear % 400 === 0 ? 29 : 28,
-        31,
-        30,
-        31,
-        30,
-        31,
-        31,
-        30,
-        31,
-        30,
-        31,
-      ];
-
-      const start = startOfMonth(`${currentYear}-${currentMonth}-${1} 00:00:00`);
-      const end = endOfMonth(`${currentYear}-${currentMonth}-${month[currentMonth - 1]} 23:59:59`);
+      // 用数字构造本地时间，"2026-9-1 00:00:00" 这类非 ISO 字符串在 Safari 中会解析失败
+      const firstDay = new Date(currentYear, currentMonth - 1, 1);
+      const start = startOfMonth(firstDay);
+      const end = endOfMonth(firstDay);
 
       const completeTimes = generateTimeSeries(start, end);
       const dataMap = createDataMap(originalData);
 
       return completeTimes.map(time => {
-        const key = timeFormatter(time);
+        const key = formatTime(time, timeRange);
         return (
           dataMap.get(key) || {
             amount: 0,
@@ -166,12 +145,12 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
         count: item.sumCount,
       }));
     return fillTimeSeries(result);
-  }, [revenueData, timeRange]);
+  }, [revenueData, timeRange, date]);
 
-  // 自定义 Tooltip
-  const CustomTooltip = ({ active, payload }: TooltipType) => {
+  // 自定义 Tooltip，以渲染函数传给 recharts，避免在组件内定义组件
+  const renderTooltip = ({ active, payload }: TooltipContentProps) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload;
+      const data = payload[0].payload as DataType;
       return (
         <div className="rounded bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
           <p className="dark:border-gray-70 font-medium">
@@ -251,7 +230,9 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
         }}
       >
         <ResponsiveContainer width={"100%"} height={220} debounce={200}>
+          {/* 切换时间粒度时数据长度和 Brush 区间都会变化，重新挂载避免过渡帧计算出 NaN 坐标 */}
           <LineChart
+            key={timeRange}
             data={processedData}
             margin={{
               left: 0,
@@ -262,16 +243,13 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
           >
             <CartesianGrid strokeDasharray="3 3" />
 
-            {/* X轴添加缩放控制 */}
+            {/* 数据已按天/小时补齐为连续序列，用分类轴即可等距排布（recharts 3 不再支持分类轴配合 time 比例尺） */}
             <XAxis
               dataKey="time"
               tickFormatter={timeFormatter}
               minTickGap={20}
-              scale="time"
-              domain={["auto", "auto"]}
               tick={{ fill: "#666", fontSize: 12 }}
               tickLine={{ stroke: "#ccc" }}
-              allowDataOverflow
             />
 
             <YAxis
@@ -284,7 +262,7 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
               }}
               tick={{ fill: "#666", fontSize: 12 }}
               tickLine={{ stroke: "#ccc" }}
-              domain={[0, (dataMax: number) => (dataMax * 1.1).toFixed(2)]}
+              domain={[0, (dataMax: number) => Number((dataMax * 1.1).toFixed(2))]}
             />
 
             <Brush
@@ -294,11 +272,6 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
               stroke="#8884d8"
               tickFormatter={timeFormatter}
               className="dark:[&_rect:first-child]:fill-gray-800"
-            />
-
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{ strokeWidth: 0, className: "dark:text-gray-200" }}
             />
 
             <Line
@@ -319,6 +292,12 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
                 stroke: "#8884d8",
                 strokeWidth: 2,
               }}
+            />
+
+            {/* recharts 3 按 JSX 顺序决定层级，Tooltip 放在最后才不会被折线遮挡 */}
+            <Tooltip
+              content={renderTooltip}
+              cursor={{ strokeWidth: 0, className: "dark:text-gray-200" }}
             />
           </LineChart>
         </ResponsiveContainer>

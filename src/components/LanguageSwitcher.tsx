@@ -1,23 +1,21 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useTransition } from "react";
 import { createPortal } from "react-dom";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/routing";
+import { useIsClient } from "@/hooks/useIsClient";
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
-  const [mounted, setMounted] = useState(false);
+  // 按钮通过 portal 挂到 body 上，只能在客户端渲染
+  const mounted = useIsClient();
 
   const isZh = locale === "zh";
   const otherLocale = isZh ? "en" : "zh";
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const toggleLocale = () => {
     startTransition(() => {

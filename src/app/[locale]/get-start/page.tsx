@@ -1,4 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
+import ReactMarkdown from "react-markdown";
 
 import { BackgroundBeamsWithCollision } from "@/components/BackgroundBeamsWithCollision";
 import { Link } from "@/i18n/routing";
@@ -22,14 +23,13 @@ export default async function GetStart({
 
   const { type_id, source } = await searchParams;
 
-  const [plans, announcement] = await Promise.all([
+  const [plans, announcement, C2URate] = await Promise.all([
     getPlans(type_id),
     getAnnouncement(locale as "zh" | "en"),
+    // 人民币->美元汇率
+    locale === "zh" ? 1 : getUSDRate(),
   ]);
   const { homePlans, morePlans } = plans;
-
-  // 人民币->美元汇率
-  const C2URate = locale === "zh" ? 1 : await getUSDRate();
 
   return (
     <div className="relative" suppressHydrationWarning>
@@ -49,7 +49,10 @@ export default async function GetStart({
             </div>
           </div>
           {announcement.ec === 200 && (
-            <Announcement summary={announcement.data.summary} details={announcement.data.details} />
+            <Announcement
+              summary={announcement.data.summary}
+              content={<ReactMarkdown>{announcement.data.details}</ReactMarkdown>}
+            />
           )}
 
           <ProjectBanner />

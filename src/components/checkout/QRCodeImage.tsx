@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import QRCode from "qrcode";
 
 interface QRCodeImageProps {
   value: string;
@@ -10,24 +9,36 @@ interface QRCodeImageProps {
   className?: string;
 }
 
+// qrcode 只在弹出支付二维码时才需要，按需加载
+async function createQRCodeDataURL(value: string, size: number) {
+  const { default: QRCode } = await import("qrcode");
+  return QRCode.toDataURL(value, {
+    width: size,
+    margin: 1,
+    color: {
+      dark: "#000000",
+      light: "#FFFFFF",
+    },
+  });
+}
+
 export default function QRCodeImage({ value, size = 256, logo }: QRCodeImageProps) {
   const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
-    QRCode.toDataURL(value, {
-      width: size,
-      margin: 1,
-      color: {
-        dark: "#000000",
-        light: "#FFFFFF",
-      },
-    })
+    let cancelled = false;
+    createQRCodeDataURL(value, size)
       .then(url => {
-        setImageUrl(url);
+        if (!cancelled) {
+          setImageUrl(url);
+        }
       })
       .catch((err: Error) => {
         console.error("生成二维码失败:", err);
       });
+    return () => {
+      cancelled = true;
+    };
   }, [value, size]);
 
   return (

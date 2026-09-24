@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useLayoutEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Button,
   Input,
@@ -17,12 +17,18 @@ import {
 } from "@heroui/react";
 import { stringToColor } from "@/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
-import { addToast, ToastProps } from "@heroui/toast";
+import { addToast } from "@heroui/toast";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { ArrowTopRightOnSquareIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import { getGroupUrl } from "@/lib/utils/constant";
-import { detectPlatform } from "@/lib/utils/browserDetection";
-import { matchSupportSelection, parseSupportOptions } from "@/lib/utils/support";
+import { detectPlatform, isInAppBrowser } from "@/lib/utils/browserDetection";
+import {
+  matchSupportSelection,
+  parseSupportOptions,
+  type SupportOption,
+} from "@/lib/utils/support";
+import { copyText } from "@/lib/utils/clipboard";
+import InAppDownloadNotice from "@/components/InAppDownloadNotice";
 
 export interface ProjectCardProps {
   type_id: string;
@@ -37,6 +43,77 @@ export interface ProjectCardProps {
   osParam?: string | null;
   archParam?: string | null;
   channelParam?: string | null;
+}
+
+// 锁定选项的只读展示：禁用鼠标交互，键盘聚焦时也不显示输入光标
+const lockedInputClassNames = {
+  inputWrapper: "pointer-events-none",
+  input: "caret-transparent",
+};
+
+type LatestDownloadResult =
+  | { status: "ok"; url: string; version: string }
+  | { status: "error"; code: number; msg: string }
+  | { status: "noUrl"; msg: string };
+
+async function fetchLatestDownload(
+  resource: string,
+  query: URLSearchParams
+): Promise<LatestDownloadResult> {
+  const response = await fetch(
+    `${CLIENT_BACKEND}/api/resources/${encodeURIComponent(resource)}/latest?${query}`
+  );
+  const { code, msg, data } = await response.json();
+  if (code !== 0) {
+    return { status: "error", code, msg };
+  }
+  if (!data.url) {
+    return { status: "noUrl", msg };
+  }
+  return { status: "ok", url: data.url, version: data.version_name };
+}
+
+type SelectionParams = Pick<
+  ProjectCardProps,
+  "showModal" | "osParam" | "archParam" | "channelParam"
+>;
+
+function getInitialSelection(
+  options: SupportOption[],
+  { showModal, osParam, archParam, channelParam }: SelectionParams
+) {
+  // 取解析后的首项，避免带 rid 前缀的条目被 split("-") 拆错
+  const first = options[0];
+  let channel = first?.channel ?? "";
+  let os = first?.os === "any" ? "" : (first?.os ?? "");
+  let arch = first?.arch === "any" ? "" : (first?.arch ?? "");
+
+  // URL 参数只对被 rid 命中、即将自动打开的卡片生效
+  if (showModal) {
+    if (channelParam != null) {
+      channel = channelParam;
+    }
+    if (osParam != null) {
+      os = osParam;
+    }
+    if (archParam != null) {
+      arch = archParam;
+    } else if (osParam != null) {
+      // URL 中指定了 os 但没有 arch 参数时，清空 arch 以避免残留不匹配的默认值
+      arch = "";
+    }
+  }
+
+  const fromUrl = showModal && (osParam != null || archParam != null);
+  if (!fromUrl) {
+    const matched = matchSupportSelection(options, channel, detectPlatform());
+    if (matched) {
+      os = matched.os;
+      arch = matched.arch;
+    }
+  }
+
+  return { channel, os, arch };
 }
 
 export default function ProjectCard(props: ProjectCardProps) {
@@ -57,96 +134,87 @@ export default function ProjectCard(props: ProjectCardProps) {
   const avatarBgColor = useMemo(() => stringToColor(name), [name]);
   const avatarText = useMemo(() => name.charAt(0).toUpperCase(), [name]);
 
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  // 被 URL 中 rid 命中的卡片直接打开下载弹窗
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultOpen: showModal });
 
   const locale = useLocale();
 
   const supportOptions = useMemo(() => parseSupportOptions(support), [support]);
 
-  // 取解析后的首项，避免带 rid 前缀的条目被 split("-") 拆错
-  const first = supportOptions[0];
-
-  const [channel, setChannel] = useState(first?.channel ?? "");
-  const [os, setOs] = useState(first?.os === "any" ? "" : (first?.os ?? ""));
-  const [arch, setArch] = useState(first?.arch === "any" ? "" : (first?.arch ?? ""));
+  // 初始选中项只在首次渲染时计算。选项只在弹窗里展示，弹窗不参与服务端渲染，
+  // 因此客户端按 UA 算出的值与服务端不同也不会导致水合不一致
+  const [initialSelection] = useState(() =>
+    getInitialSelection(supportOptions, { showModal, osParam, archParam, channelParam })
+  );
+  const [channel, setChannel] = useState(initialSelection.channel);
+  const [os, setOs] = useState(initialSelection.os);
+  const [arch, setArch] = useState(initialSelection.arch);
 
   const [cdk, setCdk] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [downloadStarted, setDownloadStarted] = useState(false);
   const [isLoadingAnimation, setIsLoadingAnimation] = useState(false);
   const [version, setVersion] = useState("");
+  const [downloadUrl, setDownloadUrl] = useState("");
+  // 自动打开下载是否成功，失败(被拦截或 App 内置浏览器)时引导用户手动下载
+  const [autoDownloaded, setAutoDownloaded] = useState(false);
+  const [inAppBrowser, setInAppBrowser] = useState(false);
+  // 复制失败时展示分享链接，供用户手动复制
+  const [shareUrl, setShareUrl] = useState("");
 
   const t = useTranslations("Download");
   const p = useTranslations("Projects");
   const common = useTranslations("Common");
 
-  useLayoutEffect(() => {
-    // URL 参数只对被 rid 命中、即将自动打开的卡片生效
-    const fromUrl = showModal && (osParam != null || archParam != null);
-
-    if (showModal) {
-      if (osParam != null) {
-        setOs(osParam);
-      }
-      if (archParam != null) {
-        setArch(archParam);
-      } else if (osParam != null) {
-        // URL 中指定了 os 但没有 arch 参数时，清空 arch 以避免残留不匹配的默认值
-        setArch("");
-      }
-      if (channelParam != null) {
-        setChannel(channelParam);
-      }
-    }
-
-    if (!fromUrl) {
-      const currentChannel = showModal && channelParam != null ? channelParam : channel;
-      const matched = matchSupportSelection(supportOptions, currentChannel, detectPlatform());
-      if (matched) {
-        setOs(matched.os);
-        setArch(matched.arch);
-      }
-    }
-
-    if (showModal) {
-      onOpen();
-    }
-  }, []);
-
   const availableChannel = useMemo(() => {
     return [...new Set(supportOptions.map(item => item.channel))];
   }, [supportOptions]);
 
+  // 只有一个具体选项(非 any)时锁定为该值，不允许展开选择
+  const lockedValue = (items: { value: string }[]) =>
+    items.length === 1 && items[0].value !== "any" ? items[0].value : null;
+
+  const lockedChannel = availableChannel.length === 1 ? availableChannel[0] : null;
+  const selectedChannel = lockedChannel ?? channel;
+
   const availableOS = useMemo(() => {
-    if (!channel) return [];
+    if (!selectedChannel) return [];
     return [
-      ...new Set(supportOptions.filter(item => item.channel === channel).map(item => item.os)),
+      ...new Set(
+        supportOptions.filter(item => item.channel === selectedChannel).map(item => item.os)
+      ),
     ].map(item => ({
       label: item,
       value: item,
     }));
-  }, [channel, supportOptions]);
+  }, [selectedChannel, supportOptions]);
+
+  const lockedOs = lockedValue(availableOS);
+  const selectedOs = lockedOs ?? os;
 
   const renderFixedSelect = (value: any[]) => {
     return !(value.length === 0 || (value.length === 1 && value[0].value === "any"));
   };
 
   const availableArch = useMemo(() => {
-    if (!channel) return [];
+    if (!selectedChannel) return [];
     // OS 全为 "any" 时 os 状态保持空字符串，此时用 "any" 作为过滤值
-    const effectiveOs = !renderFixedSelect(availableOS) ? "any" : os;
+    const effectiveOs = !renderFixedSelect(availableOS) ? "any" : selectedOs;
     if (!effectiveOs) return [];
     return [
       ...new Set(
         supportOptions
-          .filter(item => item.channel === channel && item.os === effectiveOs)
+          .filter(item => item.channel === selectedChannel && item.os === effectiveOs)
           .map(item => item.arch)
       ),
     ].map(item => ({
       label: item,
       value: item,
     }));
-  }, [channel, supportOptions, os, availableOS]);
+  }, [selectedChannel, supportOptions, selectedOs, availableOS]);
+
+  const lockedArch = lockedValue(availableArch);
+  const selectedArch = lockedArch ?? arch;
 
   const updateUrlParams = (newChannel: string, newOs: string, newArch: string) => {
     if (typeof window === "undefined") return;
@@ -181,12 +249,12 @@ export default function ProjectCard(props: ProjectCardProps) {
   const handleOSChange = (value: any) => {
     setOs(value);
     setArch("");
-    updateUrlParams(channel, value, "");
+    updateUrlParams(selectedChannel, value, "");
   };
 
   const handleArchChange = (value: any) => {
     setArch(value);
-    updateUrlParams(channel, os, value);
+    updateUrlParams(selectedChannel, selectedOs, value);
   };
 
   // 互斥的状态
@@ -198,21 +266,21 @@ export default function ProjectCard(props: ProjectCardProps) {
   });
 
   const queryUrl = async (type: "Share" | "Download") => {
-    if (!channel) {
+    if (!selectedChannel) {
       addToast({
         description: t("noChannel"),
         color: "warning",
       });
       return;
     }
-    if (renderFixedSelect(availableOS) && os === "") {
+    if (renderFixedSelect(availableOS) && selectedOs === "") {
       addToast({
         description: t("noOs"),
         color: "warning",
       });
       return;
     }
-    if (renderFixedSelect(availableArch) && arch === "") {
+    if (renderFixedSelect(availableArch) && selectedArch === "") {
       addToast({
         description: t("noArch"),
         color: "warning",
@@ -226,57 +294,50 @@ export default function ProjectCard(props: ProjectCardProps) {
       });
       return;
     }
-    setLoading({
-      loading: true,
-      type: type,
+    // 根据当前选择的 channel、os、arch 找到对应的 supportOption，获取其 rid
+    const currentOption = supportOptions.find(
+      item =>
+        item.channel === selectedChannel &&
+        (item.os === selectedOs || item.os === "any") &&
+        (item.arch === selectedArch || item.arch === "any")
+    );
+    // 如果 supportOption 中有自定义的 rid，使用它；否则使用原始的 resource
+    const targetResource = currentOption?.rid || resource;
+
+    const query = new URLSearchParams({
+      os: selectedOs === "any" ? "" : selectedOs,
+      arch: selectedArch === "any" ? "" : selectedArch,
+      channel: selectedChannel,
+      cdk: cdk.trim(),
+      user_agent: "mirrorchyan_web",
     });
-    try {
-      // 根据当前选择的 channel、os、arch 找到对应的 supportOption，获取其 rid
-      const currentOption = supportOptions.find(
-        item =>
-          item.channel === channel &&
-          (item.os === os || item.os === "any") &&
-          (item.arch === arch || item.arch === "any")
-      );
-      // 如果 supportOption 中有自定义的 rid，使用它；否则使用原始的 resource
-      const targetResource = currentOption?.rid || resource;
 
-      const reqOs = os === "any" ? "" : os;
-      const reqArch = arch === "any" ? "" : arch;
-      const dl = `${CLIENT_BACKEND}/api/resources/${targetResource}/latest?os=${reqOs}&arch=${reqArch}&channel=${channel}&cdk=${cdk}&user_agent=mirrorchyan_web`;
-      const response = await fetch(dl);
+    setLoading({ loading: true, type });
+    const result = await fetchLatestDownload(targetResource, query).catch((error: unknown) => {
+      console.error(error);
+      return null;
+    });
+    setLoading({ loading: false, type });
 
-      const { code, msg, data } = await response.json();
-      if (code !== 0) {
-        const props = {
-          description: msg,
-          color: "warning",
-        };
-        if (code !== 1) {
-          props.description = t(code.toString());
-        }
-        addToast(props as ToastProps);
-        return;
-      }
-
-      const url = data.url;
-      if (!url) {
-        addToast({
-          description: msg,
-          color: "danger",
-        });
-        return;
-      }
-
-      setVersion(data.version_name);
-
-      return url;
-    } finally {
-      setLoading({
-        loading: false,
-        type: type,
-      });
+    if (!result) {
+      addToast({ description: common("networkError"), color: "danger" });
+      return;
     }
+    if (result.status === "error") {
+      // code 为 1 时直接展示后端返回的信息，其余错误码使用本地化文案
+      addToast({
+        description: result.code === 1 ? result.msg : t(result.code.toString()),
+        color: "warning",
+      });
+      return;
+    }
+    if (result.status === "noUrl") {
+      addToast({ description: result.msg, color: "danger" });
+      return;
+    }
+
+    setVersion(result.version);
+    return result.url;
   };
 
   const handleShare = async () => {
@@ -285,15 +346,23 @@ export default function ProjectCard(props: ProjectCardProps) {
       return;
     }
     const downloadKey = url.substring(url.lastIndexOf("/") + 1);
-    const shareUrl = `${window.location.origin}/${locale}/projects/?source=dlshare-${resource}&download=${downloadKey}`;
-    await navigator.clipboard.writeText(shareUrl);
+    const link = `${window.location.origin}/${locale}/projects/?${new URLSearchParams({
+      source: `dlshare-${resource}`,
+      download: downloadKey,
+    })}`;
 
-    addToast({
-      description: t("shared"),
-      color: "primary",
-    });
+    // 接口返回后已失去用户激活，Safari/iOS 可能拒绝写入剪贴板，此时展示链接让用户手动复制
+    if (await copyText(link)) {
+      setShareUrl("");
+      addToast({
+        description: t("shared"),
+        color: "primary",
+      });
+    } else {
+      setShareUrl(link);
+    }
     console.log(
-      `shared key ${downloadKey} for ${name} tuple: ${os}-${arch}-${channel}${cdk ? ` cdk: ${cdk}` : ""}`
+      `shared key ${downloadKey} for ${name} tuple: ${selectedOs}-${selectedArch}-${selectedChannel}${cdk ? ` cdk: ${cdk}` : ""}`
     );
   };
 
@@ -303,9 +372,17 @@ export default function ProjectCard(props: ProjectCardProps) {
       return;
     }
 
-    window.open(url, "_blank");
+    // App 内置浏览器会拦截下载；其他浏览器在 await 之后打开新窗口也可能被拦截
+    const inApp = isInAppBrowser();
+    const opened = !inApp && window.open(url, "_blank") !== null;
 
+    setDownloadUrl(new URL(url, window.location.href).href);
+    setInAppBrowser(inApp);
+    setAutoDownloaded(opened);
     setDownloadStarted(true);
+    if (!opened) {
+      return;
+    }
     setIsLoadingAnimation(true);
 
     // 糊点安慰剂)
@@ -314,15 +391,6 @@ export default function ProjectCard(props: ProjectCardProps) {
     }, 1000);
   };
 
-  const Conditioned = ({
-    children,
-    condition,
-  }: {
-    condition: () => boolean;
-    children: React.ReactElement;
-  }) => {
-    return condition() ? children : <></>;
-  };
   const openModal = () => {
     if (!download) {
       addToast({
@@ -340,33 +408,33 @@ export default function ProjectCard(props: ProjectCardProps) {
     if (!showModal) {
       const s = new URLSearchParams(window.location.search);
       s.set("rid", resource);
-      if (os) {
-        s.set("os", os);
+      if (selectedOs) {
+        s.set("os", selectedOs);
       }
-      if (arch) {
-        s.set("arch", arch);
+      if (selectedArch) {
+        s.set("arch", selectedArch);
       }
-      if (channel) {
-        s.set("channel", channel);
+      if (selectedChannel) {
+        s.set("channel", selectedChannel);
       }
-      window.history.replaceState(null, "", `/${locale}/projects?${s}`);
+      window.history.replaceState(null, "", `${window.location.pathname}?${s}`);
     }
   };
 
   const onModalClose = () => {
+    onClose();
     const s = new URLSearchParams(window.location.search);
     s.delete("rid");
-    s.delete("os");
-    s.delete("arch");
-    s.delete("channel");
-    if (s.size === 0) {
-      window.history.replaceState(null, "", `/${locale}/projects`);
+    // URLSearchParams.size 在 Chrome 113 / Safari 17 以下不存在
+    if (s.toString() === "") {
+      window.history.replaceState(null, "", window.location.pathname);
     } else {
-      window.history.replaceState(null, "", `/${locale}/projects?${s}`);
+      window.history.replaceState(null, "", `${window.location.pathname}?${s}`);
     }
 
     setDownloadStarted(false);
     setIsLoadingAnimation(false);
+    setShareUrl("");
   };
 
   return (
@@ -434,8 +502,13 @@ export default function ProjectCard(props: ProjectCardProps) {
       <Modal
         isDismissable={false}
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        onClose={onModalClose}
+        onOpenChange={open => {
+          if (open) {
+            onOpen();
+          } else {
+            onModalClose();
+          }
+        }}
         backdrop="opaque"
         size="2xl"
         placement="center"
@@ -501,13 +574,45 @@ export default function ProjectCard(props: ProjectCardProps) {
                       <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
                         {isLoadingAnimation
                           ? t("downloading")
-                          : t("downloadStarted", { name, version })}
+                          : autoDownloaded
+                            ? t("downloadStarted", { name, version })
+                            : t("downloadReady", { name, version })}
                       </h3>
-                      <p className="text-gray-600 dark:text-gray-300">
-                        {isLoadingAnimation ? t("pleaseWait") : t("downloadInProgress")}
-                      </p>
+                      {(isLoadingAnimation || autoDownloaded) && (
+                        <p className="text-gray-600 dark:text-gray-300">
+                          {isLoadingAnimation ? t("pleaseWait") : t("downloadInProgress")}
+                        </p>
+                      )}
+                      {!isLoadingAnimation &&
+                        !inAppBrowser &&
+                        (autoDownloaded ? (
+                          <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                            {t("manualDownloadHint")}
+                            <a
+                              href={downloadUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary-600 dark:text-primary-400 ml-1 underline"
+                            >
+                              {t("manualDownloadLink")}
+                            </a>
+                          </p>
+                        ) : (
+                          <Button
+                            as="a"
+                            href={downloadUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            color="primary"
+                            className="mt-4"
+                          >
+                            {t("clickToDownload")}
+                          </Button>
+                        ))}
                     </div>
                   </div>
+
+                  {inAppBrowser && <InAppDownloadNotice url={downloadUrl} />}
 
                   <div className="rounded-lg border border-orange-200 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-900/20">
                     <div className="flex items-start">
@@ -625,53 +730,79 @@ export default function ProjectCard(props: ProjectCardProps) {
                   </div>
                   <div className="flex flex-col gap-4 sm:flex-row">
                     <div className="flex-1">
-                      <Select
-                        label={t("channel")}
-                        placeholder={t("noChannel")}
-                        onChange={e => handleChannelChange(e.target.value)}
-                        className="w-full"
-                        isDisabled={availableChannel.length === 0}
-                        selectedKeys={[channel]}
-                      >
-                        {availableChannel.map(channelOption => (
-                          <SelectItem key={channelOption}>{t(channelOption)}</SelectItem>
-                        ))}
-                      </Select>
+                      {lockedChannel ? (
+                        <Input
+                          label={t("channel")}
+                          value={t(lockedChannel)}
+                          isReadOnly
+                          className="w-full"
+                          classNames={lockedInputClassNames}
+                        />
+                      ) : (
+                        <Select
+                          label={t("channel")}
+                          placeholder={t("noChannel")}
+                          onChange={e => handleChannelChange(e.target.value)}
+                          className="w-full"
+                          isDisabled={availableChannel.length === 0}
+                          selectedKeys={[selectedChannel]}
+                        >
+                          {availableChannel.map(channelOption => (
+                            <SelectItem key={channelOption}>{t(channelOption)}</SelectItem>
+                          ))}
+                        </Select>
+                      )}
                     </div>
 
-                    <>
-                      <Conditioned condition={() => renderFixedSelect(availableOS)}>
-                        <div className="flex-1">
+                    {renderFixedSelect(availableOS) && (
+                      <div className="flex-1">
+                        {lockedOs ? (
+                          <Input
+                            label={t("os")}
+                            value={lockedOs}
+                            isReadOnly
+                            className="w-full"
+                            classNames={lockedInputClassNames}
+                          />
+                        ) : (
                           <Select
                             label={t("os")}
                             placeholder={t("noOs")}
                             onChange={e => handleOSChange(e.target.value)}
                             className="w-full"
                             items={availableOS}
-                            selectedKeys={[os]}
+                            selectedKeys={[selectedOs]}
                           >
                             {item => <SelectItem key={item.value}>{item.label}</SelectItem>}
                           </Select>
-                        </div>
-                      </Conditioned>
-                    </>
+                        )}
+                      </div>
+                    )}
 
-                    <>
-                      <Conditioned condition={() => renderFixedSelect(availableArch)}>
-                        <div className="flex-1">
+                    {renderFixedSelect(availableArch) && (
+                      <div className="flex-1">
+                        {lockedArch ? (
+                          <Input
+                            label={t("arch")}
+                            value={lockedArch}
+                            isReadOnly
+                            className="w-full"
+                            classNames={lockedInputClassNames}
+                          />
+                        ) : (
                           <Select
                             label={t("arch")}
                             placeholder={t("noArch")}
                             onChange={e => handleArchChange(e.target.value)}
                             className="w-full"
                             items={availableArch}
-                            selectedKeys={[arch]}
+                            selectedKeys={[selectedArch]}
                           >
                             {item => <SelectItem key={item.value}>{item.label}</SelectItem>}
                           </Select>
-                        </div>
-                      </Conditioned>
-                    </>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-row gap-3">
@@ -706,6 +837,29 @@ export default function ProjectCard(props: ProjectCardProps) {
                       </Link>
                     </div>
                   </div>
+
+                  {shareUrl && (
+                    <Input
+                      label={t("shareLink")}
+                      description={t("copyShareLinkManually")}
+                      value={shareUrl}
+                      isReadOnly
+                      onFocus={e => e.target.select()}
+                      endContent={
+                        <Button
+                          size="sm"
+                          variant="flat"
+                          onPress={async () => {
+                            if (await copyText(shareUrl)) {
+                              addToast({ description: t("shared"), color: "primary" });
+                            }
+                          }}
+                        >
+                          {t("copy")}
+                        </Button>
+                      }
+                    />
+                  )}
                 </div>
               )}
               {!downloadStarted && (
@@ -734,14 +888,7 @@ export default function ProjectCard(props: ProjectCardProps) {
                 </Button>
               ) : (
                 <>
-                  <Button
-                    color="danger"
-                    variant="light"
-                    onPress={() => {
-                      onClose();
-                      onModalClose();
-                    }}
-                  >
+                  <Button color="danger" variant="light" onPress={onModalClose}>
                     {common("cancel")}
                   </Button>
                   <Button

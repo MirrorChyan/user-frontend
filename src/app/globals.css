@@ -74,3 +74,89 @@ body {
 ::-ms-reveal {
   display: none;
 }
+
+/* 背景动画：纯 CSS 实现，时长和延迟通过行内样式按元素设置 */
+@keyframes background-line-draw {
+  0% {
+    stroke-dashoffset: 800;
+    stroke-dasharray: 50 800;
+    opacity: 0;
+  }
+  20%,
+  40% {
+    opacity: 1;
+  }
+  60%,
+  100% {
+    stroke-dashoffset: 0;
+    stroke-dasharray: 20 800;
+    opacity: 0;
+  }
+}
+
+.background-line {
+  opacity: 0;
+  animation: background-line-draw linear infinite both;
+}
+
+@keyframes collision-beam-fall {
+  from {
+    transform: translate(var(--beam-x), -200px);
+  }
+  to {
+    transform: translate(var(--beam-x), 1800px);
+  }
+}
+
+.collision-beam {
+  transform: translate(var(--beam-x), -200px);
+  animation: collision-beam-fall linear both;
+}
+
+@keyframes explosion-flash {
+  0% {
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.explosion-flash {
+  animation: explosion-flash 2s ease-out both;
+}
+
+@keyframes explosion-particle {
+  from {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--particle-x), var(--particle-y));
+    opacity: 0;
+  }
+}
+
+.explosion-particle {
+  animation: explosion-particle ease-out both;
+}
+
+/* 窄屏只保留一半线条，减轻移动端重绘压力 */
+@media (max-width: 767px) {
+  .background-line-extra {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .background-line,
+  .collision-beam,
+  .explosion-flash,
+  .explosion-particle {
+    animation: none;
+    display: none;
+  }
+}

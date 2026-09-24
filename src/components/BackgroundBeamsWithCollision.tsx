@@ -1,7 +1,45 @@
 "use client";
 import { cn } from "@/lib/utils/css";
-import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "@/hooks/useMediaQuery";
+
+type BeamOptions = {
+  initialX: number;
+  duration: number;
+  repeatDelay: number;
+  delay?: number;
+  // 高度需要与 className 中的 h-* 保持一致，用于计算碰撞时间
+  height: number;
+  className: string;
+};
+
+const BEAMS: BeamOptions[] = [
+  { initialX: 10, duration: 7, repeatDelay: 3, delay: 2, height: 56, className: "h-14" },
+  { initialX: 600, duration: 3, repeatDelay: 3, delay: 4, height: 56, className: "h-14" },
+  { initialX: 100, duration: 7, repeatDelay: 7, height: 24, className: "h-6" },
+  { initialX: 400, duration: 5, repeatDelay: 14, delay: 4, height: 56, className: "h-14" },
+  { initialX: 800, duration: 11, repeatDelay: 2, height: 80, className: "h-20" },
+  { initialX: 1000, duration: 4, repeatDelay: 2, height: 48, className: "h-12" },
+  { initialX: 1200, duration: 6, repeatDelay: 4, delay: 2, height: 24, className: "h-6" },
+];
+
+// 光束位于 top-20（80px），从 translateY(-200px) 线性移动到 translateY(1800px)
+const BEAM_TOP = 80;
+const START_Y = -200;
+const END_Y = 1800;
+const EXPLOSION_MS = 2000;
+
+type Particle = { id: number; x: number; y: number; duration: number };
+type ExplosionState = { x: number; y: number; particles: Particle[] };
+
+function createParticles(): Particle[] {
+  return Array.from({ length: 20 }, (_, index) => ({
+    id: index,
+    x: Math.floor(Math.random() * 80 - 40),
+    y: Math.floor(Math.random() * -50 - 10),
+    duration: Math.random() * 1.5 + 0.5,
+  }));
+}
 
 export const BackgroundBeamsWithCollision = ({
   children,
@@ -10,61 +48,22 @@ export const BackgroundBeamsWithCollision = ({
   children: React.ReactNode;
   className?: string;
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const parentRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = usePrefersReducedMotion();
+  const [size, setSize] = useState<{ width: number; height: number } | null>(null);
 
-  const beams = [
-    {
-      initialX: 10,
-      translateX: 10,
-      duration: 7,
-      repeatDelay: 3,
-      delay: 2,
-    },
-    {
-      initialX: 600,
-      translateX: 600,
-      duration: 3,
-      repeatDelay: 3,
-      delay: 4,
-    },
-    {
-      initialX: 100,
-      translateX: 100,
-      duration: 7,
-      repeatDelay: 7,
-      className: "h-6",
-    },
-    {
-      initialX: 400,
-      translateX: 400,
-      duration: 5,
-      repeatDelay: 14,
-      delay: 4,
-    },
-    {
-      initialX: 800,
-      translateX: 800,
-      duration: 11,
-      repeatDelay: 2,
-      className: "h-20",
-    },
-    {
-      initialX: 1000,
-      translateX: 1000,
-      duration: 4,
-      repeatDelay: 2,
-      className: "h-12",
-    },
-    {
-      initialX: 1200,
-      translateX: 1200,
-      duration: 6,
-      repeatDelay: 4,
-      delay: 2,
-      className: "h-6",
-    },
-  ];
+  useEffect(() => {
+    const parent = parentRef.current;
+    if (!parent) return;
+    const observer = new ResizeObserver(() => {
+      setSize({ width: parent.clientWidth, height: parent.clientHeight });
+    });
+    observer.observe(parent);
+    return () => observer.disconnect();
+  }, []);
+
+  // 只渲染落在容器宽度内的光束，窄屏上不再为看不见的光束做动画
+  const beams = size && !reducedMotion ? BEAMS.filter(beam => beam.initialX < size.width) : [];
 
   return (
     <div
@@ -75,18 +74,13 @@ export const BackgroundBeamsWithCollision = ({
         className
       )}
     >
-      {beams.map(beam => (
-        <CollisionMechanism
-          key={beam.initialX + "beam-idx"}
-          beamOptions={beam}
-          containerRef={containerRef}
-          parentRef={parentRef}
-        />
-      ))}
+      {size &&
+        beams.map(beam => (
+          <CollisionBeam key={beam.initialX} beam={beam} parentHeight={size.height} />
+        ))}
 
       {children}
       <div
-        ref={containerRef}
         className="pointer-events-none absolute inset-x-0 bottom-0 w-full bg-neutral-100"
         style={{
           boxShadow:
@@ -97,157 +91,86 @@ export const BackgroundBeamsWithCollision = ({
   );
 };
 
-const CollisionMechanism = React.forwardRef<
-  HTMLDivElement,
-  {
-    containerRef: React.RefObject<HTMLDivElement | null>;
-    parentRef: React.RefObject<HTMLDivElement | null>;
-    beamOptions?: {
-      initialX?: number;
-      translateX?: number;
-      initialY?: number;
-      translateY?: number;
-      rotate?: number;
-      className?: string;
-      duration?: number;
-      delay?: number;
-      repeatDelay?: number;
-    };
-  }
->(({ parentRef, containerRef, beamOptions = {} }, ref) => {
-  const beamRef = useRef<HTMLDivElement>(null);
-  const [collision, setCollision] = useState<{
-    detected: boolean;
-    coordinates: { x: number; y: number } | null;
-  }>({
-    detected: false,
-    coordinates: null,
-  });
-  const [beamKey, setBeamKey] = useState(0);
-  const [cycleCollisionDetected, setCycleCollisionDetected] = useState(false);
+/**
+ * 光束匀速下落，根据容器高度直接算出落到底部的时刻，不再轮询位置。
+ * 碰撞后展示爆炸效果并在 2 秒后重新下落（再次等待 delay）；
+ * 容器过高碰不到底部时，落完一轮后等待 repeatDelay 再开始下一轮。
+ */
+function CollisionBeam({ beam, parentHeight }: { beam: BeamOptions; parentHeight: number }) {
+  const [round, setRound] = useState({ id: 0, delay: beam.delay ?? 0 });
+  const [explosion, setExplosion] = useState<ExplosionState | null>(null);
 
   useEffect(() => {
-    const checkCollision = () => {
-      if (beamRef.current && containerRef.current && parentRef.current && !cycleCollisionDetected) {
-        const beamRect = beamRef.current.getBoundingClientRect();
-        const containerRect = containerRef.current.getBoundingClientRect();
-        const parentRect = parentRef.current.getBoundingClientRect();
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const travel = parentHeight - BEAM_TOP - beam.height - START_Y;
+    const reachesBottom = travel > 0 && travel <= END_Y - START_Y;
 
-        if (beamRect.bottom >= containerRect.top) {
-          const relativeX = beamRect.left - parentRect.left + beamRect.width / 2;
-          const relativeY = beamRect.bottom - parentRect.top;
-
-          setCollision({
-            detected: true,
-            coordinates: {
-              x: relativeX,
-              y: relativeY,
-            },
-          });
-          setCycleCollisionDetected(true);
-        }
-      }
-    };
-
-    const animationInterval = setInterval(checkCollision, 50);
-
-    return () => clearInterval(animationInterval);
-  }, [cycleCollisionDetected, containerRef, parentRef]);
-
-  useEffect(() => {
-    if (collision.detected && collision.coordinates) {
-      setTimeout(() => {
-        setCollision({ detected: false, coordinates: null });
-        setCycleCollisionDetected(false);
-      }, 2000);
-
-      setTimeout(() => {
-        setBeamKey(prevKey => prevKey + 1);
-      }, 2000);
+    if (reachesBottom) {
+      const hitAt = round.delay + (travel / (END_Y - START_Y)) * beam.duration;
+      timers.push(
+        setTimeout(() => {
+          setExplosion({ x: beam.initialX, y: parentHeight, particles: createParticles() });
+          timers.push(
+            setTimeout(() => {
+              setExplosion(null);
+              setRound(prev => ({ id: prev.id + 1, delay: beam.delay ?? 0 }));
+            }, EXPLOSION_MS)
+          );
+        }, hitAt * 1000)
+      );
+    } else {
+      timers.push(
+        setTimeout(
+          () => setRound(prev => ({ id: prev.id + 1, delay: beam.repeatDelay })),
+          (round.delay + beam.duration) * 1000
+        )
+      );
     }
-  }, [collision]);
+
+    return () => timers.forEach(clearTimeout);
+  }, [beam, parentHeight, round]);
 
   return (
     <>
-      <motion.div
-        key={beamKey}
-        ref={beamRef}
-        animate="animate"
-        initial={{
-          translateY: beamOptions.initialY || "-200px",
-          translateX: beamOptions.initialX || "0px",
-          rotate: beamOptions.rotate || 0,
-        }}
-        variants={{
-          animate: {
-            translateY: beamOptions.translateY || "1800px",
-            translateX: beamOptions.translateX || "0px",
-            rotate: beamOptions.rotate || 0,
-          },
-        }}
-        transition={{
-          duration: beamOptions.duration || 8,
-          repeat: Infinity,
-          repeatType: "loop",
-          ease: "linear",
-          delay: beamOptions.delay || 0,
-          repeatDelay: beamOptions.repeatDelay || 0,
-        }}
+      <div
+        key={round.id}
         className={cn(
-          "absolute top-20 left-0 m-auto h-14 w-px rounded-full bg-gradient-to-t from-indigo-500 via-purple-500 to-transparent",
-          beamOptions.className
+          "collision-beam absolute top-20 left-0 w-px rounded-full bg-gradient-to-t from-indigo-500 via-purple-500 to-transparent",
+          beam.className
         )}
+        style={
+          {
+            "--beam-x": `${beam.initialX}px`,
+            animationDuration: `${beam.duration}s`,
+            animationDelay: `${round.delay}s`,
+          } as React.CSSProperties
+        }
       />
-      <AnimatePresence>
-        {collision.detected && collision.coordinates && (
-          <Explosion
-            key={`${collision.coordinates.x}-${collision.coordinates.y}`}
-            className=""
-            style={{
-              left: `${collision.coordinates.x}px`,
-              top: `${collision.coordinates.y}px`,
-              transform: "translate(-50%, -50%)",
-            }}
-          />
-        )}
-      </AnimatePresence>
+      {explosion && <Explosion {...explosion} />}
     </>
   );
-});
+}
 
-CollisionMechanism.displayName = "CollisionMechanism";
-
-const Explosion = ({ ...props }: React.HTMLProps<HTMLDivElement>) => {
-  const spans = Array.from({ length: 20 }, (_, index) => ({
-    id: index,
-    initialX: 0,
-    initialY: 0,
-    directionX: Math.floor(Math.random() * 80 - 40),
-    directionY: Math.floor(Math.random() * -50 - 10),
-  }));
-
+function Explosion({ x, y, particles }: ExplosionState) {
   return (
-    <div {...props} className={cn("absolute z-50 h-2 w-2", props.className)}>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 1.5, ease: "easeOut" }}
-        className="absolute -inset-x-10 top-0 m-auto h-2 w-10 rounded-full bg-gradient-to-r from-transparent via-indigo-500 to-transparent blur-sm"
-      ></motion.div>
-      {spans.map(span => (
-        <motion.span
-          key={span.id}
-          initial={{ x: span.initialX, y: span.initialY, opacity: 1 }}
-          animate={{
-            x: span.directionX,
-            y: span.directionY,
-            opacity: 0,
-          }}
-          transition={{ duration: Math.random() * 1.5 + 0.5, ease: "easeOut" }}
-          className="absolute h-1 w-1 rounded-full bg-gradient-to-b from-indigo-500 to-purple-500"
+    <div
+      className="absolute z-50 h-2 w-2"
+      style={{ left: `${x}px`, top: `${y}px`, transform: "translate(-50%, -50%)" }}
+    >
+      <div className="explosion-flash absolute -inset-x-10 top-0 m-auto h-2 w-10 rounded-full bg-gradient-to-r from-transparent via-indigo-500 to-transparent blur-sm" />
+      {particles.map(particle => (
+        <span
+          key={particle.id}
+          className="explosion-particle absolute h-1 w-1 rounded-full bg-gradient-to-b from-indigo-500 to-purple-500"
+          style={
+            {
+              "--particle-x": `${particle.x}px`,
+              "--particle-y": `${particle.y}px`,
+              animationDuration: `${particle.duration}s`,
+            } as React.CSSProperties
+          }
         />
       ))}
     </div>
   );
-};
+}

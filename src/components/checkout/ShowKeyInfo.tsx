@@ -1,11 +1,61 @@
 import { useLocale, useTranslations } from "next-intl";
 import { CheckCircle, Gift, Layers, MessageCircle, TrendingUp } from "lucide-react";
-import moment from "moment/moment";
 import { OrderInfoType } from "@/components/checkout/QRCodePayModal";
 import { addToast } from "@heroui/toast";
 import { getGroupUrl } from "@/lib/utils/constant";
-import { useMemo, useState } from "react";
-import confetti from "canvas-confetti";
+import { useState } from "react";
+import { DAY_MS, formatDateTime } from "@/lib/utils/date";
+import { copyText } from "@/lib/utils/clipboard";
+
+// 先展示少一天的到期时间，抽取额外天数后再加回来；
+// relativeDays 为抽取前的剩余天数，抽取后展示为 relativeDays + extraDays
+function getInitialExpiry(expiredAt: string | undefined) {
+  const now = Date.now();
+  const initialExpiredTime = (expiredAt ? new Date(expiredAt).getTime() : now) - DAY_MS;
+  return {
+    initialExpiredTime,
+    relativeDays: Math.round((initialExpiredTime - now) / DAY_MS),
+  };
+}
+
+const CONFETTI_COLORS = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"];
+
+// 只有点击抽奖时才加载 canvas-confetti，避免打进结账页的首屏包
+async function fireConfetti() {
+  const { default: confetti } = await import("canvas-confetti");
+  const end = Date.now() + 100;
+
+  const frame = () => {
+    confetti({
+      particleCount: 20,
+      angle: 60,
+      spread: 70,
+      origin: { x: 0, y: 0.5 },
+      colors: CONFETTI_COLORS,
+      zIndex: 1000,
+    });
+    confetti({
+      particleCount: 20,
+      angle: 120,
+      spread: 70,
+      origin: { x: 1, y: 0.5 },
+      colors: CONFETTI_COLORS,
+      zIndex: 1000,
+    });
+    confetti({
+      particleCount: 30,
+      spread: 120,
+      origin: { x: 0.5, y: 0 },
+      colors: CONFETTI_COLORS,
+      zIndex: 1000,
+    });
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  };
+  frame();
+}
 
 export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
   const t = useTranslations("ShowKey");
@@ -15,31 +65,21 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
   const [extraDays, setExtraDays] = useState(0);
   const randomDays = 1;
 
-  const [expiredTime, setExpiredTime] = useState(moment(info?.expired_at).add(-1, "d"));
-
-  const relativeDays = useMemo(
-    () => Math.round(moment.duration(moment(expiredTime).diff(moment())).asDays()),
-    [expiredTime]
-  );
+  // 到期时间和剩余天数只在首次渲染时计算
+  const [{ initialExpiredTime, relativeDays }] = useState(() => getInitialExpiry(info?.expired_at));
+  const expiredTime = initialExpiredTime + extraDays * DAY_MS;
 
   if (!info) {
     return <></>;
   }
 
-  const copyToClipboard = () => {
-    if (info.cdk) {
-      navigator.clipboard
-        .writeText(info.cdk)
-        .then(() => {
-          addToast({
-            color: "success",
-            description: t("copySuccess"),
-          });
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    }
+  const copyToClipboard = async () => {
+    if (!info.cdk) return;
+    const copied = await copyText(info.cdk);
+    addToast({
+      color: copied ? "success" : "danger",
+      description: copied ? t("copySuccess") : t("copyFailed"),
+    });
   };
 
   const handleJoinQQGroup = async () => {
@@ -53,48 +93,13 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
   const handleGetExtraDays = () => {
     setExtraDays(randomDays);
     setShowConfetti(true);
-    setExpiredTime(expiredTime.add(1, "d"));
-
-    const end = Date.now() + 100;
-
-    const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"];
 
     addToast({
       color: "success",
       description: t.rich("confettiText", { randomDays })?.toString() ?? "",
     });
 
-    (function frame() {
-      confetti({
-        particleCount: 20,
-        angle: 60,
-        spread: 70,
-        origin: { x: 0, y: 0.5 },
-        colors: colors,
-        zIndex: 1000,
-      });
-
-      confetti({
-        particleCount: 20,
-        angle: 120,
-        spread: 70,
-        origin: { x: 1, y: 0.5 },
-        colors: colors,
-        zIndex: 1000,
-      });
-
-      confetti({
-        particleCount: 30,
-        spread: 120,
-        origin: { x: 0.5, y: 0 },
-        colors: colors,
-        zIndex: 1000,
-      });
-
-      if (Date.now() < end) {
-        requestAnimationFrame(frame);
-      }
-    })();
+    fireConfetti().catch(error => console.error(error));
   };
 
   return (
@@ -126,7 +131,7 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
               <span className="text-sm whitespace-pre-line text-gray-500 dark:text-gray-400">
                 {t.rich("timeConfettiAfter", {
                   addDay: extraDays,
-                  time: expiredTime.format("YYYY-MM-DD HH:mm:ss"),
+                  time: formatDateTime(expiredTime),
                 })}
                 <div className="mt-2 flex items-center justify-center gap-1 text-sm text-emerald-600 dark:text-emerald-400">
                   {t.rich("remainingDays", { originDay: relativeDays })}
@@ -139,7 +144,7 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
             ) : (
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 {t.rich("timeConfettiBefore", {
-                  time: expiredTime.format("YYYY-MM-DD HH:mm:ss"),
+                  time: formatDateTime(expiredTime),
                   days: relativeDays,
                 })}
               </span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { getStorageItem, removeStorageItem, setStorageItem } from "@/lib/utils/storage";
 
 interface SourceTrackerProps {
   source?: string;
@@ -11,23 +12,25 @@ type SourceInfo = {
   ts: number;
 };
 
+const SOURCE_KEY = "source";
+
 export default function SourceTracker({ source }: SourceTrackerProps) {
   useEffect(() => {
     if (source) {
-      window.localStorage.setItem(
-        "source",
+      setStorageItem(
+        SOURCE_KEY,
         JSON.stringify({
           source: source,
           ts: new Date().valueOf(),
         } as SourceInfo)
       );
     }
-  });
+  }, [source]);
   return null;
 }
 
 export function getSource(): string {
-  const source = localStorage.getItem("source");
+  const source = getStorageItem(SOURCE_KEY);
   if (!source) return "";
 
   try {
@@ -35,12 +38,12 @@ export function getSource(): string {
     const isExpired = Date.now() - ts > 3_600_000;
 
     if (isExpired) {
-      localStorage.removeItem("source");
+      removeStorageItem(SOURCE_KEY);
       return "";
     }
     return value;
   } catch {
-    localStorage.removeItem("source");
+    removeStorageItem(SOURCE_KEY);
     return "";
   }
 }

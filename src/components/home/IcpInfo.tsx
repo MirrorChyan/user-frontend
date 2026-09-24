@@ -10,7 +10,12 @@ type ICP = {
 async function getIcpInfo() {
   try {
     const head = await headers();
-    const res = await fetch(`${SERVER_BACKEND}/api/misc/icp?domain=${head.get("Host")}`);
+    const query = new URLSearchParams({ domain: head.get("Host") ?? "" });
+    const res = await fetch(`${SERVER_BACKEND}/api/misc/icp?${query}`, {
+      // 备案信息几乎不变，按域名缓存 1 小时
+      next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(10_000),
+    });
     if (!res.ok) {
       return null;
     }

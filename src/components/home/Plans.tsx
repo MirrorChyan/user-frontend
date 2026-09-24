@@ -23,18 +23,23 @@ export default function Plans({ morePlans, homePlans, ...rest }: PlansProps) {
   const homePlansRef = useRef<HTMLDivElement>(null);
   const [offset, setOffset] = useState<number | null>(10000);
 
+  // 桌面端把“更多”按钮放在最后一张套餐卡片右侧，窗口尺寸变化时重新计算
   useEffect(() => {
-    if (!homePlans.length || !morePlans.length) return;
-    if (homePlansRef.current) {
+    const container = homePlansRef.current;
+    if (!container || !homePlans.length || !morePlans.length) return;
+
+    const observer = new ResizeObserver(() => {
       if (document.body.clientWidth < 768) {
         setOffset(null);
-      } else {
-        const { left } = homePlansRef.current!.getBoundingClientRect();
-        const { right } = homePlansRef.current!.lastElementChild!.getBoundingClientRect();
-        setOffset(right - left);
+        return;
       }
-    }
-  }, [homePlansRef.current, homePlans]);
+      const last = container.lastElementChild;
+      if (!last) return;
+      setOffset(last.getBoundingClientRect().right - container.getBoundingClientRect().left);
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [homePlans.length, morePlans.length]);
 
   return (
     <div className="mx-auto mt-16 max-w-md self-center md:max-w-2xl lg:max-w-4xl xl:mx-0 xl:max-w-6xl">

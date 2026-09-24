@@ -1,21 +1,27 @@
 "use client";
 
 import { Select, SelectItem } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SharedSelection } from "@heroui/system";
 
 type PropsType = {
   onChange?: (value: string) => void;
 };
 
+function formatMonth(month: number) {
+  return month.toString().padStart(2, "0");
+}
+
+/** 当前年月，格式为 YYYYMM，与选择器的初始值一致 */
+export function getCurrentYearMonth(): string {
+  const currentDate = new Date();
+  return currentDate.getFullYear() + formatMonth(currentDate.getMonth() + 1); // 月份从0开始
+}
+
 export default function YearMonthPicker({ onChange }: PropsType) {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = formatMonth(currentDate.getMonth() + 1); // 月份从0开始
-
-  function formatMonth(month: number) {
-    return month.toString().padStart(2, "0");
-  }
 
   const startYear = 2025;
   const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => startYear + i);
@@ -36,11 +42,6 @@ export default function YearMonthPicker({ onChange }: PropsType) {
     setSelectedMonth(month);
     if (selectedYear) onChange?.(selectedYear + month);
   };
-
-  // 初始化时触发一次回调
-  useEffect(() => {
-    onChange?.(currentYear + currentMonth);
-  }, []); // 空依赖数组确保只执行一次
 
   return (
     <div className="flex w-full overflow-hidden rounded-2xl">

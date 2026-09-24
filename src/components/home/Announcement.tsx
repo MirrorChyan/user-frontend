@@ -1,34 +1,37 @@
 "use client";
 
-import { useEffect } from "react";
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from "@heroui/react";
-import ReactMarkdown from "react-markdown";
+import { ReactNode, useEffect, useState } from "react";
+import { useDisclosure } from "@heroui/react";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { addToast, closeAll } from "@heroui/toast";
 
+// 公告弹窗只有点击通知后才需要，按需加载
+const AnnouncementModal = dynamic(() => import("@/components/home/AnnouncementModal"));
+
 type PropsType = {
   summary: string;
-  details: string;
+  // 公告详情已在服务端渲染为 Markdown，客户端不需要加载 react-markdown
+  content: ReactNode;
 };
 
-export default function Announcement({ details, summary }: PropsType) {
+export default function Announcement({ content, summary }: PropsType) {
   const t = useTranslations("Component.Announcement");
   // model state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  // 首次打开后保持挂载，保留关闭动画
+  const [modalLoaded, setModalLoaded] = useState(false);
 
   useEffect(() => {
+    const openModal = () => {
+      setModalLoaded(true);
+      onOpen();
+    };
+
     closeAll();
     addToast({
       title: (
-        <div onClick={onOpen} className={"h-full w-full cursor-pointer"}>
+        <div onClick={openModal} className={"h-full w-full cursor-pointer"}>
           {t("newAnnouncement")} - {summary}
         </div>
       ),
@@ -39,28 +42,12 @@ export default function Announcement({ details, summary }: PropsType) {
     });
   }, [summary, t, onOpen]);
 
-  return (
-    <>
-      <Modal backdrop="blur" scrollBehavior="inside" isOpen={isOpen} onClose={onOpenChange}>
-        <ModalContent>
-          {onClose => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">{summary}</ModalHeader>
-              <ModalBody>
-                <ReactMarkdown>{details}</ReactMarkdown>
-              </ModalBody>
-              <ModalFooter>
-                {/* <Button color="danger" variant="light" onPress={onClose}>
-                  {t('doNotShow')}
-                </Button> */}
-                <Button color="primary" onPress={onClose}>
-                  {t("close")}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </>
-  );
+  return modalLoaded ? (
+    <AnnouncementModal
+      summary={summary}
+      content={content}
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+    />
+  ) : null;
 }

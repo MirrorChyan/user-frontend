@@ -9,42 +9,29 @@ type Announcement = {
   };
 };
 
-// 缓存的公告
-const announcementCache: Record<string, Announcement> = {};
-
-// 缓存的公告更新时间
-const lastFetchTime: Record<string, number> = {};
-// 缓存的持续时间
-const CACHE_DURATION = 60 * 1000; // 1分钟（毫秒）
+const EMPTY_ANNOUNCEMENT: Announcement = {
+  ec: 400,
+  msg: "",
+  data: {
+    summary: "",
+    details: "",
+  },
+};
 
 export async function getAnnouncement(lang: "zh" | "en"): Promise<Announcement> {
-  // Use absolute URL with origin to work properly in server components
-  const now = Date.now();
-  if (
-    lastFetchTime[lang] &&
-    now - lastFetchTime[lang] < CACHE_DURATION &&
-    announcementCache[lang]
-  ) {
-    return announcementCache[lang];
-  }
-
   try {
-    const res = await fetch(`${SERVER_BACKEND}/api/misc/anno?lang=${lang}`);
-    const response = await res.json();
-
-    announcementCache[lang] = response;
-    lastFetchTime[lang] = now;
-
-    return response;
+    const res = await fetch(`${SERVER_BACKEND}/api/misc/anno?${new URLSearchParams({ lang })}`, {
+      // 由 Next.js 数据缓存按语言分别缓存 1 分钟
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!res.ok) {
+      console.error("Get Announcement resp error:", res.status);
+      return EMPTY_ANNOUNCEMENT;
+    }
+    return await res.json();
   } catch (error) {
     console.error("Get Announcement error:", error);
-    return {
-      ec: 400,
-      msg: "",
-      data: {
-        summary: "",
-        details: "",
-      },
-    };
+    return EMPTY_ANNOUNCEMENT;
   }
 }

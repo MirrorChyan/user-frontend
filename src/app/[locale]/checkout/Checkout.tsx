@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { ArrowLeft } from "lucide-react";
-import { isMobile } from "react-device-detect";
-import { isInAppBrowser, shouldUseQRCodePayment } from "@/lib/utils/browserDetection";
+import {
+  isInAppBrowser,
+  isMobileDevice,
+  shouldUseQRCodePayment,
+} from "@/lib/utils/browserDetection";
 import NoOrder from "@/app/[locale]/checkout/NoOrder";
 import RenewalCdkInput, { RenewalCdkInputRef } from "@/components/checkout/RenewalCdkInput";
 import OrderSummaryCard from "@/components/checkout/OrderSummaryCard";
@@ -46,8 +49,9 @@ export default function Checkout(params: CheckoutProps) {
   const t = useTranslations("Checkout");
   const router = useRouter();
 
-  const planId = params.planId[0];
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("alipay");
+  const planId = params.planId[0] ?? "";
+  // 用户手动选择的支付方式，未选择时使用套餐的默认支付方式
+  const [selectedPaymentMethod, setPaymentMethod] = useState<PaymentMethod>();
   const [showModal, setShowModal] = useState<ShowedType>("none");
   const [paymentUrl, setPaymentUrl] = useState<string>("");
   const [paymentHtml, setPaymentHtml] = useState<string>("");
@@ -55,11 +59,14 @@ export default function Checkout(params: CheckoutProps) {
   const [renewCdk, setRenewCdk] = useState("");
   const [showInAppWarning, setShowInAppWarning] = useState(false);
   const [payOnNewPage, setPayOnNewPage] = useState(false);
+  const isMobile = isMobileDevice();
   const canTryH5 = shouldUseQRCodePayment() ? false : isMobile;
 
   const renewalCdkInputRef = useRef<RenewalCdkInputRef>(null);
 
   const { planInfo, loading: planInfoLoading, hasError } = usePlanInfo({ planId });
+  const paymentMethod: PaymentMethod =
+    selectedPaymentMethod ?? (planInfo ? getDefaultPaymentMethod(planInfo) : "alipay");
   const priceInfo = usePriceCalculation({ planInfo, rate: params.rate });
   const { orderInfo, isPolling } = useOrderPolling({ customOrderId, renewCdk });
   // afdian 支付在 handlePurchase 中单独处理，不会调用 createPayment
@@ -69,13 +76,6 @@ export default function Checkout(params: CheckoutProps) {
     canTryH5,
     renewCdk,
   });
-
-  // 当 planInfo 加载完成后，设置默认支付方式
-  useEffect(() => {
-    if (planInfo) {
-      setPaymentMethod(getDefaultPaymentMethod(planInfo));
-    }
-  }, [planInfo]);
 
   // 爱发电支付处理
   const handleAfdianPayment = () => {
@@ -88,8 +88,11 @@ export default function Checkout(params: CheckoutProps) {
     const url =
       base +
       `&plan_id=${planId}&sku=%5B%7B%22sku_id%22%3A%22${skuId}%22%2C%22count%22%3A1%7D%5D&viokrz_ex=0&custom_order_id=${customOrderId}`;
+    // 填了续费 CDK 时前面有 await 校验，弹窗可能被拦截，等待弹窗里保留支付链接兜底
     window.open(url, "_blank");
 
+    setPaymentUrl(url);
+    setPaymentHtml("");
     setShowModal(paymentMethod);
     setCustomOrderId(customOrderId);
   };
@@ -122,23 +125,26 @@ export default function Checkout(params: CheckoutProps) {
     setPayOnNewPage(result.payOnNewPage ?? false);
 
     // 如果是移动端H5支付且有支付链接，自动打开
+    // 此时已经过了多次 await，Safari 等可能拦截弹窗，等待弹窗里提供手动打开的按钮
     if (result.payOnNewPage && orderInfo.pay_url) {
       window.open(orderInfo.pay_url, "_blank");
     }
 
-    // 设置支付URL或HTML
-    if (orderInfo.pay_url) {
-      setPaymentUrl(orderInfo.pay_url);
-    } else {
-      setPaymentHtml(orderInfo.html || "");
-    }
+    // 设置支付URL或HTML，同时清掉另一项，避免残留上一次的支付信息
+    setPaymentUrl(orderInfo.pay_url || "");
+    setPaymentHtml(orderInfo.pay_url ? "" : orderInfo.html || "");
 
     setCustomOrderId(orderInfo.custom_order_id);
     setShowModal(paymentMethod);
   };
 
+  // 用户关闭支付弹窗即取消本次支付：停止轮询并清空支付信息，回到结账表单
   const handleCloseModal = () => {
     setShowModal("none");
+    setCustomOrderId(undefined);
+    // 表单支付弹窗按 paymentHtml 是否为空决定显示，需要一并清空
+    setPaymentUrl("");
+    setPaymentHtml("");
   };
 
   const handleSwitchToWechat = () => {
@@ -146,7 +152,7 @@ export default function Checkout(params: CheckoutProps) {
   };
 
   // 参数校验
-  if (!params.planId || params.planId.length > 1 || hasError) {
+  if (params.planId.length !== 1 || hasError) {
     return <NoOrder />;
   }
 

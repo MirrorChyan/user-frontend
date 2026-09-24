@@ -80,7 +80,9 @@
     "switchToWechatPay": "使用微信支付",
     "copyPageLink": "复制当前页面链接",
     "linkCopied": "链接已复制",
-    "understood": "我知道了"
+    "understood": "我知道了",
+    "paymentPageNotOpened": "如果支付页面没有自动打开，请点击下方按钮",
+    "openPaymentPage": "打开支付页面"
   },
   "GetKey": {
     "title": "欢迎使用Mirror酱",
@@ -104,7 +106,7 @@
     "invalidOrderId": "订单不存在哦",
     "orderExpired": "CDKey已过期",
     "expireAt": "在 {time} 内可用",
-    "timeLeft": "（剩余 {relativeTime}）",
+    "timeLeft": "（{relativeTime}到期）",
     "timeConfettiBefore": "CDK 在 {time} 内可用（剩余 {days} 天）",
     "timeConfettiAfter": "✨ 已提升至 {time} 内可用",
     "confettiText": "🎉 恭喜获得额外{randomDays}天使用时间！",
@@ -120,7 +122,8 @@
       "order not found": "订单不存在哦",
       "order_id is required": "请输入订单号",
       "CDK already exists": "出错啦，请重试！",
-      "CDK is blocked": "订单已被封禁"
+      "CDK is blocked": "订单已被封禁",
+      "networkError": "网络错误，请重试"
     },
     "paymentSuccess": "支付成功",
     "copy": "复制",
@@ -170,6 +173,10 @@
       "close": "关闭"
     }
   },
+  "BrowserSupport": {
+    "outdated": "您的浏览器版本过低，页面可能无法正常显示。请升级浏览器，或使用最新版 Chrome、Edge、Firefox、Safari 访问。",
+    "close": "关闭"
+  },
   "Download": {
     "title": "下载 {rid} {os} {arch}",
     "cdkey": "CDK",
@@ -204,7 +211,18 @@
     "importantNote": "重要提示",
     "downloadWarning": "请不要使用迅雷等多线程下载器，建议使用浏览器直接下载！",
     "downloadProblems": "下载遇到问题？",
-    "troubleshoot1": "加入QQ群获取帮助"
+    "troubleshoot1": "加入QQ群获取帮助",
+    "downloadReady": "{name} {version} 已准备好",
+    "downloadReadyForShare": "请在系统浏览器中下载",
+    "clickToDownload": "点击下载",
+    "manualDownloadHint": "如果下载没有自动开始，",
+    "manualDownloadLink": "点击这里重新下载",
+    "inAppBrowserTitle": "当前 App 内无法直接下载",
+    "inAppBrowserDesc": "微信、QQ 等 App 的内置浏览器会拦截文件下载。请点击右上角菜单选择「在浏览器中打开」，或复制下载链接到系统浏览器中打开。",
+    "copyDownloadLink": "复制下载链接",
+    "linkCopied": "已复制，请粘贴到浏览器中打开",
+    "copyShareLinkManually": "自动复制失败，请手动复制链接",
+    "copy": "复制"
   },
   "Projects": {
     "joinUs": "加入我们",

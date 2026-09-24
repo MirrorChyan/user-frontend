@@ -86,6 +86,7 @@ export default function PaymentModalsContainer({
           <WaitForPayModal
             open={showModal === "wechatPay"}
             paymentType={t("wechatPay")}
+            paymentUrl={paymentUrl}
             isLoading={isPolling}
             orderInfo={orderInfo}
             onClose={onClose}
@@ -93,6 +94,7 @@ export default function PaymentModalsContainer({
           <WaitForPayModal
             open={showModal === "alipay"}
             paymentType={t("alipay")}
+            paymentUrl={paymentUrl}
             isLoading={isPolling}
             orderInfo={orderInfo}
             onClose={onClose}
@@ -103,6 +105,7 @@ export default function PaymentModalsContainer({
         <WaitForPayModal
           open={showModal === "afdian"}
           paymentType={t("afdianPayment")}
+          paymentUrl={paymentUrl}
           isLoading={isPolling}
           orderInfo={orderInfo}
           onClose={onClose}

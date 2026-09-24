@@ -1,16 +1,18 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import { ChangeEvent, useCallback, useRef, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { Button, Input } from "@heroui/react";
-import { debounce } from "lodash";
-import moment from "moment";
 import { motion } from "framer-motion";
 
 import { useRouter } from "@/i18n/routing";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
+import { DAY_MS, isPast } from "@/lib/utils/date";
 import HomeButton from "@/components/HomeButton";
 import { BackgroundBeamsWithCollision } from "@/components/BackgroundBeamsWithCollision";
+
+// 输入停止后延迟多久校验 CDK
+const CHECK_DELAY = 2000;
 
 export default function Transmission() {
   const format = useFormatter();
@@ -28,11 +30,12 @@ export default function Transmission() {
   const [showOrderId, setShowOrderId] = useState("");
   const [transfering, setTransfering] = useState(false);
 
-  // 使用 ref 存储最新值，解决 debounce 闭包问题
-  const fromCdkRef = useRef(fromCdk);
-  const toCdkRef = useRef(toCdk);
-  fromCdkRef.current = fromCdk;
-  toCdkRef.current = toCdk;
+  // 延迟校验时需要读到另一侧输入框的最新值，在输入事件里同步更新
+  const fromCdkRef = useRef("");
+  const toCdkRef = useRef("");
+  // 输入停止一段时间后再发起校验
+  const fromCheckTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const toCheckTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   async function handleReward(key: string) {
     const response = await fetch(`${CLIENT_BACKEND}/api/billing/reward?reward_key=${key}`);
@@ -42,13 +45,11 @@ export default function Transmission() {
         setFromCdkDescription(t("rewardUsedUp"));
         return;
       }
-      const startAt = moment(data.start_at);
-      const expiredAt = moment(data.expired_at);
-      if (startAt.isAfter(moment())) {
+      if (!isPast(data.start_at)) {
         setFromCdkDescription(t("rewardNotStarted"));
         return;
       }
-      if (expiredAt.isBefore(moment())) {
+      if (isPast(data.expired_at)) {
         setFromCdkDescription(t("rewardExpired"));
         return;
       }
@@ -81,18 +82,18 @@ export default function Transmission() {
     const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?cdk=${cdk}`);
     const { ec, msg, data } = await response.json();
     if (ec === 200) {
-      const expiredAt = moment(data.expired_at);
-      const createdAt = moment(data.created_at);
-      if (expiredAt.isBefore(moment())) {
+      const expiredAt = new Date(data.expired_at);
+      if (isPast(expiredAt)) {
         setFromCdkDescription(t("cdkExpired"));
         return;
       }
-      if (createdAt.isBefore(moment().subtract(3, "day"))) {
+      // 创建超过 3 天
+      if (isPast(new Date(data.created_at).getTime() + 3 * DAY_MS)) {
         setFromCdkDescription(t("cdkTooOld"));
         return;
       }
-      const relativeTime = format.relativeTime(expiredAt.toDate(), { unit: "day" });
-      setFromCdkDescription(`${relativeTime} (${timeFormat(expiredAt.toDate())})`);
+      const relativeTime = format.relativeTime(expiredAt, { unit: "day" });
+      setFromCdkDescription(`${relativeTime} (${timeFormat(expiredAt)})`);
       setFromCdkValid(true);
     } else {
       setFromCdkDescription(msg);
@@ -117,12 +118,12 @@ export default function Transmission() {
     const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?cdk=${cdk}`);
     const { ec, msg, data } = await response.json();
     if (ec === 200) {
-      const expiredAt = moment(data.expired_at);
-      if (expiredAt.isBefore(moment())) {
+      const expiredAt = new Date(data.expired_at);
+      if (isPast(expiredAt)) {
         setToCdkDescription(t("cdkExpired"));
       } else {
-        const relativeTime = format.relativeTime(expiredAt.toDate(), { unit: "day" });
-        setToCdkDescription(`${relativeTime} (${timeFormat(expiredAt.toDate())})`);
+        const relativeTime = format.relativeTime(expiredAt, { unit: "day" });
+        setToCdkDescription(`${relativeTime} (${timeFormat(expiredAt)})`);
       }
       setToCdkValid(true);
       setShowOrderId(data.custom_order_id);
@@ -132,11 +133,19 @@ export default function Transmission() {
     }
   }
 
-  const requestFromCdkDebounced = useCallback(debounce(requestFromCdk, 2000), []);
-  const requestToCdkDebounced = useCallback(debounce(requestToCdk, 2000), []);
+  function requestFromCdkDebounced(cdk: string) {
+    clearTimeout(fromCheckTimerRef.current);
+    fromCheckTimerRef.current = setTimeout(() => requestFromCdk(cdk), CHECK_DELAY);
+  }
+
+  function requestToCdkDebounced(cdk: string) {
+    clearTimeout(toCheckTimerRef.current);
+    toCheckTimerRef.current = setTimeout(() => requestToCdk(cdk), CHECK_DELAY);
+  }
 
   async function handleFromCdkChange(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
+    fromCdkRef.current = value;
     setFromCdk(value);
     setFromCdkDescription("");
     setFromCdkValid(false);
@@ -153,6 +162,7 @@ export default function Transmission() {
 
   async function handleToCdkChange(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
+    toCdkRef.current = value;
     setToCdk(value);
     setToCdkDescription("");
     setToCdkValid(false);

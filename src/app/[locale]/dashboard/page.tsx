@@ -1,8 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import Revenue from "@/app/[locale]/dashboard/Revenue";
+import dynamic from "next/dynamic";
 import LoginForm from "@/app/[locale]/dashboard/LoginForm";
+import RevenueSkeleton from "@/app/[locale]/dashboard/RevenueSkeleton";
+
+// 看板依赖 recharts 等较大的库，登录成功后才加载
+const Revenue = dynamic(() => import("@/app/[locale]/dashboard/Revenue"), {
+  loading: () => <RevenueSkeleton />,
+});
 
 export type RevenueType = {
   activated_at: Date;

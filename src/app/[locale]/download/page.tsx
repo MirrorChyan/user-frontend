@@ -1,27 +1,15 @@
-"use client";
+import { redirect } from "@/i18n/routing";
+import { getLocale } from "next-intl/server";
+import { QueryParams } from "next-intl/navigation";
 
-import { useRouter } from "@/i18n/routing";
-import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { useEffect } from "react";
-import LoadingState from "@/components/LoadingState";
-
-export default function Download() {
-  const t = useTranslations("Download");
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const params = new URLSearchParams();
-
-    searchParams.forEach((value: string, key: string) => {
-      params.set(key, value);
-    });
-
-    const queryString = params.toString();
-    const redirectUrl = `/projects${queryString ? `?${queryString}` : ""}`;
-    router.push(redirectUrl);
-  }, [searchParams, router]);
-
-  return <LoadingState title={t("pleaseWait")} />;
+// 旧版下载链接的入口，在服务端直接重定向到项目页并保留全部查询参数
+export default async function Download({ searchParams }: { searchParams: Promise<QueryParams> }) {
+  const locale = await getLocale();
+  redirect({
+    href: {
+      pathname: "/projects",
+      query: await searchParams,
+    },
+    locale,
+  });
 }

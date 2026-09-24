@@ -1,4 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
+import ReactMarkdown from "react-markdown";
 
 import { BackgroundBeamsWithCollision } from "@/components/BackgroundBeamsWithCollision";
 import { Link } from "@/i18n/routing";
@@ -48,7 +49,10 @@ export default async function GetStart({
             </div>
           </div>
           {announcement.ec === 200 && (
-            <Announcement summary={announcement.data.summary} details={announcement.data.details} />
+            <Announcement
+              summary={announcement.data.summary}
+              content={<ReactMarkdown>{announcement.data.details}</ReactMarkdown>}
+            />
           )}
 
           <ProjectBanner />

@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import React from "react";
 import Script from "next/script";
@@ -19,6 +19,11 @@ export const metadata: Metadata = {
     "Mirror酱是一个第三方应用分发平台，让开源应用的更新更简单。用户付费使用，收益与开发者共享。此外，Mirror酱本身也是开源的。",
 };
 
+// 构建时为每种语言预渲染，未使用请求期 API 的页面可以静态生成
+export function generateStaticParams() {
+  return routing.locales.map(locale => ({ locale }));
+}
+
 export default async function LocaleLayout({
   children,
   params,
@@ -31,6 +36,8 @@ export default async function LocaleLayout({
   if (!routing.locales.includes(locale as "zh" | "en")) {
     notFound();
   }
+  // 让 next-intl 的服务端 API 从这里读取语言，而不是请求头
+  setRequestLocale(locale);
 
   // Providing all messages to the client
   // side is the easiest way to get started

@@ -8,6 +8,8 @@ const REQUEST_TIMEOUT = 10_000;
 export async function getProjects(): Promise<ProjectCardProps[]> {
   try {
     const res = await fetch(`${SERVER_BACKEND}/api/misc/project`, {
+      // 首页和项目页共用，缓存 60 秒
+      next: { revalidate: 60 },
       signal: AbortSignal.timeout(REQUEST_TIMEOUT),
     });
     if (!res.ok) {

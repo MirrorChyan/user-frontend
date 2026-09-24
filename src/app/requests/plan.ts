@@ -18,9 +18,12 @@ type PlansRes = {
 
 export const getPlans = async (type_id?: string) => {
   try {
-    const res = await fetch(
-      `${SERVER_BACKEND}/api/misc/plan${type_id ? `?type_id=${type_id}` : ""}`
-    );
+    const query = type_id ? `?${new URLSearchParams({ type_id })}` : "";
+    const res = await fetch(`${SERVER_BACKEND}/api/misc/plan${query}`, {
+      // 套餐信息变化不频繁，缓存 60 秒，避免每个首页请求都打到后端
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(10_000),
+    });
     if (!res.ok) {
       console.error("Get Plans resp error:", res);
       return {

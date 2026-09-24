@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import React from "react";
 import Script from "next/script";
@@ -11,6 +11,7 @@ import { Providers } from "./provider";
 
 import "@/app/globals.css";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import OutdatedBrowserScript from "@/components/OutdatedBrowserScript";
 
 export const metadata: Metadata = {
   title: "Mirror酱",
@@ -34,11 +35,16 @@ export default async function LocaleLayout({
   // Providing all messages to the client
   // side is the easiest way to get started
   const messages = await getMessages();
+  const browserSupport = await getTranslations("BrowserSupport");
 
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
         <meta name="renderer" content="webkit" />
+        <OutdatedBrowserScript
+          message={browserSupport("outdated")}
+          closeLabel={browserSupport("close")}
+        />
         <Script strategy="afterInteractive" id="baidu-analytics">
           {`
 var _hmt = _hmt || [];

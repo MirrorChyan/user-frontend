@@ -173,6 +173,10 @@
       "close": "关闭"
     }
   },
+  "BrowserSupport": {
+    "outdated": "您的浏览器版本过低，页面可能无法正常显示。请升级浏览器，或使用最新版 Chrome、Edge、Firefox、Safari 访问。",
+    "close": "关闭"
+  },
   "Download": {
     "title": "下载 {rid} {os} {arch}",
     "cdkey": "CDK",

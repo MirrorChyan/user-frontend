@@ -178,6 +178,10 @@
       "close": "Close"
     }
   },
+  "BrowserSupport": {
+    "outdated": "Your browser is out of date and this page may not display correctly. Please update it, or use the latest Chrome, Edge, Firefox or Safari.",
+    "close": "Close"
+  },
   "Download": {
     "title": "Download {rid} {os} {arch}",
     "cdkey": "CDKey",

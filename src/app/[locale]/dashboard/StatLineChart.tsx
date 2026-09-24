@@ -16,6 +16,8 @@ import { StatData } from "@/app/[locale]/dashboard/page";
 
 type Props = {
   statData: StatData;
+  /** 变化时重播描线动画（见 globals.css 的 stat-line-chart） */
+  animationCycle: number;
 };
 
 // 用一下扇形图颜色得了，懒得找了（
@@ -49,7 +51,7 @@ function renderTooltip({ active, payload, label }: TooltipContentProps) {
   );
 }
 
-export default function StatLineChart({ statData }: Props) {
+export default function StatLineChart({ statData, animationCycle }: Props) {
   const t = useTranslations("Dashboard");
 
   const rids = useMemo(() => Object.keys(statData), [statData]);
@@ -82,40 +84,58 @@ export default function StatLineChart({ statData }: Props) {
     value >= 1000 ? `${(value / 1000).toFixed(0)}k` : String(value);
 
   const renderChart = (data: object[], title: string) => (
-    <div>
+    <div className="stat-line-chart" data-cycle={animationCycle % 2}>
       <h3 className="mb-2 text-center text-sm font-medium text-gray-600 dark:text-gray-300">
         {title}
       </h3>
-      <ResponsiveContainer width="100%" height={220} debounce={200}>
-        <LineChart data={data} margin={{ left: 8, right: 24, top: 8, bottom: 8 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="date"
-            tick={{ fill: "#666", fontSize: 11 }}
-            tickLine={{ stroke: "#ccc" }}
-            minTickGap={20}
-          />
-          <YAxis
-            tickFormatter={yTickFormatter}
-            tick={{ fill: "#666", fontSize: 11 }}
-            tickLine={{ stroke: "#ccc" }}
-            domain={[0, (dataMax: number) => Math.ceil(dataMax * 1.1)]}
-          />
-          {rids.map((rid, i) => (
-            <Line
-              key={rid}
-              type="monotone"
-              dataKey={rid}
-              stroke={COLORS[i % COLORS.length]}
-              strokeWidth={2}
-              dot={{ fill: COLORS[i % COLORS.length], strokeWidth: 0, r: 3 }}
-              activeDot={{ r: 6, fill: "#fff", stroke: COLORS[i % COLORS.length], strokeWidth: 2 }}
+      <div className="relative">
+        <ResponsiveContainer width="100%" height={220} debounce={200}>
+          <LineChart data={data} margin={{ left: 8, right: 24, top: 8, bottom: 8 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="date"
+              tick={{ fill: "#666", fontSize: 11 }}
+              tickLine={{ stroke: "#ccc" }}
+              minTickGap={20}
             />
-          ))}
-          {/* recharts 3 按 JSX 顺序决定层级，Tooltip 放在最后才不会被折线遮挡 */}
-          <Tooltip content={renderTooltip} wrapperStyle={{ pointerEvents: "auto" }} />
-        </LineChart>
-      </ResponsiveContainer>
+            <YAxis
+              tickFormatter={yTickFormatter}
+              tick={{ fill: "#666", fontSize: 11 }}
+              tickLine={{ stroke: "#ccc" }}
+              domain={[0, (dataMax: number) => Math.ceil(dataMax * 1.1)]}
+            />
+            {rids.map((rid, i) => (
+              <Line
+                key={rid}
+                type="monotone"
+                dataKey={rid}
+                stroke={COLORS[i % COLORS.length]}
+                strokeWidth={2}
+                dot={{ fill: COLORS[i % COLORS.length], strokeWidth: 0, r: 3 }}
+                activeDot={{
+                  r: 6,
+                  fill: "#fff",
+                  stroke: COLORS[i % COLORS.length],
+                  strokeWidth: 2,
+                }}
+                // 资源多时会有上百条线，recharts 3 的 JS 入场动画每帧都要重渲染所有线并测量路径长度，
+                // 切换到本页时会连续卡顿 1 秒以上，改用下方的遮罩实现入场动画
+                isAnimationActive={false}
+              />
+            ))}
+            {/* recharts 3 按 JSX 顺序决定层级，Tooltip 放在最后才不会被折线遮挡 */}
+            <Tooltip content={renderTooltip} wrapperStyle={{ pointerEvents: "auto" }} />
+          </LineChart>
+        </ResponsiveContainer>
+        {/*
+        入场动画：与卡片同色的遮罩盖住绘图区（左侧 68px 为 Y 轴），向右收起，折线从左到右出现。
+        只对遮罩做 transform 动画，由合成线程完成，不会逐帧重绘上百条折线
+      */}
+        <div
+          aria-hidden
+          className="stat-line-reveal bg-content1 pointer-events-none absolute inset-y-0 right-0 left-[68px]"
+        />
+      </div>
     </div>
   );
 

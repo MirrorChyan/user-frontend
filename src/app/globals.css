@@ -144,6 +144,75 @@ body {
   animation: explosion-particle ease-out both;
 }
 
+/*
+ * 请求统计折线图的入场动画：遮罩向右收起，折线从左到右出现（接近 recharts 2 的描线效果）。
+ * 只对遮罩做 transform 动画，由合成线程完成，上百条折线不需要逐帧重绘。
+ * 切换到请求统计时通过 data-cycle 在两组相同的关键帧之间切换，以重新播放动画。
+ */
+@keyframes stat-line-reveal-a {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes stat-line-reveal-b {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+.stat-line-reveal {
+  transform-origin: right;
+  will-change: transform;
+  animation: stat-line-reveal-a 1.5s ease both;
+}
+
+.stat-line-chart[data-cycle="1"] .stat-line-reveal {
+  animation-name: stat-line-reveal-b;
+}
+
+/*
+ * 销售饼图的入场动画：recharts 3 的饼图动画每帧都会重建全部扇区，改由 CSS 旋转缩放进入。
+ * 切换到销售统计或筛选条件变化时通过 data-cycle 重播。
+ */
+@keyframes sales-pie-enter-a {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sales-pie-enter-b {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.sales-pie-chart .recharts-pie {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sales-pie-enter-a 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sales-pie-chart[data-cycle="1"] .recharts-pie {
+  animation-name: sales-pie-enter-b;
+}
+
 /* 窄屏只保留一半线条，减轻移动端重绘压力 */
 @media (max-width: 767px) {
   .background-line-extra {
@@ -157,6 +226,14 @@ body {
   .explosion-flash,
   .explosion-particle {
     animation: none;
+    display: none;
+  }
+
+  .sales-pie-chart .recharts-pie {
+    animation: none;
+  }
+
+  .stat-line-reveal {
     display: none;
   }
 }

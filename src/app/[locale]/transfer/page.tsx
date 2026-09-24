@@ -4,11 +4,11 @@ import { useFormatter, useTranslations } from "next-intl";
 import { ChangeEvent, useCallback, useRef, useState } from "react";
 import { Button, Input } from "@heroui/react";
 import { debounce } from "lodash";
-import moment from "moment";
 import { motion } from "framer-motion";
 
 import { useRouter } from "@/i18n/routing";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
+import { DAY_MS } from "@/lib/utils/date";
 import HomeButton from "@/components/HomeButton";
 import { BackgroundBeamsWithCollision } from "@/components/BackgroundBeamsWithCollision";
 
@@ -42,13 +42,12 @@ export default function Transmission() {
         setFromCdkDescription(t("rewardUsedUp"));
         return;
       }
-      const startAt = moment(data.start_at);
-      const expiredAt = moment(data.expired_at);
-      if (startAt.isAfter(moment())) {
+      const now = Date.now();
+      if (new Date(data.start_at).getTime() > now) {
         setFromCdkDescription(t("rewardNotStarted"));
         return;
       }
-      if (expiredAt.isBefore(moment())) {
+      if (new Date(data.expired_at).getTime() < now) {
         setFromCdkDescription(t("rewardExpired"));
         return;
       }
@@ -81,18 +80,18 @@ export default function Transmission() {
     const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?cdk=${cdk}`);
     const { ec, msg, data } = await response.json();
     if (ec === 200) {
-      const expiredAt = moment(data.expired_at);
-      const createdAt = moment(data.created_at);
-      if (expiredAt.isBefore(moment())) {
+      const expiredAt = new Date(data.expired_at);
+      const now = Date.now();
+      if (expiredAt.getTime() < now) {
         setFromCdkDescription(t("cdkExpired"));
         return;
       }
-      if (createdAt.isBefore(moment().subtract(3, "day"))) {
+      if (new Date(data.created_at).getTime() < now - 3 * DAY_MS) {
         setFromCdkDescription(t("cdkTooOld"));
         return;
       }
-      const relativeTime = format.relativeTime(expiredAt.toDate(), { unit: "day" });
-      setFromCdkDescription(`${relativeTime} (${timeFormat(expiredAt.toDate())})`);
+      const relativeTime = format.relativeTime(expiredAt, { unit: "day" });
+      setFromCdkDescription(`${relativeTime} (${timeFormat(expiredAt)})`);
       setFromCdkValid(true);
     } else {
       setFromCdkDescription(msg);
@@ -117,12 +116,12 @@ export default function Transmission() {
     const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?cdk=${cdk}`);
     const { ec, msg, data } = await response.json();
     if (ec === 200) {
-      const expiredAt = moment(data.expired_at);
-      if (expiredAt.isBefore(moment())) {
+      const expiredAt = new Date(data.expired_at);
+      if (expiredAt.getTime() < Date.now()) {
         setToCdkDescription(t("cdkExpired"));
       } else {
-        const relativeTime = format.relativeTime(expiredAt.toDate(), { unit: "day" });
-        setToCdkDescription(`${relativeTime} (${timeFormat(expiredAt.toDate())})`);
+        const relativeTime = format.relativeTime(expiredAt, { unit: "day" });
+        setToCdkDescription(`${relativeTime} (${timeFormat(expiredAt)})`);
       }
       setToCdkValid(true);
       setShowOrderId(data.custom_order_id);

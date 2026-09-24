@@ -85,7 +85,9 @@
     "switchToWechatPay": "Switch to WeChat Pay",
     "copyPageLink": "Copy Current Page Link",
     "linkCopied": "Link Copied",
-    "understood": "Got it"
+    "understood": "Got it",
+    "paymentPageNotOpened": "If the payment page didn't open automatically, tap the button below",
+    "openPaymentPage": "Open payment page"
   },
   "GetKey": {
     "title": "Welcome to MirrorChyan",
@@ -109,7 +111,7 @@
     "invalidOrderId": "Order does not exist",
     "orderExpired": "CDKey has expired",
     "expireAt": "Valid until {time}",
-    "timeLeft": " ( {relativeTime} remain )",
+    "timeLeft": " (expires {relativeTime})",
     "timeConfettiBefore": "CDK available within {time} ({days} days remaining)",
     "timeConfettiAfter": "✨ Improved! Now available within {time}",
     "confettiText": "🎉 Congrats! {randomDays} extra days unlocked!",
@@ -125,7 +127,8 @@
       "order not found": "Order does not exist",
       "order_id is required": "Please enter the order ID",
       "CDK already exists": "Error, please try again",
-      "CDK is blocked": "Order has been blocked"
+      "CDK is blocked": "Order has been blocked",
+      "networkError": "Network error, please try again"
     },
     "paymentSuccess": "Payment Successful",
     "copy": "Copy",
@@ -209,7 +212,18 @@
     "importantNote": "Important Note",
     "downloadWarning": "Please do not use multi-threaded downloaders such as Thunder. We recommend downloading directly using your browser.",
     "downloadProblems": "Having download issues?",
-    "troubleshoot1": "Join QQ group for help"
+    "troubleshoot1": "Join QQ group for help",
+    "downloadReady": "{name} {version} is ready",
+    "downloadReadyForShare": "Please download in your system browser",
+    "clickToDownload": "Download now",
+    "manualDownloadHint": "If the download didn't start automatically,",
+    "manualDownloadLink": "click here to download",
+    "inAppBrowserTitle": "Downloads are blocked in this app",
+    "inAppBrowserDesc": "The built-in browser of apps like WeChat or QQ blocks file downloads. Use the menu in the top-right corner to open this page in your browser, or copy the download link into your system browser.",
+    "copyDownloadLink": "Copy download link",
+    "linkCopied": "Copied. Paste it into your browser",
+    "copyShareLinkManually": "Couldn't copy automatically. Please copy the link manually",
+    "copy": "Copy"
   },
   "Projects": {
     "title": "Project List",

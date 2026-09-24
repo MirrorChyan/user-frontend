@@ -88,8 +88,11 @@ export default function Checkout(params: CheckoutProps) {
     const url =
       base +
       `&plan_id=${planId}&sku=%5B%7B%22sku_id%22%3A%22${skuId}%22%2C%22count%22%3A1%7D%5D&viokrz_ex=0&custom_order_id=${customOrderId}`;
+    // 填了续费 CDK 时前面有 await 校验，弹窗可能被拦截，等待弹窗里保留支付链接兜底
     window.open(url, "_blank");
 
+    setPaymentUrl(url);
+    setPaymentHtml("");
     setShowModal(paymentMethod);
     setCustomOrderId(customOrderId);
   };
@@ -122,16 +125,14 @@ export default function Checkout(params: CheckoutProps) {
     setPayOnNewPage(result.payOnNewPage ?? false);
 
     // 如果是移动端H5支付且有支付链接，自动打开
+    // 此时已经过了多次 await，Safari 等可能拦截弹窗，等待弹窗里提供手动打开的按钮
     if (result.payOnNewPage && orderInfo.pay_url) {
       window.open(orderInfo.pay_url, "_blank");
     }
 
-    // 设置支付URL或HTML
-    if (orderInfo.pay_url) {
-      setPaymentUrl(orderInfo.pay_url);
-    } else {
-      setPaymentHtml(orderInfo.html || "");
-    }
+    // 设置支付URL或HTML，同时清掉另一项，避免残留上一次的支付信息
+    setPaymentUrl(orderInfo.pay_url || "");
+    setPaymentHtml(orderInfo.pay_url ? "" : orderInfo.html || "");
 
     setCustomOrderId(orderInfo.custom_order_id);
     setShowModal(paymentMethod);
@@ -139,6 +140,8 @@ export default function Checkout(params: CheckoutProps) {
 
   const handleCloseModal = () => {
     setShowModal("none");
+    // 关闭弹窗后停止轮询订单状态
+    setCustomOrderId(undefined);
   };
 
   const handleSwitchToWechat = () => {

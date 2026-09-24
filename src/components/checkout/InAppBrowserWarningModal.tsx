@@ -5,6 +5,7 @@ import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@
 import { Fragment, useState } from "react";
 import { AlertTriangle, X } from "lucide-react";
 import { Button } from "@heroui/react";
+import { copyText } from "@/lib/utils/clipboard";
 
 interface InAppBrowserWarningModalProps {
   open: boolean;
@@ -27,18 +28,7 @@ export default function InAppBrowserWarningModal({
   };
 
   const handleCopyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // 降级方案：使用 execCommand
-      const textArea = document.createElement("textarea");
-      textArea.value = window.location.href;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
+    if (await copyText(window.location.href)) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }

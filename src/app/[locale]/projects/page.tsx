@@ -1,8 +1,7 @@
 import { BackgroundLines } from "@/components/BackgroundLines";
-import { ProjectCardProps } from "@/components/ProjectCard";
 import ProjectIntegratedCard from "@/components/ProjectIntegratedCard";
 import { getTranslations } from "next-intl/server";
-import { SERVER_BACKEND } from "@/app/requests/misc";
+import { getProjects } from "@/app/requests/project";
 import ProjectCardView from "@/components/ProjectCardView";
 import HomeButton from "@/components/HomeButton";
 import SourceTracker from "@/components/SourceTracker";
@@ -21,16 +20,7 @@ export default async function ProjectsPage({
 }) {
   const t = await getTranslations("GetStart");
   const p = await getTranslations("Projects");
-  const resp = await fetch(`${SERVER_BACKEND}/api/misc/project`);
-  const projects: Array<ProjectCardProps> = [];
-  try {
-    const { ec, data } = await resp.json();
-    if (ec === 200) {
-      projects.push(...data);
-    }
-  } catch (e) {
-    console.log(e);
-  }
+  const projects = await getProjects();
   const { source } = await searchParams;
 
   const mainProjects = projects.filter(project => project.type_id === GAME_TOOLS_TYPE_ID);

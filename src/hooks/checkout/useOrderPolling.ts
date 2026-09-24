@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { addToast } from "@heroui/toast";
@@ -20,6 +20,12 @@ interface UseOrderPollingResult {
   isPolling: boolean;
 }
 
+const POLL_INTERVAL = 1500;
+// 不用马上触发查询
+const FIRST_POLL_DELAY = 1200;
+// 40 分钟仍未支付则刷新页面
+const RELOAD_AFTER = 40 * 60 * 1000;
+
 export function useOrderPolling({
   customOrderId,
   renewCdk,
@@ -27,20 +33,24 @@ export function useOrderPolling({
   const t = useTranslations("Checkout");
   const [orderInfo, setOrderInfo] = useState<OrderInfoType | undefined>();
   const [isPolling, setIsPolling] = useState(false);
-  const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
-  const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const fetchOrderStatus = async () => {
-      if (!customOrderId) return;
+    if (!customOrderId) return;
 
+    let stopped = false;
+    let pollTimer: ReturnType<typeof setTimeout> | undefined;
+    const reloadTimer = setTimeout(() => location.reload(), RELOAD_AFTER);
+
+    // 上一次请求结束后再排下一次，避免慢请求堆积
+    const poll = async () => {
       try {
         const response = await fetch(
-          `${CLIENT_BACKEND}/api/billing/order/query?custom_order_id=${customOrderId}`
+          `${CLIENT_BACKEND}/api/billing/order/query?custom_order_id=${encodeURIComponent(customOrderId)}`
         );
+        if (stopped) return;
         if (response.ok) {
-          const { ec, code, data } = await response.json();
-          console.log(ec, code, data);
+          const { code, data } = await response.json();
+          if (stopped) return;
           if (code === 0) {
             setOrderInfo({
               cdk: data.cdk,
@@ -48,59 +58,32 @@ export function useOrderPolling({
               created_at: data.created_at,
               is_renewal: renewCdk.length > 0,
             });
-            if (intervalIdRef.current) {
-              clearInterval(intervalIdRef.current);
-              intervalIdRef.current = null;
-              setIsPolling(false);
-            }
-          } else {
-            setOrderInfo(undefined);
+            // 支付完成，停止轮询，也不再自动刷新页面
+            clearTimeout(reloadTimer);
+            setIsPolling(false);
+            return;
           }
+          setOrderInfo(undefined);
         }
-      } catch (error) {
+      } catch {
+        if (stopped) return;
         addToast({
           color: "warning",
           description: t("errorWithPollingOrder"),
         });
       }
+      pollTimer = setTimeout(poll, POLL_INTERVAL);
     };
-    if (customOrderId) {
-      // 清理之前的轮询和超时
-      if (intervalIdRef.current) {
-        clearInterval(intervalIdRef.current);
-        intervalIdRef.current = null;
-      }
-      if (timeoutIdRef.current) {
-        clearTimeout(timeoutIdRef.current);
-        timeoutIdRef.current = null;
-      }
 
-      setIsPolling(true);
-      // 不用马上触发查询
-      setTimeout(() => {
-        intervalIdRef.current = setInterval(fetchOrderStatus, 1500);
+    setIsPolling(true);
+    pollTimer = setTimeout(poll, FIRST_POLL_DELAY);
 
-        // 40分钟后自动刷新页面
-        timeoutIdRef.current = setTimeout(
-          () => {
-            location.reload();
-          },
-          40 * 1000 * 60
-        );
-      }, 1200);
-
-      return () => {
-        if (intervalIdRef.current) {
-          clearInterval(intervalIdRef.current);
-          intervalIdRef.current = null;
-        }
-        if (timeoutIdRef.current) {
-          clearTimeout(timeoutIdRef.current);
-          timeoutIdRef.current = null;
-        }
-        setIsPolling(false);
-      };
-    }
+    return () => {
+      stopped = true;
+      clearTimeout(pollTimer);
+      clearTimeout(reloadTimer);
+      setIsPolling(false);
+    };
   }, [customOrderId, renewCdk, t]);
 
   return { orderInfo, isPolling };

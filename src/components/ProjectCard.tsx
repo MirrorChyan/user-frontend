@@ -21,8 +21,10 @@ import { addToast, ToastProps } from "@heroui/toast";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { ArrowTopRightOnSquareIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import { getGroupUrl } from "@/lib/utils/constant";
-import { detectPlatform } from "@/lib/utils/browserDetection";
+import { detectPlatform, isInAppBrowser } from "@/lib/utils/browserDetection";
 import { matchSupportSelection, parseSupportOptions } from "@/lib/utils/support";
+import { copyText } from "@/lib/utils/clipboard";
+import InAppDownloadNotice from "@/components/InAppDownloadNotice";
 
 export interface ProjectCardProps {
   type_id: string;
@@ -81,6 +83,12 @@ export default function ProjectCard(props: ProjectCardProps) {
   const [downloadStarted, setDownloadStarted] = useState(false);
   const [isLoadingAnimation, setIsLoadingAnimation] = useState(false);
   const [version, setVersion] = useState("");
+  const [downloadUrl, setDownloadUrl] = useState("");
+  // 自动打开下载是否成功，失败(被拦截或 App 内置浏览器)时引导用户手动下载
+  const [autoDownloaded, setAutoDownloaded] = useState(false);
+  const [inAppBrowser, setInAppBrowser] = useState(false);
+  // 复制失败时展示分享链接，供用户手动复制
+  const [shareUrl, setShareUrl] = useState("");
 
   const t = useTranslations("Download");
   const p = useTranslations("Projects");
@@ -262,9 +270,14 @@ export default function ProjectCard(props: ProjectCardProps) {
       // 如果 supportOption 中有自定义的 rid，使用它；否则使用原始的 resource
       const targetResource = currentOption?.rid || resource;
 
-      const reqOs = selectedOs === "any" ? "" : selectedOs;
-      const reqArch = selectedArch === "any" ? "" : selectedArch;
-      const dl = `${CLIENT_BACKEND}/api/resources/${targetResource}/latest?os=${reqOs}&arch=${reqArch}&channel=${selectedChannel}&cdk=${cdk}&user_agent=mirrorchyan_web`;
+      const query = new URLSearchParams({
+        os: selectedOs === "any" ? "" : selectedOs,
+        arch: selectedArch === "any" ? "" : selectedArch,
+        channel: selectedChannel,
+        cdk: cdk.trim(),
+        user_agent: "mirrorchyan_web",
+      });
+      const dl = `${CLIENT_BACKEND}/api/resources/${encodeURIComponent(targetResource)}/latest?${query}`;
       const response = await fetch(dl);
 
       const { code, msg, data } = await response.json();
@@ -306,13 +319,21 @@ export default function ProjectCard(props: ProjectCardProps) {
       return;
     }
     const downloadKey = url.substring(url.lastIndexOf("/") + 1);
-    const shareUrl = `${window.location.origin}/${locale}/projects/?source=dlshare-${resource}&download=${downloadKey}`;
-    await navigator.clipboard.writeText(shareUrl);
+    const link = `${window.location.origin}/${locale}/projects/?${new URLSearchParams({
+      source: `dlshare-${resource}`,
+      download: downloadKey,
+    })}`;
 
-    addToast({
-      description: t("shared"),
-      color: "primary",
-    });
+    // 接口返回后已失去用户激活，Safari/iOS 可能拒绝写入剪贴板，此时展示链接让用户手动复制
+    if (await copyText(link)) {
+      setShareUrl("");
+      addToast({
+        description: t("shared"),
+        color: "primary",
+      });
+    } else {
+      setShareUrl(link);
+    }
     console.log(
       `shared key ${downloadKey} for ${name} tuple: ${selectedOs}-${selectedArch}-${selectedChannel}${cdk ? ` cdk: ${cdk}` : ""}`
     );
@@ -324,9 +345,17 @@ export default function ProjectCard(props: ProjectCardProps) {
       return;
     }
 
-    window.open(url, "_blank");
+    // App 内置浏览器会拦截下载；其他浏览器在 await 之后打开新窗口也可能被拦截
+    const inApp = isInAppBrowser();
+    const opened = !inApp && window.open(url, "_blank") !== null;
 
+    setDownloadUrl(new URL(url, window.location.href).href);
+    setInAppBrowser(inApp);
+    setAutoDownloaded(opened);
     setDownloadStarted(true);
+    if (!opened) {
+      return;
+    }
     setIsLoadingAnimation(true);
 
     // 糊点安慰剂)
@@ -380,7 +409,8 @@ export default function ProjectCard(props: ProjectCardProps) {
     s.delete("os");
     s.delete("arch");
     s.delete("channel");
-    if (s.size === 0) {
+    // URLSearchParams.size 在 Chrome 113 / Safari 17 以下不存在
+    if (s.toString() === "") {
       window.history.replaceState(null, "", `/${locale}/projects`);
     } else {
       window.history.replaceState(null, "", `/${locale}/projects?${s}`);
@@ -388,6 +418,7 @@ export default function ProjectCard(props: ProjectCardProps) {
 
     setDownloadStarted(false);
     setIsLoadingAnimation(false);
+    setShareUrl("");
   };
 
   return (
@@ -522,13 +553,45 @@ export default function ProjectCard(props: ProjectCardProps) {
                       <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
                         {isLoadingAnimation
                           ? t("downloading")
-                          : t("downloadStarted", { name, version })}
+                          : autoDownloaded
+                            ? t("downloadStarted", { name, version })
+                            : t("downloadReady", { name, version })}
                       </h3>
-                      <p className="text-gray-600 dark:text-gray-300">
-                        {isLoadingAnimation ? t("pleaseWait") : t("downloadInProgress")}
-                      </p>
+                      {(isLoadingAnimation || autoDownloaded) && (
+                        <p className="text-gray-600 dark:text-gray-300">
+                          {isLoadingAnimation ? t("pleaseWait") : t("downloadInProgress")}
+                        </p>
+                      )}
+                      {!isLoadingAnimation &&
+                        !inAppBrowser &&
+                        (autoDownloaded ? (
+                          <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                            {t("manualDownloadHint")}
+                            <a
+                              href={downloadUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary-600 dark:text-primary-400 ml-1 underline"
+                            >
+                              {t("manualDownloadLink")}
+                            </a>
+                          </p>
+                        ) : (
+                          <Button
+                            as="a"
+                            href={downloadUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            color="primary"
+                            className="mt-4"
+                          >
+                            {t("clickToDownload")}
+                          </Button>
+                        ))}
                     </div>
                   </div>
+
+                  {inAppBrowser && <InAppDownloadNotice url={downloadUrl} />}
 
                   <div className="rounded-lg border border-orange-200 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-900/20">
                     <div className="flex items-start">
@@ -757,6 +820,29 @@ export default function ProjectCard(props: ProjectCardProps) {
                       </Link>
                     </div>
                   </div>
+
+                  {shareUrl && (
+                    <Input
+                      label={t("shareLink")}
+                      description={t("copyShareLinkManually")}
+                      value={shareUrl}
+                      isReadOnly
+                      onFocus={e => e.target.select()}
+                      endContent={
+                        <Button
+                          size="sm"
+                          variant="flat"
+                          onPress={async () => {
+                            if (await copyText(shareUrl)) {
+                              addToast({ description: t("shared"), color: "primary" });
+                            }
+                          }}
+                        >
+                          {t("copy")}
+                        </Button>
+                      }
+                    />
+                  )}
                 </div>
               )}
               {!downloadStarted && (

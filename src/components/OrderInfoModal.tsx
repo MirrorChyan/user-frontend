@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations, useFormatter, useLocale } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { OrderInfoType } from "@/components/checkout/QRCodePayModal";
@@ -8,7 +8,6 @@ import { X, AlertCircle, CheckCircle } from "lucide-react";
 import QQGroupLink from "@/components/QQGroupLink";
 import { Link } from "@/i18n/routing";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
-import moment from "moment";
 import { addToast } from "@heroui/toast";
 
 interface OrderInfoModalProps {
@@ -19,31 +18,30 @@ interface OrderInfoModalProps {
 export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps) {
   const t = useTranslations("ShowKey");
   const format = useFormatter();
-  const locale = useLocale();
   const [orderInfo, setOrderInfo] = useState<OrderInfoType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isExpired, setIsExpired] = useState(false);
 
+  // 依赖需与 React Compiler 推断的一致，否则整个组件会被跳过优化
+  const expiredAt = orderInfo?.expired_at;
+
   const formattedTime = useMemo(() => {
-    if (!orderInfo?.expired_at) return null;
-    return format.dateTime(moment(orderInfo.expired_at).toDate(), {
+    if (!expiredAt) return null;
+    return format.dateTime(new Date(expiredAt), {
       year: "numeric",
       month: "short",
       day: "numeric",
       hour: "numeric",
       minute: "numeric",
     });
-  }, [orderInfo?.expired_at, format]);
+  }, [expiredAt, format]);
 
-  useEffect(() => {
-    moment.locale(locale);
-  }, [locale]);
-
+  // 由 next-intl 按当前语言格式化，如"3个月后" / "in 3 months"
   const relativeTime = useMemo(() => {
-    if (!orderInfo?.expired_at) return null;
-    return moment.duration(moment(orderInfo.expired_at).diff(moment())).humanize();
-  }, [orderInfo?.expired_at, locale]);
+    if (!expiredAt) return null;
+    return format.relativeTime(new Date(expiredAt), new Date());
+  }, [expiredAt, format]);
 
   const copyToClipboard = () => {
     if (!orderInfo?.cdk) return;
@@ -84,7 +82,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
         const { ec, msg, data } = await response.json();
 
         if (ec === 200) {
-          const expired = moment(data.expired_at).isBefore(moment());
+          const expired = new Date(data.expired_at).getTime() < Date.now();
           setIsExpired(expired);
           setOrderInfo(data);
         } else {

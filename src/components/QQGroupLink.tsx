@@ -2,6 +2,7 @@
 
 import { getGroupUrl, QQ_GROUP } from "@/lib/utils/constant";
 import { useEffect, useState } from "react";
+import { getStorageItem, removeStorageItem, setStorageItem } from "@/lib/utils/storage";
 
 export interface QQGroupProps {
   text: string;
@@ -21,7 +22,7 @@ export default function QQGroupLink({ text }: QQGroupProps) {
   useEffect(() => {
     const getCachedUrl = (): string | null => {
       try {
-        const cached = localStorage.getItem(CACHE_KEY);
+        const cached = getStorageItem(CACHE_KEY);
         if (!cached) return null;
 
         const data: CachedData = JSON.parse(cached);
@@ -31,25 +32,21 @@ export default function QQGroupLink({ text }: QQGroupProps) {
           return data.url;
         }
 
-        localStorage.removeItem(CACHE_KEY);
+        removeStorageItem(CACHE_KEY);
         return null;
       } catch (error) {
-        localStorage.removeItem(CACHE_KEY);
+        removeStorageItem(CACHE_KEY);
         console.error("Failed to read QQ group URL cache:", error);
         return null;
       }
     };
 
     const setCachedUrl = (url: string) => {
-      try {
-        const data: CachedData = {
-          url,
-          timestamp: Date.now(),
-        };
-        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-      } catch (error) {
-        console.error("Failed to cache QQ group URL:", error);
-      }
+      const data: CachedData = {
+        url,
+        timestamp: Date.now(),
+      };
+      setStorageItem(CACHE_KEY, JSON.stringify(data));
     };
 
     // 先尝试使用缓存

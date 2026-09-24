@@ -22,14 +22,13 @@ export default async function GetStart({
 
   const { type_id, source } = await searchParams;
 
-  const [plans, announcement] = await Promise.all([
+  const [plans, announcement, C2URate] = await Promise.all([
     getPlans(type_id),
     getAnnouncement(locale as "zh" | "en"),
+    // 人民币->美元汇率
+    locale === "zh" ? 1 : getUSDRate(),
   ]);
   const { homePlans, morePlans } = plans;
-
-  // 人民币->美元汇率
-  const C2URate = locale === "zh" ? 1 : await getUSDRate();
 
   return (
     <div className="relative" suppressHydrationWarning>

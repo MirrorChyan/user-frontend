@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { Button, Modal, ModalBody, ModalContent, ModalFooter } from "@heroui/react";
 import { getGroupUrl } from "@/lib/utils/constant";
+import { isInAppBrowser } from "@/lib/utils/browserDetection";
+import InAppDownloadNotice from "@/components/InAppDownloadNotice";
 
 export default function DownloadModalWrapper() {
   const searchParams = useSearchParams();
@@ -15,6 +17,8 @@ export default function DownloadModalWrapper() {
 
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [isLoadingAnimation, setIsLoadingAnimation] = useState(false);
+  const [downloadUrl, setDownloadUrl] = useState("");
+  const [inAppBrowser, setInAppBrowser] = useState(false);
   // 确保只触发一次下载
   const downloadTriggeredRef = useRef(false);
 
@@ -23,11 +27,20 @@ export default function DownloadModalWrapper() {
     if (download && !downloadTriggeredRef.current) {
       downloadTriggeredRef.current = true;
 
-      const url = `${CLIENT_BACKEND}/api/resources/download/${download}`;
-      window.location.href = url;
+      const url = new URL(
+        `${CLIENT_BACKEND}/api/resources/download/${encodeURIComponent(download)}`,
+        window.location.href
+      ).href;
+      // 分享链接常被贴到微信、QQ 里打开，内置浏览器会拦截下载，改为引导到系统浏览器
+      const inApp = isInAppBrowser();
+      if (!inApp) {
+        window.location.href = url;
+      }
 
+      setDownloadUrl(url);
+      setInAppBrowser(inApp);
       setShowDownloadModal(true);
-      setIsLoadingAnimation(true);
+      setIsLoadingAnimation(!inApp);
 
       console.log(`downloading ${url}`);
 
@@ -121,13 +134,28 @@ export default function DownloadModalWrapper() {
                     )}
                   </div>
                   <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
-                    {t("downloadStartedForShare")}
+                    {inAppBrowser ? t("downloadReadyForShare") : t("downloadStartedForShare")}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    {isLoadingAnimation ? t("pleaseWait") : t("downloadInProgress")}
-                  </p>
+                  {!inAppBrowser && (
+                    <p className="text-gray-600 dark:text-gray-300">
+                      {isLoadingAnimation ? t("pleaseWait") : t("downloadInProgress")}
+                    </p>
+                  )}
+                  {!inAppBrowser && !isLoadingAnimation && (
+                    <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                      {t("manualDownloadHint")}
+                      <a
+                        href={downloadUrl}
+                        className="text-primary-600 dark:text-primary-400 ml-1 underline"
+                      >
+                        {t("manualDownloadLink")}
+                      </a>
+                    </p>
+                  )}
                 </div>
               </div>
+
+              {inAppBrowser && <InAppDownloadNotice url={downloadUrl} />}
 
               <div className="rounded-lg border border-orange-200 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-900/20">
                 <div className="flex items-start">

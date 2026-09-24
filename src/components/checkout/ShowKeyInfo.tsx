@@ -1,11 +1,12 @@
 import { useLocale, useTranslations } from "next-intl";
 import { CheckCircle, Gift, Layers, MessageCircle, TrendingUp } from "lucide-react";
-import moment from "moment/moment";
 import { OrderInfoType } from "@/components/checkout/QRCodePayModal";
 import { addToast } from "@heroui/toast";
 import { getGroupUrl } from "@/lib/utils/constant";
 import { useMemo, useState } from "react";
 import confetti from "canvas-confetti";
+import { DAY_MS, formatDateTime } from "@/lib/utils/date";
+import { copyText } from "@/lib/utils/clipboard";
 
 export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
   const t = useTranslations("ShowKey");
@@ -15,31 +16,29 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
   const [extraDays, setExtraDays] = useState(0);
   const randomDays = 1;
 
-  const [expiredTime, setExpiredTime] = useState(moment(info?.expired_at).add(-1, "d"));
+  // 先展示少一天的到期时间，抽取额外天数后再加回来
+  const [initialExpiredTime] = useState(
+    () => new Date(info?.expired_at ?? Date.now()).getTime() - DAY_MS
+  );
+  const expiredTime = initialExpiredTime + extraDays * DAY_MS;
 
+  // 抽取前的剩余天数，抽取后展示为 relativeDays + extraDays
   const relativeDays = useMemo(
-    () => Math.round(moment.duration(moment(expiredTime).diff(moment())).asDays()),
-    [expiredTime]
+    () => Math.round((initialExpiredTime - Date.now()) / DAY_MS),
+    [initialExpiredTime]
   );
 
   if (!info) {
     return <></>;
   }
 
-  const copyToClipboard = () => {
-    if (info.cdk) {
-      navigator.clipboard
-        .writeText(info.cdk)
-        .then(() => {
-          addToast({
-            color: "success",
-            description: t("copySuccess"),
-          });
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    }
+  const copyToClipboard = async () => {
+    if (!info.cdk) return;
+    const copied = await copyText(info.cdk);
+    addToast({
+      color: copied ? "success" : "danger",
+      description: copied ? t("copySuccess") : t("copyFailed"),
+    });
   };
 
   const handleJoinQQGroup = async () => {
@@ -53,7 +52,6 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
   const handleGetExtraDays = () => {
     setExtraDays(randomDays);
     setShowConfetti(true);
-    setExpiredTime(expiredTime.add(1, "d"));
 
     const end = Date.now() + 100;
 
@@ -126,7 +124,7 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
               <span className="text-sm whitespace-pre-line text-gray-500 dark:text-gray-400">
                 {t.rich("timeConfettiAfter", {
                   addDay: extraDays,
-                  time: expiredTime.format("YYYY-MM-DD HH:mm:ss"),
+                  time: formatDateTime(expiredTime),
                 })}
                 <div className="mt-2 flex items-center justify-center gap-1 text-sm text-emerald-600 dark:text-emerald-400">
                   {t.rich("remainingDays", { originDay: relativeDays })}
@@ -139,7 +137,7 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
             ) : (
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 {t.rich("timeConfettiBefore", {
-                  time: expiredTime.format("YYYY-MM-DD HH:mm:ss"),
+                  time: formatDateTime(expiredTime),
                   days: relativeDays,
                 })}
               </span>

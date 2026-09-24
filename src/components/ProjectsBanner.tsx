@@ -1,21 +1,12 @@
 import { cn } from "@/lib/utils/css";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { CLIENT_BACKEND, SERVER_BACKEND } from "@/app/requests/misc";
-import { ProjectCardProps } from "@/components/ProjectCard";
+import { CLIENT_BACKEND } from "@/app/requests/misc";
+import { getProjects } from "@/app/requests/project";
 
 export default async function ProjectBanner() {
   const t = await getTranslations("GetStart");
-  const resp = await fetch(`${SERVER_BACKEND}/api/misc/project`);
-  const projects: Array<ProjectCardProps> = [];
-  try {
-    const { ec, data } = await resp.json();
-    if (ec === 200) {
-      projects.push(...data);
-    }
-  } catch (e) {
-    console.log(e);
-  }
+  const projects = await getProjects();
 
   const displayCount = 6;
   const displayProjects = projects.slice(0, displayCount);

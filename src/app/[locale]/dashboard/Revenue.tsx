@@ -228,6 +228,8 @@ function SalesPieChart({ data, field, title, activeValue, onToggle }: SalesPieCh
             align="left"
             verticalAlign="top"
             content={legendContent}
+            // recharts 3 的图例默认按名称字母序排序，这里保持 data 原有顺序（按份数、金额降序）
+            itemSorter={item => data.findIndex(entry => entry.name === item.value)}
             wrapperStyle={{
               maxHeight: "240px",
               overflowY: "auto",

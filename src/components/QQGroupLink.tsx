@@ -49,17 +49,23 @@ export default function QQGroupLink({ text }: QQGroupProps) {
       setStorageItem(CACHE_KEY, JSON.stringify(data));
     };
 
-    // 先尝试使用缓存
+    let cancelled = false;
+    // 先尝试使用缓存，缓存不存在或已过期时重新获取
     const cachedUrl = getCachedUrl();
-    if (cachedUrl) {
-      setUrl(cachedUrl);
-    } else {
-      // 缓存不存在或已过期，重新获取
-      getGroupUrl().then(url => {
+    const urlPromise = cachedUrl
+      ? Promise.resolve(cachedUrl)
+      : getGroupUrl().then(url => {
+          setCachedUrl(url);
+          return url;
+        });
+    urlPromise.then(url => {
+      if (!cancelled) {
         setUrl(url);
-        setCachedUrl(url);
-      });
-    }
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (

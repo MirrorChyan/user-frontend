@@ -31,8 +31,10 @@ export function useOrderPolling({
   renewCdk,
 }: UseOrderPollingProps): UseOrderPollingResult {
   const t = useTranslations("Checkout");
-  const [orderInfo, setOrderInfo] = useState<OrderInfoType | undefined>();
-  const [isPolling, setIsPolling] = useState(false);
+  // 按订单号记录支付结果，未拿到当前订单的结果前都视为轮询中
+  const [paidOrder, setPaidOrder] = useState<{ orderId: string; info: OrderInfoType }>();
+  const orderInfo = paidOrder?.orderId === customOrderId ? paidOrder?.info : undefined;
+  const isPolling = !!customOrderId && !orderInfo;
 
   useEffect(() => {
     if (!customOrderId) return;
@@ -52,18 +54,19 @@ export function useOrderPolling({
           const { code, data } = await response.json();
           if (stopped) return;
           if (code === 0) {
-            setOrderInfo({
-              cdk: data.cdk,
-              expired_at: data.expired_at,
-              created_at: data.created_at,
-              is_renewal: renewCdk.length > 0,
+            setPaidOrder({
+              orderId: customOrderId,
+              info: {
+                cdk: data.cdk,
+                expired_at: data.expired_at,
+                created_at: data.created_at,
+                is_renewal: renewCdk.length > 0,
+              },
             });
             // 支付完成，停止轮询，也不再自动刷新页面
             clearTimeout(reloadTimer);
-            setIsPolling(false);
             return;
           }
-          setOrderInfo(undefined);
         }
       } catch {
         if (stopped) return;
@@ -75,14 +78,12 @@ export function useOrderPolling({
       pollTimer = setTimeout(poll, POLL_INTERVAL);
     };
 
-    setIsPolling(true);
     pollTimer = setTimeout(poll, FIRST_POLL_DELAY);
 
     return () => {
       stopped = true;
       clearTimeout(pollTimer);
       clearTimeout(reloadTimer);
-      setIsPolling(false);
     };
   }, [customOrderId, renewCdk, t]);
 

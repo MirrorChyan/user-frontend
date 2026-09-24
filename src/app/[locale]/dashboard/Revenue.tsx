@@ -9,11 +9,9 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Skeleton,
   Tab,
   Tabs,
 } from "@heroui/react";
-import { debounce } from "lodash";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, TooltipProps } from "recharts";
 import { Props } from "recharts/types/component/DefaultLegendContent";
 import { RevenueType, StatData } from "@/app/[locale]/dashboard/page";
@@ -48,6 +46,8 @@ type SalesPieChartProps = {
   data: ChartDataItem[];
   field: FilterField;
   title: string;
+  activeValue: string | undefined;
+  onToggle: (field: FilterField, value: string) => void;
 };
 
 type LegendPayloadEntry = {
@@ -70,9 +70,181 @@ const PLATFORM_LABELS: Record<string, string> = {
   alipay: "支付宝",
 };
 
+// Function to prepare chart data by grouping
+function prepareChartData(data: RevenueType[], key: keyof RevenueType): ChartDataItem[] {
+  const grouped: Record<string, { amount: number; count: number }> = data.reduce(
+    (acc, item) => {
+      const keyValue = String(item[key]);
+      const amount = parseDashboardAmount(item.amount);
+      const count = Number(item.buy_count);
+
+      if (!acc[keyValue]) {
+        acc[keyValue] = { amount: 0, count: 0 };
+      }
+      acc[keyValue].amount += amount;
+      acc[keyValue].count += count;
+      return acc;
+    },
+    {} as Record<string, { amount: number; count: number }>
+  );
+
+  return Object.entries(grouped).map(([name, { amount, count }]) => ({
+    name,
+    amount: parseFloat(amount.toFixed(2)),
+    count,
+  }));
+}
+
+function calculatePercentages(data: ChartDataItem[]): ChartDataItem[] {
+  const total = data.reduce((sum, item) => sum + item.count, 0);
+
+  if (total === 0) {
+    return data.map(item => ({
+      ...item,
+      percentage: 0,
+    }));
+  }
+
+  return data
+    .map(item => ({
+      ...item,
+      percentage: parseFloat(((item.count / total) * 100).toFixed(1)),
+    }))
+    .sort((a, b) => (b.count == a.count ? b.amount - a.amount : b.count - a.count));
+}
+
+const PIE_COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#8884D8",
+  "#82CA9D",
+  "#DC143C",
+  "#9370DB",
+  "#20B2AA",
+];
+
+// 饼图需要定义在组件外部，否则父组件每次渲染都会让它重新挂载并重播动画
+function SalesPieChart({ data, field, title, activeValue, onToggle }: SalesPieChartProps) {
+  const t = useTranslations("Dashboard");
+  const [activeSliceIndex, setActiveSliceIndex] = useState<number | undefined>(undefined);
+
+  const customTooltip = (toolTipProps: TooltipProps<number, string>) => {
+    const { active, payload } = toolTipProps;
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="rounded border bg-white p-2 shadow dark:border-gray-700 dark:bg-gray-800">
+          <p className="font-medium text-gray-900 dark:text-white">
+            {data.name} {data.percentage}%
+          </p>
+          <p className="text-gray-700 dark:text-gray-300">
+            {data.count}
+            {t("unit.count")} {data.amount.toFixed(2)}
+            {t("unit.amount")}
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const legendContent = ({ payload }: Props) => {
+    if (!payload) return null;
+
+    const legendEntries = payload as unknown as LegendPayloadEntry[];
+
+    return (
+      <ul className="text-xs">
+        {legendEntries.map((entry, index) => {
+          const isActive = activeValue === entry.value;
+          return (
+            <li key={`item-${index}`} className="mb-1">
+              <button
+                type="button"
+                className={`flex w-full items-center rounded px-1 py-0.5 text-left transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:hover:bg-gray-700 ${
+                  isActive
+                    ? "bg-blue-100 ring-1 ring-blue-300 dark:bg-blue-900/30 dark:ring-blue-700"
+                    : ""
+                }`}
+                onClick={() => onToggle(field, entry.value)}
+                aria-pressed={isActive}
+              >
+                <span
+                  className="mr-1 inline-block h-3 w-3 shrink-0"
+                  style={{ backgroundColor: entry.color }}
+                />
+                <div className="flex flex-col">
+                  <span>
+                    {entry.value} {entry.payload.percentage}%{" "}
+                  </span>
+                  <span className="text-gray-500">
+                    {entry.payload.count}
+                    {t("unit.count")} {entry.payload.amount.toFixed(2)}
+                    {t("unit.amount")}
+                  </span>
+                </div>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
+
+  return (
+    <div className="h-full">
+      <h3 className="mb-2">
+        {title}
+        {activeValue && (
+          <span className="ml-2 text-sm font-normal text-blue-500">({activeValue})</span>
+        )}
+      </h3>
+      <ResponsiveContainer width="100%" height={250}>
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            outerRadius={80}
+            innerRadius={30}
+            fill="#8884d8"
+            dataKey="count"
+            activeIndex={activeSliceIndex}
+            onMouseEnter={(_, index) => setActiveSliceIndex(index)}
+            onMouseLeave={() => setActiveSliceIndex(undefined)}
+          >
+            {data.map((_entry, index) => (
+              <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip content={customTooltip} />
+          <Legend
+            layout="vertical"
+            align="left"
+            verticalAlign="top"
+            content={legendContent}
+            wrapperStyle={{
+              maxHeight: "240px",
+              overflowY: "auto",
+              direction: "ltr",
+              paddingRight: "10px",
+              textAlign: "left",
+              scrollbarWidth: "none" /* Firefox */,
+              msOverflowStyle: "none" /* Internet Explorer 10+ */,
+            }}
+            className="no-scrollbar"
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
 export default function Revenue({ revenueData, statData, onLogOut, rid, date }: RevenueProps) {
   const t = useTranslations("Dashboard");
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<string>("sales");
   const [filters, setFilters] = useState<FilterMap>({});
   const [filterDate, setFilterDate] = useState<string | null>(null);
@@ -150,14 +322,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
   useEffect(() => {
     if (!revenueData) {
       onLogOut();
-      return;
     }
-
-    const timeoutId = window.setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    return () => window.clearTimeout(timeoutId);
   }, [onLogOut, revenueData]);
 
   // Prepare chart data
@@ -221,51 +386,8 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
     return { platforms, total };
   }, [filteredData]);
 
-  function calculatePercentages(data: ChartDataItem[]): ChartDataItem[] {
-    const total = data.reduce((sum, item) => sum + item.count, 0);
-
-    if (total === 0) {
-      return data.map(item => ({
-        ...item,
-        percentage: 0,
-      }));
-    }
-
-    return data
-      .map(item => ({
-        ...item,
-        percentage: parseFloat(((item.count / total) * 100).toFixed(1)),
-      }))
-      .sort((a, b) => (b.count == a.count ? b.amount - a.amount : b.count - a.count));
-  }
-
-  // Function to prepare chart data by grouping
-  function prepareChartData(data: RevenueType[], key: keyof RevenueType): ChartDataItem[] {
-    const grouped: Record<string, { amount: number; count: number }> = data.reduce(
-      (acc, item) => {
-        const keyValue = String(item[key]);
-        const amount = parseDashboardAmount(item.amount);
-        const count = Number(item.buy_count);
-
-        if (!acc[keyValue]) {
-          acc[keyValue] = { amount: 0, count: 0 };
-        }
-        acc[keyValue].amount += amount;
-        acc[keyValue].count += count;
-        return acc;
-      },
-      {} as Record<string, { amount: number; count: number }>
-    );
-
-    return Object.entries(grouped).map(([name, { amount, count }]) => ({
-      name,
-      amount: parseFloat(amount.toFixed(2)),
-      count,
-    }));
-  }
-
-  // CSV export handler
-  const handleExport = debounce(async () => {
+  // CSV export handler，在点击回调中同步触发下载，Safari 才不会拦截
+  const handleExport = () => {
     const filename = `MirrorChyan Sales ${rid} ${date}.csv`;
     const csvContent =
       "\uFEFF" +
@@ -282,159 +404,9 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
     link.href = URL.createObjectURL(blob);
     link.download = filename;
     link.click();
-  }, 500);
-
-  // Reusable Pie Chart component
-  const SalesPieChart = (pieChartProps: SalesPieChartProps) => {
-    const [activeSliceIndex, setActiveSliceIndex] = useState<number | undefined>(undefined);
-    const COLORS = [
-      "#0088FE",
-      "#00C49F",
-      "#FFBB28",
-      "#FF8042",
-      "#8884D8",
-      "#82CA9D",
-      "#DC143C",
-      "#9370DB",
-      "#20B2AA",
-    ];
-
-    const activeValue = filters[pieChartProps.field];
-
-    const customTooltip = (toolTipProps: TooltipProps<number, string>) => {
-      const { active, payload } = toolTipProps;
-      if (active && payload && payload.length) {
-        const data = payload[0].payload;
-        return (
-          <div className="rounded border bg-white p-2 shadow dark:border-gray-700 dark:bg-gray-800">
-            <p className="font-medium text-gray-900 dark:text-white">
-              {data.name} {data.percentage}%
-            </p>
-            <p className="text-gray-700 dark:text-gray-300">
-              {data.count}
-              {t("unit.count")} {data.amount.toFixed(2)}
-              {t("unit.amount")}
-            </p>
-          </div>
-        );
-      }
-      return null;
-    };
-
-    const legendContent = ({ payload }: Props) => {
-      if (!payload) return null;
-
-      const legendEntries = payload as unknown as LegendPayloadEntry[];
-
-      return (
-        <ul className="text-xs">
-          {legendEntries.map((entry, index) => {
-            const isActive = activeValue === entry.value;
-            return (
-              <li key={`item-${index}`} className="mb-1">
-                <button
-                  type="button"
-                  className={`flex w-full items-center rounded px-1 py-0.5 text-left transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:hover:bg-gray-700 ${
-                    isActive
-                      ? "bg-blue-100 ring-1 ring-blue-300 dark:bg-blue-900/30 dark:ring-blue-700"
-                      : ""
-                  }`}
-                  onClick={() => handleFilterToggle(pieChartProps.field, entry.value)}
-                  aria-pressed={isActive}
-                >
-                  <span
-                    className="mr-1 inline-block h-3 w-3 shrink-0"
-                    style={{ backgroundColor: entry.color }}
-                  />
-                  <div className="flex flex-col">
-                    <span>
-                      {entry.value} {entry.payload.percentage}%{" "}
-                    </span>
-                    <span className="text-gray-500">
-                      {entry.payload.count}
-                      {t("unit.count")} {entry.payload.amount.toFixed(2)}
-                      {t("unit.amount")}
-                    </span>
-                  </div>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      );
-    };
-
-    return (
-      <div className="h-full">
-        <h3 className="mb-2">
-          {pieChartProps.title}
-          {activeValue && (
-            <span className="ml-2 text-sm font-normal text-blue-500">({activeValue})</span>
-          )}
-        </h3>
-        <ResponsiveContainer width="100%" height={250}>
-          <PieChart>
-            <Pie
-              data={pieChartProps.data}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              outerRadius={80}
-              innerRadius={30}
-              fill="#8884d8"
-              dataKey="count"
-              activeIndex={activeSliceIndex}
-              onMouseEnter={(_, index) => setActiveSliceIndex(index)}
-              onMouseLeave={() => setActiveSliceIndex(undefined)}
-            >
-              {pieChartProps.data.map((_entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip content={customTooltip} />
-            <Legend
-              layout="vertical"
-              align="left"
-              verticalAlign="top"
-              content={legendContent}
-              wrapperStyle={{
-                maxHeight: "240px",
-                overflowY: "auto",
-                direction: "ltr",
-                paddingRight: "10px",
-                textAlign: "left",
-                scrollbarWidth: "none" /* Firefox */,
-                msOverflowStyle: "none" /* Internet Explorer 10+ */,
-              }}
-              className="no-scrollbar"
-            />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-    );
+    // 立即释放会导致部分浏览器取消下载，稍后再回收
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
   };
-
-  if (isLoading) {
-    return (
-      <div className="mx-auto max-w-7xl space-y-8 p-6">
-        <Skeleton className="h-20 w-1/2 rounded-lg" />
-        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {[1, 2, 3].map((_, i) => (
-            <Skeleton key={i} className="h-20 rounded-lg" />
-          ))}
-        </div>
-        <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:col-span-2">
-            {[1, 2, 3, 4].map((_, i) => (
-              <Skeleton key={i} className="h-60 rounded-lg" />
-            ))}
-          </div>
-          <Skeleton className="min-h-96 rounded-lg lg:col-span-1" />
-        </div>
-        <Skeleton className="h-96 rounded-lg" />
-      </div>
-    );
-  }
 
   const hasStatData = Object.keys(statData).length > 0;
 
@@ -619,22 +591,42 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
                       data={applicationData}
                       field="application"
                       title={t("application")}
+                      activeValue={filters.application}
+                      onToggle={handleFilterToggle}
                     />
                   </div>
                 </Card>
                 <Card>
                   <div className="p-2">
-                    <SalesPieChart data={planData} field="plan" title={t("plan")} />
+                    <SalesPieChart
+                      data={planData}
+                      field="plan"
+                      title={t("plan")}
+                      activeValue={filters.plan}
+                      onToggle={handleFilterToggle}
+                    />
                   </div>
                 </Card>
                 <Card>
                   <div className="p-2">
-                    <SalesPieChart data={userAgentData} field="user_agent" title={t("userAgent")} />
+                    <SalesPieChart
+                      data={userAgentData}
+                      field="user_agent"
+                      title={t("userAgent")}
+                      activeValue={filters.user_agent}
+                      onToggle={handleFilterToggle}
+                    />
                   </div>
                 </Card>
                 <Card>
                   <div className="p-2">
-                    <SalesPieChart data={sourceData} field="source" title={t("source")} />
+                    <SalesPieChart
+                      data={sourceData}
+                      field="source"
+                      title={t("source")}
+                      activeValue={filters.source}
+                      onToggle={handleFilterToggle}
+                    />
                   </div>
                 </Card>
               </div>

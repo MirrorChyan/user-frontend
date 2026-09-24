@@ -6,18 +6,37 @@ import { Button, Input, Tooltip } from "@heroui/react";
 import { ComputerDesktopIcon } from "@heroicons/react/16/solid";
 import { addToast, closeAll } from "@heroui/toast";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
-import YearMonthPicker from "@/components/YearMonthPicker";
+import YearMonthPicker, { getCurrentYearMonth } from "@/components/YearMonthPicker";
 import { RevenueResponse, RevenueType, StatData } from "@/app/[locale]/dashboard/page";
 
 type LoginFormProps = {
   onLoginSuccess: (data: RevenueType[], rid: string, date: string, statData: StatData) => void;
 };
 
+type StatResponse = { ec: number; data?: StatData };
+
+async function fetchDashboardData(rid: string, token: string, month: string, isUa: boolean) {
+  const headers = { Authorization: token };
+  const revenueQuery = new URLSearchParams({ rid, date: month, is_ua: String(+isUa) });
+  const statQuery = new URLSearchParams({ rid });
+  const [revenueRes, statRes] = await Promise.all([
+    fetch(`${CLIENT_BACKEND}/api/billing/revenue?${revenueQuery}`, { headers }).then(
+      res => res.json() as Promise<RevenueResponse>
+    ),
+    // 统计数据是可选的，失败时不影响收益数据展示
+    fetch(`${CLIENT_BACKEND}/api/billing/stat/resources?${statQuery}`, { headers })
+      .then(res => res.json() as Promise<StatResponse>)
+      .catch((): StatResponse => ({ ec: -1 })),
+  ]);
+  return { revenueRes, statRes };
+}
+
 export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
   const t = useTranslations("Dashboard");
 
   // Form state
-  const [month, setMonth] = useState<string>("");
+  // 与年月选择器的初始值保持一致
+  const [month, setMonth] = useState<string>(getCurrentYearMonth);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isUa, setIsUa] = useState<boolean>(false);
 
@@ -42,40 +61,25 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
       return;
     }
 
-    try {
-      setIsLoading(true);
-      const [revenueRes, statRes] = await Promise.all([
-        fetch(`${CLIENT_BACKEND}/api/billing/revenue?rid=${rid}&date=${month}&is_ua=${+isUa}`, {
-          headers: { Authorization: token },
-        }).then(res => res.json()) as Promise<RevenueResponse>,
-        fetch(`${CLIENT_BACKEND}/api/billing/stat/resources?rid=${rid}`, {
-          headers: { Authorization: token },
-        })
-          .then(res => res.json())
-          .catch(() => ({ ec: -1 })),
-      ]);
-
-      if (revenueRes.ec !== 200) {
-        closeAll();
-        addToast({
-          description: t("error"),
-          color: "warning",
-        });
-        return;
-      }
-
-      const statData: StatData = statRes.ec === 200 ? (statRes.data ?? {}) : {};
-      onLoginSuccess(revenueRes.data, rid, month, statData);
-    } catch (error) {
+    setIsLoading(true);
+    const result = await fetchDashboardData(rid, token, month, isUa).catch((error: unknown) => {
       console.error("Error:", error);
+      return null;
+    });
+    setIsLoading(false);
+
+    if (!result || result.revenueRes.ec !== 200) {
       closeAll();
       addToast({
         description: t("error"),
         color: "warning",
       });
-    } finally {
-      setIsLoading(false);
+      return;
     }
+
+    const { revenueRes, statRes } = result;
+    const statData: StatData = statRes.ec === 200 ? (statRes.data ?? {}) : {};
+    onLoginSuccess(revenueRes.data, rid, month, statData);
   };
 
   return (

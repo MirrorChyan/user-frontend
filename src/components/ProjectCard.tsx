@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useLayoutEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Button,
   Input,
@@ -17,12 +17,16 @@ import {
 } from "@heroui/react";
 import { stringToColor } from "@/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
-import { addToast, ToastProps } from "@heroui/toast";
+import { addToast } from "@heroui/toast";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { ArrowTopRightOnSquareIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import { getGroupUrl } from "@/lib/utils/constant";
 import { detectPlatform, isInAppBrowser } from "@/lib/utils/browserDetection";
-import { matchSupportSelection, parseSupportOptions } from "@/lib/utils/support";
+import {
+  matchSupportSelection,
+  parseSupportOptions,
+  type SupportOption,
+} from "@/lib/utils/support";
 import { copyText } from "@/lib/utils/clipboard";
 import InAppDownloadNotice from "@/components/InAppDownloadNotice";
 
@@ -47,6 +51,71 @@ const lockedInputClassNames = {
   input: "caret-transparent",
 };
 
+type LatestDownloadResult =
+  | { status: "ok"; url: string; version: string }
+  | { status: "error"; code: number; msg: string }
+  | { status: "noUrl"; msg: string };
+
+async function fetchLatestDownload(
+  resource: string,
+  query: URLSearchParams
+): Promise<LatestDownloadResult> {
+  const response = await fetch(
+    `${CLIENT_BACKEND}/api/resources/${encodeURIComponent(resource)}/latest?${query}`
+  );
+  const { code, msg, data } = await response.json();
+  if (code !== 0) {
+    return { status: "error", code, msg };
+  }
+  if (!data.url) {
+    return { status: "noUrl", msg };
+  }
+  return { status: "ok", url: data.url, version: data.version_name };
+}
+
+type SelectionParams = Pick<
+  ProjectCardProps,
+  "showModal" | "osParam" | "archParam" | "channelParam"
+>;
+
+function getInitialSelection(
+  options: SupportOption[],
+  { showModal, osParam, archParam, channelParam }: SelectionParams
+) {
+  // 取解析后的首项，避免带 rid 前缀的条目被 split("-") 拆错
+  const first = options[0];
+  let channel = first?.channel ?? "";
+  let os = first?.os === "any" ? "" : (first?.os ?? "");
+  let arch = first?.arch === "any" ? "" : (first?.arch ?? "");
+
+  // URL 参数只对被 rid 命中、即将自动打开的卡片生效
+  if (showModal) {
+    if (channelParam != null) {
+      channel = channelParam;
+    }
+    if (osParam != null) {
+      os = osParam;
+    }
+    if (archParam != null) {
+      arch = archParam;
+    } else if (osParam != null) {
+      // URL 中指定了 os 但没有 arch 参数时，清空 arch 以避免残留不匹配的默认值
+      arch = "";
+    }
+  }
+
+  const fromUrl = showModal && (osParam != null || archParam != null);
+  if (!fromUrl) {
+    const matched = matchSupportSelection(options, channel, detectPlatform());
+    if (matched) {
+      os = matched.os;
+      arch = matched.arch;
+    }
+  }
+
+  return { channel, os, arch };
+}
+
 export default function ProjectCard(props: ProjectCardProps) {
   const {
     name,
@@ -65,18 +134,21 @@ export default function ProjectCard(props: ProjectCardProps) {
   const avatarBgColor = useMemo(() => stringToColor(name), [name]);
   const avatarText = useMemo(() => name.charAt(0).toUpperCase(), [name]);
 
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  // 被 URL 中 rid 命中的卡片直接打开下载弹窗
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure({ defaultOpen: showModal });
 
   const locale = useLocale();
 
   const supportOptions = useMemo(() => parseSupportOptions(support), [support]);
 
-  // 取解析后的首项，避免带 rid 前缀的条目被 split("-") 拆错
-  const first = supportOptions[0];
-
-  const [channel, setChannel] = useState(first?.channel ?? "");
-  const [os, setOs] = useState(first?.os === "any" ? "" : (first?.os ?? ""));
-  const [arch, setArch] = useState(first?.arch === "any" ? "" : (first?.arch ?? ""));
+  // 初始选中项只在首次渲染时计算。选项只在弹窗里展示，弹窗不参与服务端渲染，
+  // 因此客户端按 UA 算出的值与服务端不同也不会导致水合不一致
+  const [initialSelection] = useState(() =>
+    getInitialSelection(supportOptions, { showModal, osParam, archParam, channelParam })
+  );
+  const [channel, setChannel] = useState(initialSelection.channel);
+  const [os, setOs] = useState(initialSelection.os);
+  const [arch, setArch] = useState(initialSelection.arch);
 
   const [cdk, setCdk] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -93,39 +165,6 @@ export default function ProjectCard(props: ProjectCardProps) {
   const t = useTranslations("Download");
   const p = useTranslations("Projects");
   const common = useTranslations("Common");
-
-  useLayoutEffect(() => {
-    // URL 参数只对被 rid 命中、即将自动打开的卡片生效
-    const fromUrl = showModal && (osParam != null || archParam != null);
-
-    if (showModal) {
-      if (osParam != null) {
-        setOs(osParam);
-      }
-      if (archParam != null) {
-        setArch(archParam);
-      } else if (osParam != null) {
-        // URL 中指定了 os 但没有 arch 参数时，清空 arch 以避免残留不匹配的默认值
-        setArch("");
-      }
-      if (channelParam != null) {
-        setChannel(channelParam);
-      }
-    }
-
-    if (!fromUrl) {
-      const currentChannel = showModal && channelParam != null ? channelParam : channel;
-      const matched = matchSupportSelection(supportOptions, currentChannel, detectPlatform());
-      if (matched) {
-        setOs(matched.os);
-        setArch(matched.arch);
-      }
-    }
-
-    if (showModal) {
-      onOpen();
-    }
-  }, []);
 
   const availableChannel = useMemo(() => {
     return [...new Set(supportOptions.map(item => item.channel))];
@@ -255,62 +294,50 @@ export default function ProjectCard(props: ProjectCardProps) {
       });
       return;
     }
-    setLoading({
-      loading: true,
-      type: type,
+    // 根据当前选择的 channel、os、arch 找到对应的 supportOption，获取其 rid
+    const currentOption = supportOptions.find(
+      item =>
+        item.channel === selectedChannel &&
+        (item.os === selectedOs || item.os === "any") &&
+        (item.arch === selectedArch || item.arch === "any")
+    );
+    // 如果 supportOption 中有自定义的 rid，使用它；否则使用原始的 resource
+    const targetResource = currentOption?.rid || resource;
+
+    const query = new URLSearchParams({
+      os: selectedOs === "any" ? "" : selectedOs,
+      arch: selectedArch === "any" ? "" : selectedArch,
+      channel: selectedChannel,
+      cdk: cdk.trim(),
+      user_agent: "mirrorchyan_web",
     });
-    try {
-      // 根据当前选择的 channel、os、arch 找到对应的 supportOption，获取其 rid
-      const currentOption = supportOptions.find(
-        item =>
-          item.channel === selectedChannel &&
-          (item.os === selectedOs || item.os === "any") &&
-          (item.arch === selectedArch || item.arch === "any")
-      );
-      // 如果 supportOption 中有自定义的 rid，使用它；否则使用原始的 resource
-      const targetResource = currentOption?.rid || resource;
 
-      const query = new URLSearchParams({
-        os: selectedOs === "any" ? "" : selectedOs,
-        arch: selectedArch === "any" ? "" : selectedArch,
-        channel: selectedChannel,
-        cdk: cdk.trim(),
-        user_agent: "mirrorchyan_web",
-      });
-      const dl = `${CLIENT_BACKEND}/api/resources/${encodeURIComponent(targetResource)}/latest?${query}`;
-      const response = await fetch(dl);
+    setLoading({ loading: true, type });
+    const result = await fetchLatestDownload(targetResource, query).catch((error: unknown) => {
+      console.error(error);
+      return null;
+    });
+    setLoading({ loading: false, type });
 
-      const { code, msg, data } = await response.json();
-      if (code !== 0) {
-        const props = {
-          description: msg,
-          color: "warning",
-        };
-        if (code !== 1) {
-          props.description = t(code.toString());
-        }
-        addToast(props as ToastProps);
-        return;
-      }
-
-      const url = data.url;
-      if (!url) {
-        addToast({
-          description: msg,
-          color: "danger",
-        });
-        return;
-      }
-
-      setVersion(data.version_name);
-
-      return url;
-    } finally {
-      setLoading({
-        loading: false,
-        type: type,
-      });
+    if (!result) {
+      addToast({ description: common("networkError"), color: "danger" });
+      return;
     }
+    if (result.status === "error") {
+      // code 为 1 时直接展示后端返回的信息，其余错误码使用本地化文案
+      addToast({
+        description: result.code === 1 ? result.msg : t(result.code.toString()),
+        color: "warning",
+      });
+      return;
+    }
+    if (result.status === "noUrl") {
+      addToast({ description: result.msg, color: "danger" });
+      return;
+    }
+
+    setVersion(result.version);
+    return result.url;
   };
 
   const handleShare = async () => {
@@ -364,15 +391,6 @@ export default function ProjectCard(props: ProjectCardProps) {
     }, 1000);
   };
 
-  const Conditioned = ({
-    children,
-    condition,
-  }: {
-    condition: () => boolean;
-    children: React.ReactElement;
-  }) => {
-    return condition() ? children : <></>;
-  };
   const openModal = () => {
     if (!download) {
       addToast({
@@ -733,59 +751,55 @@ export default function ProjectCard(props: ProjectCardProps) {
                       )}
                     </div>
 
-                    <>
-                      <Conditioned condition={() => renderFixedSelect(availableOS)}>
-                        <div className="flex-1">
-                          {lockedOs ? (
-                            <Input
-                              label={t("os")}
-                              value={lockedOs}
-                              isReadOnly
-                              className="w-full"
-                              classNames={lockedInputClassNames}
-                            />
-                          ) : (
-                            <Select
-                              label={t("os")}
-                              placeholder={t("noOs")}
-                              onChange={e => handleOSChange(e.target.value)}
-                              className="w-full"
-                              items={availableOS}
-                              selectedKeys={[selectedOs]}
-                            >
-                              {item => <SelectItem key={item.value}>{item.label}</SelectItem>}
-                            </Select>
-                          )}
-                        </div>
-                      </Conditioned>
-                    </>
+                    {renderFixedSelect(availableOS) && (
+                      <div className="flex-1">
+                        {lockedOs ? (
+                          <Input
+                            label={t("os")}
+                            value={lockedOs}
+                            isReadOnly
+                            className="w-full"
+                            classNames={lockedInputClassNames}
+                          />
+                        ) : (
+                          <Select
+                            label={t("os")}
+                            placeholder={t("noOs")}
+                            onChange={e => handleOSChange(e.target.value)}
+                            className="w-full"
+                            items={availableOS}
+                            selectedKeys={[selectedOs]}
+                          >
+                            {item => <SelectItem key={item.value}>{item.label}</SelectItem>}
+                          </Select>
+                        )}
+                      </div>
+                    )}
 
-                    <>
-                      <Conditioned condition={() => renderFixedSelect(availableArch)}>
-                        <div className="flex-1">
-                          {lockedArch ? (
-                            <Input
-                              label={t("arch")}
-                              value={lockedArch}
-                              isReadOnly
-                              className="w-full"
-                              classNames={lockedInputClassNames}
-                            />
-                          ) : (
-                            <Select
-                              label={t("arch")}
-                              placeholder={t("noArch")}
-                              onChange={e => handleArchChange(e.target.value)}
-                              className="w-full"
-                              items={availableArch}
-                              selectedKeys={[selectedArch]}
-                            >
-                              {item => <SelectItem key={item.value}>{item.label}</SelectItem>}
-                            </Select>
-                          )}
-                        </div>
-                      </Conditioned>
-                    </>
+                    {renderFixedSelect(availableArch) && (
+                      <div className="flex-1">
+                        {lockedArch ? (
+                          <Input
+                            label={t("arch")}
+                            value={lockedArch}
+                            isReadOnly
+                            className="w-full"
+                            classNames={lockedInputClassNames}
+                          />
+                        ) : (
+                          <Select
+                            label={t("arch")}
+                            placeholder={t("noArch")}
+                            onChange={e => handleArchChange(e.target.value)}
+                            className="w-full"
+                            items={availableArch}
+                            selectedKeys={[selectedArch]}
+                          >
+                            {item => <SelectItem key={item.value}>{item.label}</SelectItem>}
+                          </Select>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-row gap-3">

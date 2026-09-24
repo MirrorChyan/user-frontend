@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { ArrowLeft } from "lucide-react";
-import { isMobile } from "react-device-detect";
-import { isInAppBrowser, shouldUseQRCodePayment } from "@/lib/utils/browserDetection";
+import {
+  isInAppBrowser,
+  isMobileDevice,
+  shouldUseQRCodePayment,
+} from "@/lib/utils/browserDetection";
 import NoOrder from "@/app/[locale]/checkout/NoOrder";
 import RenewalCdkInput, { RenewalCdkInputRef } from "@/components/checkout/RenewalCdkInput";
 import OrderSummaryCard from "@/components/checkout/OrderSummaryCard";
@@ -46,8 +49,9 @@ export default function Checkout(params: CheckoutProps) {
   const t = useTranslations("Checkout");
   const router = useRouter();
 
-  const planId = params.planId[0];
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("alipay");
+  const planId = params.planId[0] ?? "";
+  // 用户手动选择的支付方式，未选择时使用套餐的默认支付方式
+  const [selectedPaymentMethod, setPaymentMethod] = useState<PaymentMethod>();
   const [showModal, setShowModal] = useState<ShowedType>("none");
   const [paymentUrl, setPaymentUrl] = useState<string>("");
   const [paymentHtml, setPaymentHtml] = useState<string>("");
@@ -55,11 +59,14 @@ export default function Checkout(params: CheckoutProps) {
   const [renewCdk, setRenewCdk] = useState("");
   const [showInAppWarning, setShowInAppWarning] = useState(false);
   const [payOnNewPage, setPayOnNewPage] = useState(false);
+  const isMobile = isMobileDevice();
   const canTryH5 = shouldUseQRCodePayment() ? false : isMobile;
 
   const renewalCdkInputRef = useRef<RenewalCdkInputRef>(null);
 
   const { planInfo, loading: planInfoLoading, hasError } = usePlanInfo({ planId });
+  const paymentMethod: PaymentMethod =
+    selectedPaymentMethod ?? (planInfo ? getDefaultPaymentMethod(planInfo) : "alipay");
   const priceInfo = usePriceCalculation({ planInfo, rate: params.rate });
   const { orderInfo, isPolling } = useOrderPolling({ customOrderId, renewCdk });
   // afdian 支付在 handlePurchase 中单独处理，不会调用 createPayment
@@ -69,13 +76,6 @@ export default function Checkout(params: CheckoutProps) {
     canTryH5,
     renewCdk,
   });
-
-  // 当 planInfo 加载完成后，设置默认支付方式
-  useEffect(() => {
-    if (planInfo) {
-      setPaymentMethod(getDefaultPaymentMethod(planInfo));
-    }
-  }, [planInfo]);
 
   // 爱发电支付处理
   const handleAfdianPayment = () => {
@@ -149,7 +149,7 @@ export default function Checkout(params: CheckoutProps) {
   };
 
   // 参数校验
-  if (!params.planId || params.planId.length > 1 || hasError) {
+  if (params.planId.length !== 1 || hasError) {
     return <NoOrder />;
   }
 

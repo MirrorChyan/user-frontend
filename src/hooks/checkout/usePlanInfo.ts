@@ -14,56 +14,61 @@ interface UsePlanInfoResult {
   hasError: boolean;
 }
 
+type PlanInfoResult = {
+  planInfo?: PlanInfoDetail;
+  hasError: boolean;
+};
+
+async function fetchPlanInfo(planId: string, signal: AbortSignal): Promise<PlanInfoResult> {
+  const response = await fetch(`${CLIENT_BACKEND}/api/misc/plan/${encodeURIComponent(planId)}`, {
+    signal,
+  });
+  if (!response.ok) {
+    return { hasError: false };
+  }
+  const { ec, data } = await response.json();
+  if (ec !== 200) {
+    return { hasError: true };
+  }
+  return { planInfo: data as PlanInfoDetail, hasError: false };
+}
+
 export function usePlanInfo({ planId }: UsePlanInfoProps): UsePlanInfoResult {
   const t = useTranslations("Checkout");
-  const [planInfo, setPlanInfo] = useState<PlanInfoDetail | undefined>();
-  const [loading, setLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
+  // 按 planId 记录结果，planId 变化后旧结果自动失效，加载状态由此推导
+  const [result, setResult] = useState<PlanInfoResult & { planId: string }>();
 
   useEffect(() => {
+    if (!planId) return;
     const abortController = new AbortController();
 
-    (async () => {
-      setLoading(true);
-      setHasError(false);
-
-      try {
-        const response = await fetch(`${CLIENT_BACKEND}/api/misc/plan/${planId}`, {
-          signal: abortController.signal,
-        });
-
-        if (response.ok) {
-          const { ec, data } = await response.json();
-          if (ec !== 200) {
-            if (!abortController.signal.aborted) {
-              addToast({
-                color: "warning",
-                description: t("errorWithPollingOrder"),
-              });
-              setHasError(true);
-            }
-            return;
-          }
-          if (!abortController.signal.aborted) {
-            const detail = data as PlanInfoDetail;
-            setPlanInfo(detail);
-          }
-        }
-      } catch (error) {
+    fetchPlanInfo(planId, abortController.signal)
+      .catch((error: unknown): PlanInfoResult => {
         if (!abortController.signal.aborted) {
           console.error("获取Plan信息失败", error);
         }
-      } finally {
-        if (!abortController.signal.aborted) {
-          setLoading(false);
+        return { hasError: false };
+      })
+      .then(planResult => {
+        if (abortController.signal.aborted) return;
+        if (planResult.hasError) {
+          addToast({
+            color: "warning",
+            description: t("errorWithPollingOrder"),
+          });
         }
-      }
-    })();
+        setResult({ ...planResult, planId });
+      });
 
     return () => {
       abortController.abort();
     };
-  }, [planId]);
+  }, [planId, t]);
 
-  return { planInfo, loading, hasError };
+  const current = result?.planId === planId ? result : undefined;
+  return {
+    planInfo: current?.planInfo,
+    loading: !current,
+    hasError: current?.hasError ?? false,
+  };
 }

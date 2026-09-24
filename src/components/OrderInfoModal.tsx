@@ -9,19 +9,42 @@ import QQGroupLink from "@/components/QQGroupLink";
 import { Link } from "@/i18n/routing";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { addToast } from "@heroui/toast";
+import { isPast } from "@/lib/utils/date";
 
 interface OrderInfoModalProps {
   orderId: string;
   onClose: () => void;
 }
 
+type OrderQueryResult = {
+  orderInfo: OrderInfoType | null;
+  isExpired: boolean;
+  error: string | null;
+};
+
+async function queryOrder(orderId: string): Promise<OrderQueryResult> {
+  const queryValue = orderId.trim();
+  // 24 位的是 CDK，其余按订单号查询
+  const queryKey = queryValue.length === 24 ? "cdk" : "order_id";
+  const query = new URLSearchParams({ [queryKey]: queryValue });
+  const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?${query}`);
+  const { ec, msg, data } = await response.json();
+  if (ec !== 200) {
+    return { orderInfo: null, isExpired: false, error: msg };
+  }
+  return { orderInfo: data, isExpired: isPast(data.expired_at), error: null };
+}
+
 export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps) {
   const t = useTranslations("ShowKey");
   const format = useFormatter();
-  const [orderInfo, setOrderInfo] = useState<OrderInfoType | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isExpired, setIsExpired] = useState(false);
+  // 按 orderId 记录查询结果，orderId 变化后旧结果自动失效，加载状态由此推导
+  const [result, setResult] = useState<OrderQueryResult & { orderId: string }>();
+  const current = result?.orderId === orderId ? result : undefined;
+  const loading = !current;
+  const orderInfo = current?.orderInfo ?? null;
+  const isExpired = current?.isExpired ?? false;
+  const error = current?.error ?? null;
 
   // 依赖需与 React Compiler 推断的一致，否则整个组件会被跳过优化
   const expiredAt = orderInfo?.expired_at;
@@ -72,32 +95,20 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
   };
 
   useEffect(() => {
-    const fetchOrderInfo = async () => {
-      try {
-        setLoading(true);
-        const queryValue = orderId.trim();
-        const queryKey = queryValue.length === 24 ? "cdk" : "order_id";
-        const query = new URLSearchParams({ [queryKey]: queryValue });
-        const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?${query}`);
-        const { ec, msg, data } = await response.json();
+    if (!orderId) return;
+    let cancelled = false;
 
-        if (ec === 200) {
-          const expired = new Date(data.expired_at).getTime() < Date.now();
-          setIsExpired(expired);
-          setOrderInfo(data);
-        } else {
-          setError(msg);
+    queryOrder(orderId)
+      .catch((): OrderQueryResult => ({ orderInfo: null, isExpired: false, error: "networkError" }))
+      .then(queryResult => {
+        if (!cancelled) {
+          setResult({ ...queryResult, orderId });
         }
-      } catch {
-        setError("networkError");
-      } finally {
-        setLoading(false);
-      }
-    };
+      });
 
-    if (orderId) {
-      fetchOrderInfo();
-    }
+    return () => {
+      cancelled = true;
+    };
   }, [orderId]);
 
   return (

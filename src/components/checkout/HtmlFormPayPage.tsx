@@ -1,8 +1,34 @@
 import React, { useEffect, useRef, useState } from "react";
-import html2canvas from "html2canvas";
 
 export interface HtmlFormPayPageProps {
   paymentHtml: string;
+}
+
+/** 把 iframe 中渲染好的支付页面截成 canvas，html2canvas 较大，用到时才加载 */
+async function captureIframe(iframe: HTMLIFrameElement): Promise<HTMLCanvasElement | null> {
+  const doc = iframe.contentDocument;
+  if (!doc?.body) return null;
+
+  // 等待内部图片等资源加载完成
+  const images = doc.querySelectorAll("img");
+  await Promise.all(
+    Array.from(images).map(
+      img =>
+        new Promise<void>(resolve => {
+          if (img.complete) return resolve();
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+        })
+    )
+  );
+
+  const { default: html2canvas } = await import("html2canvas");
+  return html2canvas(doc.body, {
+    useCORS: true,
+    backgroundColor: "#ffffff",
+    windowWidth: 200,
+    windowHeight: 200,
+  });
 }
 
 export default function HtmlFormPayPage({ paymentHtml }: HtmlFormPayPageProps) {
@@ -19,43 +45,21 @@ export default function HtmlFormPayPage({ paymentHtml }: HtmlFormPayPageProps) {
 
     iframe.src = url;
 
-    const handleLoad = async () => {
-      try {
-        const doc = iframe.contentDocument;
-        if (!doc?.body) return;
-
-        // 等待内部图片等资源加载完成
-        const images = doc.querySelectorAll("img");
-        await Promise.all(
-          Array.from(images).map(
-            img =>
-              new Promise<void>(resolve => {
-                if (img.complete) return resolve();
-                img.onload = () => resolve();
-                img.onerror = () => resolve();
-              })
-          )
-        );
-
-        const canvas = await html2canvas(doc.body, {
-          useCORS: true,
-          backgroundColor: "#ffffff",
-          windowWidth: 200,
-          windowHeight: 200,
-        });
-
-        const container = canvasContainerRef.current;
-        if (container) {
+    const handleLoad = () => {
+      captureIframe(iframe)
+        .then(canvas => {
+          const container = canvasContainerRef.current;
+          if (!canvas || !container) return;
           canvas.style.width = "100%";
           canvas.style.height = "100%";
           canvas.style.display = "block";
           container.innerHTML = "";
           container.appendChild(canvas);
           setReady(true);
-        }
-      } catch {
-        // 截图失败时保持 loading 状态
-      }
+        })
+        .catch(() => {
+          // 截图失败时保持 loading 状态
+        });
     };
 
     iframe.addEventListener("load", handleLoad);

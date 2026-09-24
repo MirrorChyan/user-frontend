@@ -57,6 +57,23 @@ async function createOrder(
   return await resp.json();
 }
 
+async function requestPayment(
+  planInfo: PlanInfoDetail,
+  paymentMethod: ApiPaymentMethod,
+  canTryH5: boolean,
+  renewCdk: string
+) {
+  // 构建主要支付参数
+  const { platform, planId, payType, payOnNewPage } = buildPaymentParams(
+    paymentMethod,
+    planInfo,
+    canTryH5
+  );
+  const params = buildURLParams(planId, payType, renewCdk);
+  const response = await createOrder(platform, params);
+  return { response, payOnNewPage };
+}
+
 export function usePaymentCreation({
   planInfo,
   paymentMethod,
@@ -72,40 +89,27 @@ export function usePaymentCreation({
     }
 
     setLoading(true);
-    try {
-      // 构建主要支付参数
-      const { platform, planId, payType, payOnNewPage } = buildPaymentParams(
-        paymentMethod,
-        planInfo,
-        canTryH5
-      );
-
-      const params = buildURLParams(planId, payType, renewCdk);
-      const response = await createOrder(platform, params);
-
-      if (response.code !== 0) {
-        addToast({
-          color: "warning",
-          description: t("createOrderError"),
-        });
-        return { success: false };
+    const result = await requestPayment(planInfo, paymentMethod, canTryH5, renewCdk).catch(
+      (error: unknown) => {
+        console.log(error);
+        return null;
       }
+    );
+    setLoading(false);
 
-      return {
-        success: true,
-        data: response.data as CreateOrderType,
-        payOnNewPage,
-      };
-    } catch (error) {
-      console.log(error);
+    if (!result || result.response.code !== 0) {
       addToast({
         color: "warning",
         description: t("createOrderError"),
       });
       return { success: false };
-    } finally {
-      setLoading(false);
     }
+
+    return {
+      success: true,
+      data: result.response.data as CreateOrderType,
+      payOnNewPage: result.payOnNewPage,
+    };
   }, [planInfo, paymentMethod, canTryH5, renewCdk, t]);
 
   return { createPayment, loading };

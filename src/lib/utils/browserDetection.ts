@@ -43,6 +43,25 @@ export function isInAppBrowser(): boolean {
   );
 }
 
+/** 是否为手机或平板 */
+export function isMobileDevice(): boolean {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const data = (navigator as Navigator & { userAgentData?: { mobile?: boolean } }).userAgentData;
+  if (data?.mobile) {
+    return true;
+  }
+
+  const userAgent = getUserAgent();
+  if (/Android|iPhone|iPad|iPod|Mobile|HarmonyOS|Windows Phone/i.test(userAgent)) {
+    return true;
+  }
+  // iPadOS 默认请求桌面版网页，UA 与 Mac 相同，只能通过触控点区分
+  return userAgent.includes("Macintosh") && navigator.maxTouchPoints > 1;
+}
+
 export function shouldUseQRCodePayment(): boolean {
   return isSafariBrowser() || isInAppBrowser();
 }

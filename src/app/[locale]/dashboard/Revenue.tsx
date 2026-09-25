@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Key, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Button,
@@ -26,6 +26,7 @@ import { RevenueType, StatData } from "@/app/[locale]/dashboard/page";
 import SalesList from "@/app/[locale]/dashboard/SalesList";
 import SalesLineChart from "@/app/[locale]/dashboard/SalesLineChart";
 import StatLineChartCard from "@/app/[locale]/dashboard/StatLineChartCard";
+import { cn } from "@/lib/utils/css";
 import {
   formatDashboardDayKeyFromDate,
   getDashboardMonth,
@@ -56,6 +57,8 @@ type SalesPieChartProps = {
   title: string;
   activeValue: string | undefined;
   onToggle: (field: FilterField, value: string) => void;
+  /** 变化时重播入场动画（见 globals.css 的 sales-pie-chart） */
+  animationCycle: number;
 };
 
 type LegendPayloadEntry = {
@@ -121,6 +124,9 @@ function calculatePercentages(data: ChartDataItem[]): ChartDataItem[] {
     .sort((a, b) => (b.count == a.count ? b.amount - a.amount : b.count - a.count));
 }
 
+// 未激活的标签页保持挂载但隐藏：高度收为 0 且不可交互，图表宽度不变，切换时无需重新渲染
+const INACTIVE_PANEL_CLASS = "invisible h-0 overflow-hidden";
+
 const PIE_COLORS = [
   "#0088FE",
   "#00C49F",
@@ -134,7 +140,14 @@ const PIE_COLORS = [
 ];
 
 // 饼图需要定义在组件外部，否则父组件每次渲染都会让它重新挂载并重播动画
-function SalesPieChart({ data, field, title, activeValue, onToggle }: SalesPieChartProps) {
+function SalesPieChart({
+  data,
+  field,
+  title,
+  activeValue,
+  onToggle,
+  animationCycle,
+}: SalesPieChartProps) {
   const t = useTranslations("Dashboard");
   const customTooltip = (toolTipProps: TooltipContentProps) => {
     const { active, payload } = toolTipProps;
@@ -200,7 +213,7 @@ function SalesPieChart({ data, field, title, activeValue, onToggle }: SalesPieCh
   };
 
   return (
-    <div className="h-full">
+    <div className="sales-pie-chart h-full" data-cycle={animationCycle % 2}>
       <h3 className="mb-2">
         {title}
         {activeValue && (
@@ -218,6 +231,8 @@ function SalesPieChart({ data, field, title, activeValue, onToggle }: SalesPieCh
             innerRadius={30}
             fill="#8884d8"
             dataKey="count"
+            // recharts 3 的饼图动画每帧都会重建全部扇区（扇区 key 含角度），改用 CSS 入场动画
+            isAnimationActive={false}
           >
             {data.map((_entry, index) => (
               <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
@@ -228,6 +243,8 @@ function SalesPieChart({ data, field, title, activeValue, onToggle }: SalesPieCh
             align="left"
             verticalAlign="top"
             content={legendContent}
+            // recharts 3 的图例默认按名称字母序排序，这里保持 data 原有顺序（按份数、金额降序）
+            itemSorter={item => data.findIndex(entry => entry.name === item.value)}
             wrapperStyle={{
               maxHeight: "240px",
               overflowY: "auto",
@@ -249,6 +266,11 @@ function SalesPieChart({ data, field, title, activeValue, onToggle }: SalesPieCh
 export default function Revenue({ revenueData, statData, onLogOut, rid, date }: RevenueProps) {
   const t = useTranslations("Dashboard");
   const [activeTab, setActiveTab] = useState<string>("sales");
+  // 请求统计首次打开后保持挂载，之后切换标签页只切换显示，不再重建图表
+  const [statVisited, setStatVisited] = useState(false);
+  // 每次切换到对应标签页或筛选条件变化时递增，用于重播 CSS 入场动画
+  const [salesAnimationCycle, setSalesAnimationCycle] = useState(0);
+  const [statAnimationCycle, setStatAnimationCycle] = useState(0);
   const [filters, setFilters] = useState<FilterMap>({});
   const [filterDate, setFilterDate] = useState<string | null>(null);
   const hasFilters = Object.keys(filters).length > 0 || filterDate !== null;
@@ -263,6 +285,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
   };
 
   const handleFilterToggle = useCallback((field: FilterField, value: string) => {
+    setSalesAnimationCycle(c => c + 1);
     setFilters(prev => {
       const next = { ...prev };
       if (next[field] === value) {
@@ -275,6 +298,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
   }, []);
 
   const removeFilter = useCallback((field: FilterField) => {
+    setSalesAnimationCycle(c => c + 1);
     setFilters(prev => {
       const next = { ...prev };
       delete next[field];
@@ -283,6 +307,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
   }, []);
 
   const handleDateFilterToggle = useCallback((dateStr: string) => {
+    setSalesAnimationCycle(c => c + 1);
     setFilterDate(prev => (prev === dateStr ? null : dateStr));
   }, []);
 
@@ -413,6 +438,18 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
 
   const hasStatData = Object.keys(statData).length > 0;
 
+  const handleTabChange = (key: Key) => {
+    const tab = String(key);
+    if (tab === activeTab) return;
+    setActiveTab(tab);
+    if (tab === "stat") {
+      setStatVisited(true);
+      setStatAnimationCycle(c => c + 1);
+    } else {
+      setSalesAnimationCycle(c => c + 1);
+    }
+  };
+
   return (
     <div className="min-h-screen dark:bg-gray-900">
       <div className="mx-auto max-w-7xl p-6">
@@ -435,7 +472,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
             {hasStatData ? (
               <Tabs
                 selectedKey={activeTab}
-                onSelectionChange={key => setActiveTab(key as string)}
+                onSelectionChange={handleTabChange}
                 size="sm"
                 variant="bordered"
               >
@@ -454,7 +491,14 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
               </Chip>
             ))}
             {filterDate && (
-              <Chip variant="flat" color="secondary" onClose={() => setFilterDate(null)}>
+              <Chip
+                variant="flat"
+                color="secondary"
+                onClose={() => {
+                  setSalesAnimationCycle(c => c + 1);
+                  setFilterDate(null);
+                }}
+              >
                 {t("list.date")}: {filterDate}
               </Chip>
             )}
@@ -463,6 +507,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
               variant="light"
               color="danger"
               onClick={() => {
+                setSalesAnimationCycle(c => c + 1);
                 setFilters({});
                 setFilterDate(null);
               }}
@@ -472,195 +517,197 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
           </div>
         )}
 
-        {activeTab === "stat" ? (
-          <StatLineChartCard statData={statData} />
-        ) : (
-          <>
-            {/* Stats cards */}
-            <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <Card>
-                <div className="p-4 sm:p-8">
-                  <h3 className="text-gray-500">{t("monthlyCount")}</h3>
-                  <p className="text-2xl font-bold sm:text-3xl">
-                    {totalCount}
-                    {t("unit.count")}
-                    {refundedCount > 0 ? (
-                      <span className="ml-2 text-sm font-normal text-gray-500">
-                        {t("refundedCount", { count: refundedCount })}
-                      </span>
-                    ) : null}
-                  </p>
-                </div>
-              </Card>
-              <Card>
-                <div className="p-4 sm:p-8">
-                  <h3 className="text-gray-500">{t("monthlyAmount")}</h3>
-                  <p className="text-2xl font-bold sm:text-3xl">
-                    {totalAmount.toFixed(2)}
-                    {t("unit.amount")}
-                    {refundedAmount > 0 ? (
-                      <span className="ml-2 text-sm font-normal text-gray-500">
-                        {t("refundedAmount", { amount: refundedAmount.toFixed(2) })}
-                      </span>
-                    ) : null}
-                  </p>
-                </div>
-              </Card>
-              <Popover placement="bottom" showArrow>
-                <PopoverTrigger>
-                  <Card isPressable className="text-left">
-                    <div className="p-4 sm:p-8">
-                      <h3 className="!text-gray-500">{t("estimatedRevenue")}</h3>
-                      <p className="!text-foreground text-2xl !font-bold sm:text-3xl">
-                        {estimatedRevenue.total.toFixed(2)}
-                        {t("unit.amount")}
-                        <span className="ml-2 text-sm font-normal text-gray-500">
-                          {t("clickToViewDetail")}
-                        </span>
-                      </p>
-                    </div>
-                  </Card>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <div className="p-3">
-                    <table className="text-sm">
-                      <thead>
-                        <tr className="border-b text-left text-gray-500 dark:text-gray-400">
-                          <th className="pr-4 pb-2">{t("estimatedRevenueDetail.platform")}</th>
-                          <th className="pr-4 pb-2">{t("estimatedRevenueDetail.feeRate")}</th>
-                          <th className="pr-4 pb-2 text-right">
-                            {t("estimatedRevenueDetail.sales")}
-                          </th>
-                          <th className="pr-4 pb-2 text-right">
-                            {t("estimatedRevenueDetail.platformFee")}
-                          </th>
-                          <th className="pr-4 pb-2 text-right">
-                            {t("estimatedRevenueDetail.received")}
-                          </th>
-                          <th className="pr-4 pb-2">{t("estimatedRevenueDetail.shareRate")}</th>
-                          <th className="pb-2 text-right">
-                            {t("estimatedRevenueDetail.dividend")}
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {estimatedRevenue.platforms.map(p => (
-                          <tr
-                            key={p.name}
-                            className="border-b border-gray-100 dark:border-gray-700"
-                          >
-                            <td className="py-2 pr-4 font-medium">{p.label}</td>
-                            <td className="py-2 pr-4 text-gray-500">
-                              {(p.feeRate * 100).toFixed(1)}%
-                            </td>
-                            <td className="py-2 pr-4 text-right">{p.amount.toFixed(2)}</td>
-                            <td className="py-2 pr-4 text-right text-red-500">
-                              -{p.fee.toFixed(2)}
-                            </td>
-                            <td className="py-2 pr-4 text-right">{p.received.toFixed(2)}</td>
-                            <td className="py-2 pr-4 text-center text-gray-500">50%</td>
-                            <td className="py-2 text-right font-medium text-green-600 dark:text-green-400">
-                              {p.dividend.toFixed(2)}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                      <tfoot>
-                        <tr className="font-bold">
-                          <td className="pt-2" colSpan={6}>
-                            {t("estimatedRevenueDetail.total")}
-                          </td>
-                          <td className="pt-2 text-right text-green-600 dark:text-green-400">
-                            {estimatedRevenue.total.toFixed(2)}
-                            {t("unit.amount")}
-                          </td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                    <p className="mt-3 border-t border-gray-200 pt-2 text-xs text-gray-400 dark:border-gray-700">
-                      {t("estimatedRevenueDetail.disclaimer")}
-                    </p>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            {/* Charts + Sales list */}
-            <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:col-span-2">
-                <Card>
-                  <div className="p-2">
-                    <SalesPieChart
-                      data={applicationData}
-                      field="application"
-                      title={t("application")}
-                      activeValue={filters.application}
-                      onToggle={handleFilterToggle}
-                    />
-                  </div>
-                </Card>
-                <Card>
-                  <div className="p-2">
-                    <SalesPieChart
-                      data={planData}
-                      field="plan"
-                      title={t("plan")}
-                      activeValue={filters.plan}
-                      onToggle={handleFilterToggle}
-                    />
-                  </div>
-                </Card>
-                <Card>
-                  <div className="p-2">
-                    <SalesPieChart
-                      data={userAgentData}
-                      field="user_agent"
-                      title={t("userAgent")}
-                      activeValue={filters.user_agent}
-                      onToggle={handleFilterToggle}
-                    />
-                  </div>
-                </Card>
-                <Card>
-                  <div className="p-2">
-                    <SalesPieChart
-                      data={sourceData}
-                      field="source"
-                      title={t("source")}
-                      activeValue={filters.source}
-                      onToggle={handleFilterToggle}
-                    />
-                  </div>
-                </Card>
-              </div>
-              <Card className="lg:col-span-1">
-                <div className="flex h-96 flex-col p-4 lg:h-full">
-                  <h3>
-                    {t("list.title")}
-                    {filterDate && (
-                      <span className="text-secondary ml-2 text-sm font-normal">
-                        ({filterDate})
-                      </span>
-                    )}
-                  </h3>
-                  <div className="custom-scrollbar flex-1 overflow-y-auto">
-                    <SalesList
-                      listData={filteredData}
-                      date={date}
-                      activeDate={filterDate}
-                      onDateClick={handleDateFilterToggle}
-                    />
-                  </div>
-                </div>
-              </Card>
-            </div>
+        {(activeTab === "stat" || statVisited) && (
+          <div
+            className={cn(activeTab !== "stat" && INACTIVE_PANEL_CLASS)}
+            inert={activeTab !== "stat"}
+          >
+            <StatLineChartCard statData={statData} animationCycle={statAnimationCycle} />
+          </div>
+        )}
+        <div
+          className={cn(activeTab !== "sales" && INACTIVE_PANEL_CLASS)}
+          inert={activeTab !== "sales"}
+        >
+          {/* Stats cards */}
+          <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Card>
-              <div className="h-96 w-full p-4 sm:h-80">
-                <SalesLineChart revenueData={filteredData} date={date} />
+              <div className="p-4 sm:p-8">
+                <h3 className="text-gray-500">{t("monthlyCount")}</h3>
+                <p className="text-2xl font-bold sm:text-3xl">
+                  {totalCount}
+                  {t("unit.count")}
+                  {refundedCount > 0 ? (
+                    <span className="ml-2 text-sm font-normal text-gray-500">
+                      {t("refundedCount", { count: refundedCount })}
+                    </span>
+                  ) : null}
+                </p>
               </div>
             </Card>
-          </>
-        )}
+            <Card>
+              <div className="p-4 sm:p-8">
+                <h3 className="text-gray-500">{t("monthlyAmount")}</h3>
+                <p className="text-2xl font-bold sm:text-3xl">
+                  {totalAmount.toFixed(2)}
+                  {t("unit.amount")}
+                  {refundedAmount > 0 ? (
+                    <span className="ml-2 text-sm font-normal text-gray-500">
+                      {t("refundedAmount", { amount: refundedAmount.toFixed(2) })}
+                    </span>
+                  ) : null}
+                </p>
+              </div>
+            </Card>
+            <Popover placement="bottom" showArrow>
+              <PopoverTrigger>
+                <Card isPressable className="text-left">
+                  <div className="p-4 sm:p-8">
+                    <h3 className="!text-gray-500">{t("estimatedRevenue")}</h3>
+                    <p className="!text-foreground text-2xl !font-bold sm:text-3xl">
+                      {estimatedRevenue.total.toFixed(2)}
+                      {t("unit.amount")}
+                      <span className="ml-2 text-sm font-normal text-gray-500">
+                        {t("clickToViewDetail")}
+                      </span>
+                    </p>
+                  </div>
+                </Card>
+              </PopoverTrigger>
+              <PopoverContent>
+                <div className="p-3">
+                  <table className="text-sm">
+                    <thead>
+                      <tr className="border-b text-left text-gray-500 dark:text-gray-400">
+                        <th className="pr-4 pb-2">{t("estimatedRevenueDetail.platform")}</th>
+                        <th className="pr-4 pb-2">{t("estimatedRevenueDetail.feeRate")}</th>
+                        <th className="pr-4 pb-2 text-right">
+                          {t("estimatedRevenueDetail.sales")}
+                        </th>
+                        <th className="pr-4 pb-2 text-right">
+                          {t("estimatedRevenueDetail.platformFee")}
+                        </th>
+                        <th className="pr-4 pb-2 text-right">
+                          {t("estimatedRevenueDetail.received")}
+                        </th>
+                        <th className="pr-4 pb-2">{t("estimatedRevenueDetail.shareRate")}</th>
+                        <th className="pb-2 text-right">{t("estimatedRevenueDetail.dividend")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {estimatedRevenue.platforms.map(p => (
+                        <tr key={p.name} className="border-b border-gray-100 dark:border-gray-700">
+                          <td className="py-2 pr-4 font-medium">{p.label}</td>
+                          <td className="py-2 pr-4 text-gray-500">
+                            {(p.feeRate * 100).toFixed(1)}%
+                          </td>
+                          <td className="py-2 pr-4 text-right">{p.amount.toFixed(2)}</td>
+                          <td className="py-2 pr-4 text-right text-red-500">-{p.fee.toFixed(2)}</td>
+                          <td className="py-2 pr-4 text-right">{p.received.toFixed(2)}</td>
+                          <td className="py-2 pr-4 text-center text-gray-500">50%</td>
+                          <td className="py-2 text-right font-medium text-green-600 dark:text-green-400">
+                            {p.dividend.toFixed(2)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr className="font-bold">
+                        <td className="pt-2" colSpan={6}>
+                          {t("estimatedRevenueDetail.total")}
+                        </td>
+                        <td className="pt-2 text-right text-green-600 dark:text-green-400">
+                          {estimatedRevenue.total.toFixed(2)}
+                          {t("unit.amount")}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                  <p className="mt-3 border-t border-gray-200 pt-2 text-xs text-gray-400 dark:border-gray-700">
+                    {t("estimatedRevenueDetail.disclaimer")}
+                  </p>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          {/* Charts + Sales list */}
+          <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:col-span-2">
+              <Card>
+                <div className="p-2">
+                  <SalesPieChart
+                    animationCycle={salesAnimationCycle}
+                    data={applicationData}
+                    field="application"
+                    title={t("application")}
+                    activeValue={filters.application}
+                    onToggle={handleFilterToggle}
+                  />
+                </div>
+              </Card>
+              <Card>
+                <div className="p-2">
+                  <SalesPieChart
+                    animationCycle={salesAnimationCycle}
+                    data={planData}
+                    field="plan"
+                    title={t("plan")}
+                    activeValue={filters.plan}
+                    onToggle={handleFilterToggle}
+                  />
+                </div>
+              </Card>
+              <Card>
+                <div className="p-2">
+                  <SalesPieChart
+                    animationCycle={salesAnimationCycle}
+                    data={userAgentData}
+                    field="user_agent"
+                    title={t("userAgent")}
+                    activeValue={filters.user_agent}
+                    onToggle={handleFilterToggle}
+                  />
+                </div>
+              </Card>
+              <Card>
+                <div className="p-2">
+                  <SalesPieChart
+                    animationCycle={salesAnimationCycle}
+                    data={sourceData}
+                    field="source"
+                    title={t("source")}
+                    activeValue={filters.source}
+                    onToggle={handleFilterToggle}
+                  />
+                </div>
+              </Card>
+            </div>
+            <Card className="lg:col-span-1">
+              <div className="flex h-96 flex-col p-4 lg:h-full">
+                <h3>
+                  {t("list.title")}
+                  {filterDate && (
+                    <span className="text-secondary ml-2 text-sm font-normal">({filterDate})</span>
+                  )}
+                </h3>
+                <div className="custom-scrollbar flex-1 overflow-y-auto">
+                  <SalesList
+                    listData={filteredData}
+                    date={date}
+                    activeDate={filterDate}
+                    onDateClick={handleDateFilterToggle}
+                  />
+                </div>
+              </div>
+            </Card>
+          </div>
+          <Card>
+            <div className="h-96 w-full p-4 sm:h-80">
+              <SalesLineChart revenueData={filteredData} date={date} />
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
   );

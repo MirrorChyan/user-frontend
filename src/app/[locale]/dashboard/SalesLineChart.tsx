@@ -280,12 +280,8 @@ export default function SalesLineChart({ revenueData, date }: PropsType) {
               dataKey={showSales ? "amount" : "count"}
               stroke="#8884d8"
               strokeWidth={2}
-              dot={{
-                /* 此处有魔法，不能配置dot={null}，因为rechart库的问题 */
-                fill: "#8884d8",
-                strokeWidth: 0,
-                r: 0,
-              }}
+              // 不画数据点（按小时统计时有 720 个），悬停时仍显示 activeDot
+              dot={false}
               activeDot={{
                 r: 6,
                 fill: "#fff",

@@ -308,7 +308,10 @@
       "request": "DAU",
       "count": "Downloads",
       "toggleCount": "Switch to Downloads",
-      "toggleRequest": "Switch to UV"
+      "toggleRequest": "Switch to UV",
+      "pinHint": "Click to pin and scroll",
+      "unpinHint": "Press Esc or click outside to unpin",
+      "unpin": "Unpin"
     }
   }
 }

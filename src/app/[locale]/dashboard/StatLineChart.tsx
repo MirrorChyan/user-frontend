@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   CartesianGrid,
   Line,
@@ -12,6 +12,7 @@ import {
   YAxis,
 } from "recharts";
 import { useTranslations } from "next-intl";
+import { X } from "lucide-react";
 import { StatData } from "@/app/[locale]/dashboard/page";
 
 type Props = {
@@ -33,64 +34,90 @@ const COLORS = [
   "#20B2AA",
 ];
 
-function renderTooltip({ active, payload, label }: TooltipContentProps) {
-  if (!active || !payload?.length) return null;
-  return (
-    <div className="rounded border bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
-      <p className="mb-1 font-medium dark:text-white">{label}</p>
-      <div className="max-h-48 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600">
-        {[...payload]
-          .sort((a, b) => (b.value as number) - (a.value as number))
-          .map((entry, i) => (
-            <p key={i} style={{ color: entry.color }} className="text-sm">
-              {entry.name}: {(entry.value as number).toLocaleString()}
-            </p>
-          ))}
-      </div>
-    </div>
-  );
-}
+const stopPropagation = (e: React.SyntheticEvent) => e.stopPropagation();
 
-export default function StatLineChart({ statData, animationCycle }: Props) {
+type StatChartProps = {
+  data: object[];
+  title: string;
+  rids: string[];
+  animationCycle: number;
+};
+
+function StatChart({ data, title, rids, animationCycle }: StatChartProps) {
   const t = useTranslations("Dashboard");
+  // 悬停时鼠标移向悬浮窗会经过相邻日期导致悬浮窗跳走，需点击固定后才能滚动查看
+  const [pinned, setPinned] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const rids = useMemo(() => Object.keys(statData), [statData]);
+  useEffect(() => {
+    if (!pinned) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!containerRef.current?.contains(e.target as Node)) setPinned(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPinned(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [pinned]);
 
-  const dates = useMemo(() => {
-    const dateSet = new Set<string>();
-    rids.forEach(rid => Object.keys(statData[rid]).forEach(d => dateSet.add(d)));
-    return [...dateSet].sort();
-  }, [statData, rids]);
+  const renderTooltip = ({ active, payload, label }: TooltipContentProps) => {
+    if (!active || !payload?.length) return null;
+    return (
+      // 悬浮窗在 recharts-wrapper 内，事件冒泡回图表会按指针位置改掉固定的日期
+      <div
+        className="rounded border bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800"
+        onClick={stopPropagation}
+        onMouseMove={stopPropagation}
+        onTouchMove={stopPropagation}
+      >
+        <div className="mb-1 flex items-center justify-between gap-2">
+          <p className="font-medium dark:text-white">{label}</p>
+          {pinned && (
+            <button
+              type="button"
+              aria-label={t("statChart.unpin")}
+              className="rounded p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+              onClick={() => setPinned(false)}
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
+        <div className="max-h-48 overflow-y-auto overscroll-contain [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600">
+          {[...payload]
+            .sort((a, b) => (b.value as number) - (a.value as number))
+            .map((entry, i) => (
+              <p key={i} style={{ color: entry.color }} className="text-sm">
+                {entry.name}: {(entry.value as number).toLocaleString()}
+              </p>
+            ))}
+        </div>
+        <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+          {pinned ? t("statChart.unpinHint") : t("statChart.pinHint")}
+        </p>
+      </div>
+    );
+  };
 
-  const requestData = useMemo(
-    () =>
-      dates.map(date => ({
-        date,
-        ...Object.fromEntries(rids.map(rid => [rid, statData[rid]?.[date]?.request ?? 0])),
-      })),
-    [statData, rids, dates]
-  );
-
-  const countData = useMemo(
-    () =>
-      dates.map(date => ({
-        date,
-        ...Object.fromEntries(rids.map(rid => [rid, statData[rid]?.[date]?.count ?? 0])),
-      })),
-    [statData, rids, dates]
-  );
-
-  const yTickFormatter = (value: number) =>
-    value >= 1000 ? `${(value / 1000).toFixed(0)}k` : String(value);
-
-  const renderChart = (data: object[], title: string) => (
+  return (
     <div className="stat-line-chart" data-cycle={animationCycle % 2}>
       <h3 className="mb-2 text-center text-sm font-medium text-gray-600 dark:text-gray-300">
         {title}
       </h3>
-      <div className="relative">
+      <div ref={containerRef} className="relative">
         <ResponsiveContainer width="100%" height={220} debounce={200}>
-          <LineChart data={data} margin={{ left: 8, right: 24, top: 8, bottom: 8 }}>
+          <LineChart
+            data={data}
+            margin={{ left: 8, right: 24, top: 8, bottom: 8 }}
+            onClick={state => {
+              if (state.isTooltipActive && state.activeTooltipIndex != null) setPinned(true);
+            }}
+          >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="date"
@@ -124,7 +151,11 @@ export default function StatLineChart({ statData, animationCycle }: Props) {
               />
             ))}
             {/* recharts 3 按 JSX 顺序决定层级，Tooltip 放在最后才不会被折线遮挡 */}
-            <Tooltip content={renderTooltip} wrapperStyle={{ pointerEvents: "auto" }} />
+            <Tooltip
+              content={renderTooltip}
+              trigger={pinned ? "click" : "hover"}
+              wrapperStyle={{ pointerEvents: pinned ? "auto" : "none" }}
+            />
           </LineChart>
         </ResponsiveContainer>
         {/*
@@ -138,6 +169,39 @@ export default function StatLineChart({ statData, animationCycle }: Props) {
       </div>
     </div>
   );
+}
+
+const yTickFormatter = (value: number) =>
+  value >= 1000 ? `${(value / 1000).toFixed(0)}k` : String(value);
+
+export default function StatLineChart({ statData, animationCycle }: Props) {
+  const t = useTranslations("Dashboard");
+
+  const rids = useMemo(() => Object.keys(statData), [statData]);
+
+  const dates = useMemo(() => {
+    const dateSet = new Set<string>();
+    rids.forEach(rid => Object.keys(statData[rid]).forEach(d => dateSet.add(d)));
+    return [...dateSet].sort();
+  }, [statData, rids]);
+
+  const requestData = useMemo(
+    () =>
+      dates.map(date => ({
+        date,
+        ...Object.fromEntries(rids.map(rid => [rid, statData[rid]?.[date]?.request ?? 0])),
+      })),
+    [statData, rids, dates]
+  );
+
+  const countData = useMemo(
+    () =>
+      dates.map(date => ({
+        date,
+        ...Object.fromEntries(rids.map(rid => [rid, statData[rid]?.[date]?.count ?? 0])),
+      })),
+    [statData, rids, dates]
+  );
 
   return (
     <div className="space-y-6 p-2">
@@ -145,8 +209,18 @@ export default function StatLineChart({ statData, animationCycle }: Props) {
         {t("statChart.title")}
       </h3>
       <div className="grid grid-cols-1 gap-6">
-        {renderChart(requestData, t("statChart.request"))}
-        {renderChart(countData, t("statChart.count"))}
+        <StatChart
+          data={requestData}
+          title={t("statChart.request")}
+          rids={rids}
+          animationCycle={animationCycle}
+        />
+        <StatChart
+          data={countData}
+          title={t("statChart.count")}
+          rids={rids}
+          animationCycle={animationCycle}
+        />
       </div>
     </div>
   );

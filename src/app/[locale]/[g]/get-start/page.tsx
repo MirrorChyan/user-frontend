@@ -2,7 +2,6 @@ import { getLocale, getTranslations } from "next-intl/server";
 import ReactMarkdown from "react-markdown";
 
 import { BackgroundBeamsWithCollision } from "@/components/BackgroundBeamsWithCollision";
-import { Link } from "@/i18n/routing";
 import { getUSDRate } from "@/app/requests/rate";
 import { getAnnouncement } from "@/app/requests/announcement";
 import { getPlans } from "@/app/requests/plan";
@@ -11,7 +10,7 @@ import Exposure from "@/components/Exposure";
 import ProjectBanner from "@/components/ProjectsBanner";
 import Announcement from "@/components/home/Announcement";
 import Plans from "@/components/home/Plans";
-import IcpInfo from "@/components/home/IcpInfo";
+import HomeFooter from "@/components/home/HomeFooter";
 import { Slot } from "@/config/group";
 
 export default async function GetStart({
@@ -61,60 +60,7 @@ export default async function GetStart({
           <ProjectBanner />
 
           <Plans morePlans={morePlans} homePlans={homePlans} C2URate={C2URate} />
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-6 md:mt-10">
-            <Link
-              href="/get-key"
-              className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              {t("getKey")}
-            </Link>
-            <Link
-              href="/transfer"
-              className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              {t("transfer")}
-            </Link>
-            <Link
-              href="https://pd.qq.com/g/MirrorChyan"
-              target="_blank"
-              className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              {t("discussion")}
-            </Link>
-          </div>
-          <div className="mt-16 flex flex-wrap items-center justify-center gap-6 md:mt-10">
-            <a
-              href="https://github.com/MirrorChyan/docs"
-              target="_blank"
-              className="text-sm/6 font-semibold text-gray-900 dark:text-white"
-              rel="noreferrer"
-            >
-              {t("apiDoc")}
-              <span aria-hidden="true">&nbsp;</span>
-            </a>
-            <a
-              href="https://github.com/MirrorChyan/user-frontend"
-              target="_blank"
-              className="text-sm/6 font-semibold text-gray-900 dark:text-white"
-              rel="noreferrer"
-            >
-              {t("openSource")}
-              <span aria-hidden="true">&nbsp;</span>
-            </a>
-          </div>
-          <div className="absolute bottom-4 left-0 mt-16 flex w-full items-center justify-center gap-1.5">
-            <IcpInfo />
-            <div>
-              <a
-                href="/disclaimer.html"
-                target="_blank"
-                className="text-xs text-gray-500 dark:text-gray-400"
-              >
-                {t("disclaimer")}
-                <span aria-hidden="true">&nbsp;</span>
-              </a>
-            </div>
-          </div>
+          <HomeFooter pinLegal />
         </div>
       </BackgroundBeamsWithCollision>
     </div>

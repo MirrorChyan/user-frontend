@@ -12,6 +12,7 @@
     "title": "使用Mirror酱更新你的App",
     "description": "Mirror酱是一个第三方应用分发平台，让开源应用的更新更简单。<br></br>用户付费使用，收益与开发者共享。此外，Mirror酱本身也是开源的。",
     "getKey": "查询CDK",
+    "subscribeCdk": "订阅CDK",
     "discussion": "交流反馈",
     "disclaimer": "用户协议",
     "apiDoc": "集成文档",
@@ -229,7 +230,8 @@
     "contactUs": "集成Mirror酱到您的项目",
     "openProjectHomepage": "访问项目官网查看详细文档和使用说明",
     "onlyInternalUpdate": "{name} 目前只能通过应用本身更新",
-    "dependencies": "依赖组件"
+    "dependencies": "依赖组件",
+    "shortcuts": "快捷入口"
   },
   "Common": {
     "ok": "确定",

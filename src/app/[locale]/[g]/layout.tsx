@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
+import Exposure from "@/components/Exposure";
 import GroupProvider from "@/components/GroupProvider";
-import { allSegments, isSegment } from "@/lib/group";
+import { allSegments, globalExposureSlots, isSegment } from "@/lib/group";
 
 export function generateStaticParams() {
   return allSegments().map(g => ({ g }));
@@ -19,5 +20,12 @@ export default async function GroupLayout({
     notFound();
   }
 
-  return <GroupProvider segment={g}>{children}</GroupProvider>;
+  return (
+    <GroupProvider segment={g}>
+      {globalExposureSlots().map(slot => (
+        <Exposure key={slot} slot={slot} />
+      ))}
+      {children}
+    </GroupProvider>
+  );
 }

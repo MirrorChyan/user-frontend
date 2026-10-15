@@ -1,9 +1,7 @@
+import { EVENT_ENDPOINT, TRACKED_QUERY_PARAMS, VISITOR_COOKIE } from "@/config/group";
 import { routing } from "@/i18n/routing";
 
 type EventData = Record<string, string | number | boolean>;
-
-const ENDPOINT = "/m/e";
-const VISITOR_COOKIE = "mc_vid";
 
 let lastPageUrl: string | undefined;
 
@@ -20,18 +18,31 @@ function withoutQuery(url: string): string {
   }
 }
 
+function trackedPath(): string {
+  const current = new URLSearchParams(location.search);
+  const kept = new URLSearchParams();
+  for (const key of TRACKED_QUERY_PARAMS) {
+    const value = current.get(key);
+    if (value) kept.set(key, value.slice(0, 100));
+  }
+  const query = kept.toString();
+  const path = query ? `${location.pathname}?${query}` : location.pathname;
+  return path.length <= 500 ? path : location.pathname.slice(0, 500);
+}
+
 function send(body: Record<string, unknown>): void {
   try {
     if (!enabled()) return;
     const json = JSON.stringify({
       ...body,
-      u: location.pathname.slice(0, 500),
+      u: trackedPath(),
       t: document.title.slice(0, 200),
       s: `${screen.width}x${screen.height}`,
       l: navigator.language.slice(0, 35),
     });
-    if (navigator.sendBeacon?.(ENDPOINT, new Blob([json], { type: "application/json" }))) return;
-    fetch(ENDPOINT, {
+    if (navigator.sendBeacon?.(EVENT_ENDPOINT, new Blob([json], { type: "application/json" })))
+      return;
+    fetch(EVENT_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: json,

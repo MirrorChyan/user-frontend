@@ -1,7 +1,7 @@
 import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
+import { GROUP_COOKIE, GROUP_MAX_AGE, VISITOR_COOKIE, VISITOR_MAX_AGE } from "./config/group";
 import { routing } from "./i18n/routing";
-import { GROUP_COOKIE } from "./lib/group";
 import { split } from "./lib/split";
 
 const intlMiddleware = createMiddleware({
@@ -9,10 +9,6 @@ const intlMiddleware = createMiddleware({
   localeDetection: true,
   alternateLinks: false,
 });
-
-const VISITOR_COOKIE = "mc_vid";
-const VISITOR_MAX_AGE = 60 * 60 * 24 * 365;
-const GROUP_MAX_AGE = 60 * 60 * 24 * 30;
 
 export default function proxy(request: NextRequest, event: NextFetchEvent) {
   let response = intlMiddleware(request);

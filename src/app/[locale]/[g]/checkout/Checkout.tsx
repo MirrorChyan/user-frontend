@@ -77,11 +77,11 @@ export default function Checkout(params: CheckoutProps) {
     reportedPaidOrder.current = customOrderId;
     track("pay_success", {
       plan_id: planId,
-      amount: Number(priceInfo.finalPrice),
+      amount: Number(priceInfo.finalPriceCny),
       pay: paymentMethod,
       renew: !!orderInfo.is_renewal,
     });
-  }, [orderInfo, customOrderId, planId, priceInfo.finalPrice, paymentMethod]);
+  }, [orderInfo, customOrderId, planId, priceInfo.finalPriceCny, paymentMethod]);
 
   const reportOrderCreate = () => {
     track("order_create", { plan_id: planId, pay: paymentMethod, renew: renewCdk.length > 0 });

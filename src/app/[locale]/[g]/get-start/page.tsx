@@ -12,6 +12,7 @@ import ProjectBanner from "@/components/ProjectsBanner";
 import Announcement from "@/components/home/Announcement";
 import Plans from "@/components/home/Plans";
 import IcpInfo from "@/components/home/IcpInfo";
+import { Slot } from "@/config/group";
 
 export default async function GetStart({
   searchParams,
@@ -35,7 +36,7 @@ export default async function GetStart({
   return (
     <div className="relative" suppressHydrationWarning>
       <SourceTracker source={source} />
-      <Exposure slot="page_group" />
+      <Exposure slot={Slot.PageGroup} />
       <BackgroundBeamsWithCollision className="min-h-screen">
         <div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="px-6 py-12 sm:px-6 sm:py-8 lg:px-8">

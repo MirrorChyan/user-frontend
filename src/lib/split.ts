@@ -1,14 +1,19 @@
 import type { NextFetchEvent, NextRequest } from "next/server";
 
 import {
+  BOT_UA,
   GROUP_COOKIE,
   PREVIEW_PARAM,
   PREVIEW_PREFIX,
   SLOTS,
-  defaultSegment,
-  isSegment,
-  slotValues,
-} from "./group";
+  SPLIT_KEY_FORMAT,
+  SPLIT_REFRESH_MS,
+  SPLIT_RETRY_MS,
+  SPLIT_TIMEOUT_MS,
+  SPLIT_VARIATION_FORMAT,
+} from "@/config/group";
+
+import { defaultSegment, isSegment, slotValues } from "./group";
 
 type Range = [number, number];
 
@@ -48,30 +53,26 @@ interface Result {
   variation?: string;
 }
 
-const REFRESH_MS = 60_000;
-const RETRY_MS = 10_000;
-const TIMEOUT_MS = 1_000;
-const KEY = /^[a-z0-9]{1,8}$/;
-const VARIATION = /^[a-z0-9]{1,3}$/;
-const BOT = /bot|crawl|spider|slurp|preview|headless/i;
-
 let features: Record<string, Feature> | undefined;
 let nextFetchAt = 0;
 let pending: Promise<void> | undefined;
 
-function load(source: string): Promise<void> {
-  return fetch(source, { cache: "no-store", signal: AbortSignal.timeout(TIMEOUT_MS) })
-    .then(res => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
-    .then(body => {
+async function load(source: string): Promise<void> {
+  try {
+    try {
+      const res = await fetch(source, {
+        cache: "no-store",
+        signal: AbortSignal.timeout(SPLIT_TIMEOUT_MS),
+      });
+      const body = await (res.ok ? res.json() : Promise.reject(new Error(String(res.status))));
       features = body && typeof body.features === "object" ? body.features : {};
-      nextFetchAt = Date.now() + REFRESH_MS;
-    })
-    .catch(() => {
-      nextFetchAt = Date.now() + RETRY_MS;
-    })
-    .finally(() => {
-      pending = undefined;
-    });
+      nextFetchAt = Date.now() + SPLIT_REFRESH_MS;
+    } catch {
+      nextFetchAt = Date.now() + SPLIT_RETRY_MS;
+    }
+  } finally {
+    pending = undefined;
+  }
 }
 
 function currentFeatures(event: NextFetchEvent): Record<string, Feature> | undefined {
@@ -159,7 +160,7 @@ export interface Split {
 }
 
 export function split(request: NextRequest, event: NextFetchEvent, id: string | undefined): Split {
-  if (BOT.test(request.headers.get("user-agent") ?? "")) return { segment: defaultSegment() };
+  if (BOT_UA.test(request.headers.get("user-agent") ?? "")) return { segment: defaultSegment() };
 
   const current = request.cookies.get(GROUP_COOKIE)?.value;
   const preview =
@@ -181,7 +182,11 @@ export function split(request: NextRequest, event: NextFetchEvent, id: string | 
     if (result.key === undefined) {
       values.push(value ?? allowed[0]);
       tags.push("");
-    } else if (value && KEY.test(result.key) && VARIATION.test(result.variation ?? "")) {
+    } else if (
+      value &&
+      SPLIT_KEY_FORMAT.test(result.key) &&
+      SPLIT_VARIATION_FORMAT.test(result.variation ?? "")
+    ) {
       values.push(value);
       tags.push(`${result.key}_${result.variation}`);
     } else {

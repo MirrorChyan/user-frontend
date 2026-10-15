@@ -2,8 +2,9 @@
 
 import { useEffect } from "react";
 
+import { GROUP_COOKIE, type Slot } from "@/config/group";
 import { track } from "@/lib/analytics";
-import { GROUP_COOKIE, exposureOf, type Slot } from "@/lib/group";
+import { exposureOf } from "@/lib/group";
 
 const reported = new Set<string>();
 

@@ -12,6 +12,7 @@
     "title": "Update Your Application with MirrorChyan",
     "description": "MirrorChyan is a third-party application distribution platform<br></br>that makes updating open-source applications easier.<br></br>Users pay for access, and the revenue is shared with developers.<br></br>Plus, MirrorChyan itself is open source.",
     "getKey": "Query CDKey",
+    "subscribeCdk": "Subscribe CDKey",
     "discussion": "Feedback",
     "disclaimer": "User Agreement",
     "apiDoc": "Integration",
@@ -235,7 +236,8 @@
     "contactUs": "Integrate MirrorChyan into your project",
     "openProjectHomepage": "Visit project website for detailed documentation and usage guide",
     "onlyInternalUpdate": "{name} currently only be updated through the application itself",
-    "dependencies": "Dependencies"
+    "dependencies": "Dependencies",
+    "shortcuts": "Shortcuts"
   },
   "Common": {
     "ok": "OK",

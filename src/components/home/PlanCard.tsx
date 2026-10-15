@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils/css";
 import { useTranslations } from "next-intl";
 import { Plan } from "@/app/requests/plan";
 import { Link } from "@/i18n/routing";
+import { track } from "@/lib/analytics";
 
 type PropsType = {
   plan: Plan;
@@ -65,6 +66,7 @@ export default function PlanCard({ plan, C2URate }: PropsType) {
       <Link
         href={`/checkout/${plan.plan_id}`}
         aria-describedby={plan.plan_id}
+        onClick={() => track("plan_click", { plan_id: plan.plan_id })}
         className={cn(
           plan.popular
             ? "bg-indigo-600 text-white shadow-sm hover:bg-indigo-500"

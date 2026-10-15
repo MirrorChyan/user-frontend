@@ -7,7 +7,7 @@ import { ComputerDesktopIcon } from "@heroicons/react/16/solid";
 import { addToast, closeAll } from "@heroui/toast";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import YearMonthPicker, { getCurrentYearMonth } from "@/components/YearMonthPicker";
-import { RevenueResponse, RevenueType, StatData } from "@/app/[locale]/dashboard/page";
+import { RevenueResponse, RevenueType, StatData } from "@/app/[locale]/[g]/dashboard/page";
 
 type LoginFormProps = {
   onLoginSuccess: (data: RevenueType[], rid: string, date: string, statData: StatData) => void;

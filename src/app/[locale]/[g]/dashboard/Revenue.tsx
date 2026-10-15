@@ -22,16 +22,16 @@ import {
   Tooltip,
   TooltipContentProps,
 } from "recharts";
-import { RevenueType, StatData } from "@/app/[locale]/dashboard/page";
-import SalesList from "@/app/[locale]/dashboard/SalesList";
-import SalesLineChart from "@/app/[locale]/dashboard/SalesLineChart";
-import StatLineChartCard from "@/app/[locale]/dashboard/StatLineChartCard";
+import { RevenueType, StatData } from "@/app/[locale]/[g]/dashboard/page";
+import SalesList from "@/app/[locale]/[g]/dashboard/SalesList";
+import SalesLineChart from "@/app/[locale]/[g]/dashboard/SalesLineChart";
+import StatLineChartCard from "@/app/[locale]/[g]/dashboard/StatLineChartCard";
 import { cn } from "@/lib/utils/css";
 import {
   formatDashboardDayKeyFromDate,
   getDashboardMonth,
   parseDashboardAmount,
-} from "@/app/[locale]/dashboard/utils";
+} from "@/app/[locale]/[g]/dashboard/utils";
 
 type RevenueProps = {
   date: string;

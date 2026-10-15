@@ -1,4 +1,4 @@
-import { PlanInfoDetail } from "@/app/[locale]/checkout/Checkout";
+import { PlanInfoDetail } from "@/app/[locale]/[g]/checkout/Checkout";
 
 export type PaymentMethod = "alipay" | "wechatPay" | "afdian";
 

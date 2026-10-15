@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { PlanInfoDetail } from "@/app/[locale]/checkout/Checkout";
+import { PlanInfoDetail } from "@/app/[locale]/[g]/checkout/Checkout";
 
 interface UsePriceCalculationProps {
   planInfo: PlanInfoDetail | undefined;

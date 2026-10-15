@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { PlanInfoDetail } from "@/app/[locale]/checkout/Checkout";
+import { PlanInfoDetail } from "@/app/[locale]/[g]/checkout/Checkout";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { addToast } from "@heroui/toast";
 

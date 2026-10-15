@@ -7,6 +7,7 @@ import { getUSDRate } from "@/app/requests/rate";
 import { getAnnouncement } from "@/app/requests/announcement";
 import { getPlans } from "@/app/requests/plan";
 import SourceTracker from "@/components/SourceTracker";
+import Exposure from "@/components/Exposure";
 import ProjectBanner from "@/components/ProjectsBanner";
 import Announcement from "@/components/home/Announcement";
 import Plans from "@/components/home/Plans";
@@ -34,6 +35,7 @@ export default async function GetStart({
   return (
     <div className="relative" suppressHydrationWarning>
       <SourceTracker source={source} />
+      <Exposure slot="page_group" />
       <BackgroundBeamsWithCollision className="min-h-screen">
         <div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="px-6 py-12 sm:px-6 sm:py-8 lg:px-8">

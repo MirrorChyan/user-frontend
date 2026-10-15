@@ -1,6 +1,6 @@
 import { CreditCard } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { PlanInfoDetail } from "@/app/[locale]/checkout/Checkout";
+import { PlanInfoDetail } from "@/app/[locale]/[g]/checkout/Checkout";
 import PaymentOption from "./PaymentOption";
 import PaymentIcon from "./PaymentIcon";
 

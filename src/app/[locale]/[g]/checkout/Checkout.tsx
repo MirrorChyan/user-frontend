@@ -9,7 +9,7 @@ import {
   isMobileDevice,
   shouldUseQRCodePayment,
 } from "@/lib/utils/browserDetection";
-import NoOrder from "@/app/[locale]/checkout/NoOrder";
+import NoOrder from "@/app/[locale]/[g]/checkout/NoOrder";
 import RenewalCdkInput, { RenewalCdkInputRef } from "@/components/checkout/RenewalCdkInput";
 import OrderSummaryCard from "@/components/checkout/OrderSummaryCard";
 import PaymentMethodSelector from "@/components/checkout/PaymentMethodSelector";

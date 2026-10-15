@@ -1,6 +1,6 @@
 import { ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { PlanInfoDetail } from "@/app/[locale]/checkout/Checkout";
+import { PlanInfoDetail } from "@/app/[locale]/[g]/checkout/Checkout";
 
 interface PriceInfo {
   finalPrice: string;

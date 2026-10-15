@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
-import { StatData } from "@/app/[locale]/dashboard/page";
+import { StatData } from "@/app/[locale]/[g]/dashboard/page";
 
 type Props = {
   statData: StatData;

@@ -1,11 +1,11 @@
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
-import { RevenueType } from "@/app/[locale]/dashboard/page";
+import { RevenueType } from "@/app/[locale]/[g]/dashboard/page";
 import {
   formatDashboardDayKey,
   formatDashboardDayKeyFromDate,
   getDashboardMonth,
   parseDashboardAmount,
-} from "@/app/[locale]/dashboard/utils";
+} from "@/app/[locale]/[g]/dashboard/utils";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { groupBy } from "lodash";

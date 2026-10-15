@@ -1,4 +1,4 @@
-import Checkout from "@/app/[locale]/checkout/Checkout";
+import Checkout from "@/app/[locale]/[g]/checkout/Checkout";
 import { getUSDRate } from "@/app/requests/rate";
 import { setRequestLocale } from "next-intl/server";
 

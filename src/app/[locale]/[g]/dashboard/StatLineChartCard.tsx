@@ -1,8 +1,8 @@
 "use client";
 
 import { Card } from "@heroui/react";
-import StatLineChart from "@/app/[locale]/dashboard/StatLineChart";
-import { StatData } from "@/app/[locale]/dashboard/page";
+import StatLineChart from "@/app/[locale]/[g]/dashboard/StatLineChart";
+import { StatData } from "@/app/[locale]/[g]/dashboard/page";
 
 type Props = {
   statData: StatData;

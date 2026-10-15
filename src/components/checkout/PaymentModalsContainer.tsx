@@ -3,7 +3,7 @@ import QRCodePayModal from "./QRCodePayModal";
 import WaitForPayModal from "./WaitForPayModal";
 import HtmlFormPayModal from "./HtmlFormPayModal";
 import PaymentIcon from "./PaymentIcon";
-import { PlanInfoDetail } from "@/app/[locale]/checkout/Checkout";
+import { PlanInfoDetail } from "@/app/[locale]/[g]/checkout/Checkout";
 
 type ShowedType = "none" | "alipay" | "wechatPay" | "afdian";
 

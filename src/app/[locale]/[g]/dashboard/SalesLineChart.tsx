@@ -20,7 +20,7 @@ import {
   startOfHour,
   startOfMonth,
 } from "date-fns";
-import { RevenueType } from "@/app/[locale]/dashboard/page";
+import { RevenueType } from "@/app/[locale]/[g]/dashboard/page";
 import { cn, Radio, RadioGroup, Switch, Tooltip as Tippy } from "@heroui/react";
 import { useTranslations } from "next-intl";
 

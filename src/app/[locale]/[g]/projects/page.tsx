@@ -9,6 +9,7 @@ import OrderInfoModalWrapper from "@/components/OrderInfoModalWrapper";
 import DownloadModalWrapper from "@/components/DownloadModalWrapper";
 import { Suspense } from "react";
 import { Divider } from "@heroui/divider";
+import HomeFooter from "@/components/home/HomeFooter";
 
 const GAME_TOOLS_TYPE_ID = "GameTools";
 const DEPENDENCIES_TYPE_ID = "Dependencies";
@@ -66,9 +67,19 @@ export default async function ProjectsPage({
 
               <div className="grid auto-rows-auto grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 <ProjectCardView projects={dependenciesProjects} />
+                <ProjectIntegratedCard />
               </div>
             </>
           )}
+
+          <div className="my-12 flex items-center">
+            <Divider className="flex-1" />
+            <span className="mx-4 flex-shrink-0 text-lg font-medium text-gray-500 dark:text-gray-400">
+              {p("shortcuts")}
+            </span>
+            <Divider className="flex-1" />
+          </div>
+          <HomeFooter showSubscribe compact />
         </div>
       </BackgroundLines>
     </>

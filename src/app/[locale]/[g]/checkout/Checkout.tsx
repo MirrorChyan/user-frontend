@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { ArrowLeft } from "lucide-react";
@@ -9,7 +9,7 @@ import {
   isMobileDevice,
   shouldUseQRCodePayment,
 } from "@/lib/utils/browserDetection";
-import NoOrder from "@/app/[locale]/checkout/NoOrder";
+import NoOrder from "@/app/[locale]/[g]/checkout/NoOrder";
 import RenewalCdkInput, { RenewalCdkInputRef } from "@/components/checkout/RenewalCdkInput";
 import OrderSummaryCard from "@/components/checkout/OrderSummaryCard";
 import PaymentMethodSelector from "@/components/checkout/PaymentMethodSelector";
@@ -23,6 +23,7 @@ import { usePriceCalculation } from "@/hooks/checkout/usePriceCalculation";
 import { useOrderPolling } from "@/hooks/checkout/useOrderPolling";
 import { usePaymentCreation } from "@/hooks/checkout/usePaymentCreation";
 import { ApiPaymentMethod, getDefaultPaymentMethod, PaymentMethod } from "@/lib/utils/payment";
+import { track } from "@/lib/analytics";
 
 export interface CheckoutProps {
   planId: Array<string>;
@@ -69,6 +70,23 @@ export default function Checkout(params: CheckoutProps) {
     selectedPaymentMethod ?? (planInfo ? getDefaultPaymentMethod(planInfo) : "alipay");
   const priceInfo = usePriceCalculation({ planInfo, rate: params.rate });
   const { orderInfo, isPolling } = useOrderPolling({ customOrderId, renewCdk });
+
+  const reportedPaidOrder = useRef<string>(undefined);
+  useEffect(() => {
+    if (!orderInfo || !customOrderId || reportedPaidOrder.current === customOrderId) return;
+    reportedPaidOrder.current = customOrderId;
+    track("pay_success", {
+      plan_id: planId,
+      amount: Number(priceInfo.finalPriceCny),
+      pay: paymentMethod,
+      renew: !!orderInfo.is_renewal,
+    });
+  }, [orderInfo, customOrderId, planId, priceInfo.finalPriceCny, paymentMethod]);
+
+  const reportOrderCreate = () => {
+    track("order_create", { plan_id: planId, pay: paymentMethod, renew: renewCdk.length > 0 });
+  };
+
   // afdian 支付在 handlePurchase 中单独处理，不会调用 createPayment
   const { createPayment, loading: paymentLoading } = usePaymentCreation({
     planInfo,
@@ -95,6 +113,7 @@ export default function Checkout(params: CheckoutProps) {
     setPaymentHtml("");
     setShowModal(paymentMethod);
     setCustomOrderId(customOrderId);
+    reportOrderCreate();
   };
 
   // 支付处理
@@ -120,6 +139,7 @@ export default function Checkout(params: CheckoutProps) {
     if (!result.success || !result.data) {
       return;
     }
+    reportOrderCreate();
 
     const orderInfo = result.data;
     setPayOnNewPage(result.payOnNewPage ?? false);

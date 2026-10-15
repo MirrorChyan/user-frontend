@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import LoginForm from "@/app/[locale]/dashboard/LoginForm";
-import RevenueSkeleton from "@/app/[locale]/dashboard/RevenueSkeleton";
+import LoginForm from "@/app/[locale]/[g]/dashboard/LoginForm";
+import RevenueSkeleton from "@/app/[locale]/[g]/dashboard/RevenueSkeleton";
 
 // 看板依赖 recharts 等较大的库，登录成功后才加载
-const Revenue = dynamic(() => import("@/app/[locale]/dashboard/Revenue"), {
+const Revenue = dynamic(() => import("@/app/[locale]/[g]/dashboard/Revenue"), {
   loading: () => <RevenueSkeleton />,
 });
 

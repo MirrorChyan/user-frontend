@@ -12,6 +12,7 @@ import { Providers } from "./provider";
 import "@/app/globals.css";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import OutdatedBrowserScript from "@/components/OutdatedBrowserScript";
+import PageviewTracker from "@/components/PageviewTracker";
 
 export const metadata: Metadata = {
   title: "Mirror酱",
@@ -64,6 +65,7 @@ var _hmt = _hmt || [];
         </Script>
       </head>
       <body>
+        <PageviewTracker />
         <Providers>
           <NextIntlClientProvider messages={messages}>
             <LanguageSwitcher />

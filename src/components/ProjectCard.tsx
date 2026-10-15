@@ -470,7 +470,7 @@ export default function ProjectCard(props: ProjectCardProps) {
             style={{ width: "80px", height: "80px" }}
           >
             <img
-              src={CLIENT_BACKEND + image}
+              src={image}
               alt={name}
               className="h-full w-full rounded-md object-cover opacity-90 transition-transform duration-500 ease-in-out group-hover:scale-105 group-hover:opacity-100"
             />
@@ -686,7 +686,7 @@ export default function ProjectCard(props: ProjectCardProps) {
                         style={{ width: "80px", height: "80px" }}
                       >
                         <img
-                          src={CLIENT_BACKEND + image}
+                          src={image}
                           alt={name}
                           className="h-full w-full rounded-md object-cover opacity-90 transition-transform duration-500 ease-in-out group-hover:scale-105 group-hover:opacity-100"
                         />

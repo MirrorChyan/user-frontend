@@ -43,6 +43,10 @@ export function parseSupportOptions(support: string[]): SupportOption[] {
     if (atIndex >= 0) {
       display = platformPart.substring(atIndex + 1).split("-");
       platformPart = platformPart.substring(0, atIndex);
+      // @ 后不是两段非空值时视为没写，按 @ 前的值显示
+      if (display.length !== 2 || display.some(value => !value)) {
+        display = null;
+      }
     }
 
     const parts = platformPart.split("-");
@@ -57,37 +61,39 @@ export function parseSupportOptions(support: string[]): SupportOption[] {
   });
 }
 
-/** 按所选渠道、系统、架构找到对应的选项，精确匹配优先，其次是 any */
+/**
+ * 按所选渠道、系统、架构找到对应的选项，精确匹配优先，其次是 any。
+ * 选择框隐藏时所选值为空字符串，按 any 匹配
+ */
 export function findSupportOption(
   options: SupportOption[],
   channel: string,
   os: string,
   arch: string
 ): SupportOption | undefined {
+  const selectedOs = os || "any";
+  const selectedArch = arch || "any";
   const matches = (option: SupportOption, exact: boolean) =>
     option.channel === channel &&
-    (option.os === os || (!exact && option.os === "any")) &&
-    (option.arch === arch || (!exact && option.arch === "any"));
+    (option.os === selectedOs || (!exact && option.os === "any")) &&
+    (option.arch === selectedArch || (!exact && option.arch === "any"));
   return (
     options.find(option => matches(option, true)) ?? options.find(option => matches(option, false))
   );
 }
 
 /**
- * 下载时传给后端的系统和架构：选项带 @ 时用 @ 前的值，否则沿用所选值。any 转为空字符串
+ * 下载时传给后端的系统和架构：命中选项时用它 @ 前的值，否则沿用所选值。any 转为空字符串
  */
 export function resolveDownloadPlatform(
   option: SupportOption | undefined,
   os: string,
   arch: string
 ): SupportSelection {
-  const pick = (shown: string | undefined, pkg: string | undefined, selected: string) => {
-    const value = pkg !== undefined && shown !== pkg ? pkg : selected;
-    return value === "any" ? "" : value;
-  };
+  const toQuery = (value: string) => (value === "any" ? "" : value);
   return {
-    os: pick(option?.os, option?.pkgOs, os),
-    arch: pick(option?.arch, option?.pkgArch, arch),
+    os: toQuery(option?.pkgOs ?? os),
+    arch: toQuery(option?.pkgArch ?? arch),
   };
 }
 

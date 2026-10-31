@@ -23,8 +23,10 @@ import { ArrowTopRightOnSquareIcon, EyeIcon, EyeSlashIcon } from "@heroicons/rea
 import { getGroupUrl } from "@/lib/utils/constant";
 import { detectPlatform, isInAppBrowser } from "@/lib/utils/browserDetection";
 import {
+  findSupportOption,
   matchSupportSelection,
   parseSupportOptions,
+  resolveDownloadPlatform,
   type SupportOption,
 } from "@/lib/utils/support";
 import { copyText } from "@/lib/utils/clipboard";
@@ -294,19 +296,20 @@ export default function ProjectCard(props: ProjectCardProps) {
       });
       return;
     }
-    // 根据当前选择的 channel、os、arch 找到对应的 supportOption，获取其 rid
-    const currentOption = supportOptions.find(
-      item =>
-        item.channel === selectedChannel &&
-        (item.os === selectedOs || item.os === "any") &&
-        (item.arch === selectedArch || item.arch === "any")
+    // 根据当前选择的 channel、os、arch 找到对应的 supportOption，获取其 rid 和下载用的系统、架构
+    const currentOption = findSupportOption(
+      supportOptions,
+      selectedChannel,
+      selectedOs,
+      selectedArch
     );
     // 如果 supportOption 中有自定义的 rid，使用它；否则使用原始的 resource
     const targetResource = currentOption?.rid || resource;
+    const target = resolveDownloadPlatform(currentOption, selectedOs, selectedArch);
 
     const query = new URLSearchParams({
-      os: selectedOs === "any" ? "" : selectedOs,
-      arch: selectedArch === "any" ? "" : selectedArch,
+      os: target.os,
+      arch: target.arch,
       channel: selectedChannel,
       cdk: cdk.trim(),
       user_agent: "mirrorchyan_web",

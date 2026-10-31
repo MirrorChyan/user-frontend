@@ -1,11 +1,20 @@
 import type { DetectedPlatform } from "@/lib/utils/browserDetection";
 
+/**
+ * support 每项形如 [rid/]channel-os-arch[@os-arch]。
+ * @ 前的系统、架构决定下载哪个包；@ 后的只用于展示和按 UA 匹配，缺省时与 @ 前相同。
+ * 例如 stable-any-any@windows-x64：下载未指定平台的包，页面上显示 windows / x64。
+ */
 export interface SupportOption {
   /** 自定义资源 id，形如 OtherRid/stable-windows-x64，没有则为 null，使用原 resource */
   rid: string | null;
   channel: string;
+  /** 展示和匹配用的系统、架构 */
   os: string;
   arch: string;
+  /** 下载用的系统、架构 */
+  pkgOs: string;
+  pkgArch: string;
 }
 
 export interface SupportSelection {
@@ -29,14 +38,57 @@ export function parseSupportOptions(support: string[]): SupportOption[] {
       platformPart = item.substring(slashIndex + 1);
     }
 
+    let display: string[] | null = null;
+    const atIndex = platformPart.indexOf("@");
+    if (atIndex >= 0) {
+      display = platformPart.substring(atIndex + 1).split("-");
+      platformPart = platformPart.substring(0, atIndex);
+    }
+
     const parts = platformPart.split("-");
     return {
       rid,
       channel: parts[0],
-      os: parts[1],
-      arch: parts[2],
+      os: display?.[0] ?? parts[1],
+      arch: display?.[1] ?? parts[2],
+      pkgOs: parts[1],
+      pkgArch: parts[2],
     };
   });
+}
+
+/** 按所选渠道、系统、架构找到对应的选项，精确匹配优先，其次是 any */
+export function findSupportOption(
+  options: SupportOption[],
+  channel: string,
+  os: string,
+  arch: string
+): SupportOption | undefined {
+  const matches = (option: SupportOption, exact: boolean) =>
+    option.channel === channel &&
+    (option.os === os || (!exact && option.os === "any")) &&
+    (option.arch === arch || (!exact && option.arch === "any"));
+  return (
+    options.find(option => matches(option, true)) ?? options.find(option => matches(option, false))
+  );
+}
+
+/**
+ * 下载时传给后端的系统和架构：选项带 @ 时用 @ 前的值，否则沿用所选值。any 转为空字符串
+ */
+export function resolveDownloadPlatform(
+  option: SupportOption | undefined,
+  os: string,
+  arch: string
+): SupportSelection {
+  const pick = (shown: string | undefined, pkg: string | undefined, selected: string) => {
+    const value = pkg !== undefined && shown !== pkg ? pkg : selected;
+    return value === "any" ? "" : value;
+  };
+  return {
+    os: pick(option?.os, option?.pkgOs, os),
+    arch: pick(option?.arch, option?.pkgArch, arch),
+  };
 }
 
 function score(optionValue: string, detected: string): number {

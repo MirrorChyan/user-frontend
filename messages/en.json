@@ -165,6 +165,7 @@
     "rewardValidDays": "Can redeem for {valid_days} days",
     "fromNotFound": "Invalid key, Please check!",
     "sameCdk": "Target CDKey cannot be the same as source CDKey",
+    "networkError": "Network error, please try again",
     "transferTip": "After transfer, the original CDK will expire. Please confirm."
   },
   "Component": {

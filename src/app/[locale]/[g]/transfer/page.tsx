@@ -14,6 +14,12 @@ import { BackgroundBeamsWithCollision } from "@/components/BackgroundBeamsWithCo
 // 输入停止后延迟多久校验 CDK
 const CHECK_DELAY = 2000;
 
+async function queryOrder(cdk: string) {
+  const params = new URLSearchParams({ cdk });
+  const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?${params}`);
+  return response.json();
+}
+
 export default function Transmission() {
   const format = useFormatter();
   const t = useTranslations("Transmission");
@@ -38,8 +44,11 @@ export default function Transmission() {
   const toCheckTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   async function handleReward(key: string) {
-    const response = await fetch(`${CLIENT_BACKEND}/api/billing/reward?reward_key=${key}`);
-    const { ec, msg, data } = await response.json();
+    const params = new URLSearchParams({ reward_key: key });
+    const response = await fetch(`${CLIENT_BACKEND}/api/billing/reward?${params}`);
+    const { ec, data } = await response.json();
+    // 请求期间输入已改变，丢弃过期结果
+    if (key !== fromCdkRef.current) return;
     if (ec === 200) {
       if (data.remaining <= 0) {
         setFromCdkDescription(t("rewardUsedUp"));
@@ -79,8 +88,8 @@ export default function Transmission() {
       return;
     }
 
-    const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?cdk=${cdk}`);
-    const { ec, msg, data } = await response.json();
+    const { ec, msg, data } = await queryOrder(cdk);
+    if (cdk !== fromCdkRef.current) return;
     if (ec === 200) {
       const expiredAt = new Date(data.expired_at);
       if (isPast(expiredAt)) {
@@ -115,8 +124,8 @@ export default function Transmission() {
       return;
     }
 
-    const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?cdk=${cdk}`);
-    const { ec, msg, data } = await response.json();
+    const { ec, msg, data } = await queryOrder(cdk);
+    if (cdk !== toCdkRef.current) return;
     if (ec === 200) {
       const expiredAt = new Date(data.expired_at);
       if (isPast(expiredAt)) {
@@ -133,19 +142,44 @@ export default function Transmission() {
     }
   }
 
+  // 网络错误或返回非 JSON 时提示重试；请求期间输入已改变则不提示
+  async function checkFromCdk(cdk: string) {
+    try {
+      await requestFromCdk(cdk);
+    } catch {
+      if (cdk !== fromCdkRef.current) return;
+      setFromCdkDescription(t("networkError"));
+      setFromCdkValid(false);
+    }
+  }
+
+  async function checkToCdk(cdk: string) {
+    try {
+      await requestToCdk(cdk);
+    } catch {
+      if (cdk !== toCdkRef.current) return;
+      setToCdkDescription(t("networkError"));
+      setToCdkValid(false);
+    }
+  }
+
   function requestFromCdkDebounced(cdk: string) {
     clearTimeout(fromCheckTimerRef.current);
-    fromCheckTimerRef.current = setTimeout(() => requestFromCdk(cdk), CHECK_DELAY);
+    // 输入清空后不再校验
+    if (!cdk) return;
+    fromCheckTimerRef.current = setTimeout(() => checkFromCdk(cdk), CHECK_DELAY);
   }
 
   function requestToCdkDebounced(cdk: string) {
     clearTimeout(toCheckTimerRef.current);
-    toCheckTimerRef.current = setTimeout(() => requestToCdk(cdk), CHECK_DELAY);
+    if (!cdk) return;
+    toCheckTimerRef.current = setTimeout(() => checkToCdk(cdk), CHECK_DELAY);
   }
 
   async function handleFromCdkChange(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
-    fromCdkRef.current = value;
+    // 校验和转移都用去掉首尾空白的值，避免粘贴时带上的空格导致误判
+    fromCdkRef.current = value.trim();
     setFromCdk(value);
     setFromCdkDescription("");
     setFromCdkValid(false);
@@ -157,12 +191,12 @@ export default function Transmission() {
       setToCdkHasSameError(false);
       requestToCdkDebounced(toCdkRef.current);
     }
-    requestFromCdkDebounced(value);
+    requestFromCdkDebounced(fromCdkRef.current);
   }
 
   async function handleToCdkChange(e: ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
-    toCdkRef.current = value;
+    toCdkRef.current = value.trim();
     setToCdk(value);
     setToCdkDescription("");
     setToCdkValid(false);
@@ -174,21 +208,25 @@ export default function Transmission() {
       setFromCdkHasSameError(false);
       requestFromCdkDebounced(fromCdkRef.current);
     }
-    requestToCdkDebounced(value);
+    requestToCdkDebounced(toCdkRef.current);
   }
 
   async function handleTransfer() {
     setTransfering(true);
-    const response = await fetch(
-      `${CLIENT_BACKEND}/api/billing/order/transfer?from=${fromCdk}&to=${toCdk}`
-    );
-    const { ec, msg } = await response.json();
-    if (ec === 200) {
-      router.replace(`/show-key?order_id=${showOrderId}`);
-    } else {
-      alert(msg);
+    try {
+      const params = new URLSearchParams({ from: fromCdkRef.current, to: toCdkRef.current });
+      const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/transfer?${params}`);
+      const { ec, msg } = await response.json();
+      if (ec === 200) {
+        router.replace(`/show-key?order_id=${encodeURIComponent(showOrderId)}`);
+      } else {
+        alert(msg);
+      }
+    } catch {
+      alert(t("networkError"));
+    } finally {
+      setTransfering(false);
     }
-    setTransfering(false);
   }
 
   return (

@@ -1,10 +1,10 @@
-import { useLocale, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { CheckCircle, Gift, Layers, MessageCircle, TrendingUp } from "lucide-react";
 import { OrderInfoType } from "@/components/checkout/QRCodePayModal";
 import { addToast } from "@heroui/toast";
 import { getGroupUrl } from "@/lib/utils/constant";
 import { useState } from "react";
-import { DAY_MS, formatDateTime } from "@/lib/utils/date";
+import { DAY_MS, formatExpiry } from "@/lib/utils/date";
 import { copyText } from "@/lib/utils/clipboard";
 
 // 先展示少一天的到期时间，抽取额外天数后再加回来；
@@ -60,6 +60,7 @@ async function fireConfetti() {
 export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
   const t = useTranslations("ShowKey");
   const locale = useLocale();
+  const format = useFormatter();
   const info = props.info;
   const [showConfetti, setShowConfetti] = useState(false);
   const [extraDays, setExtraDays] = useState(0);
@@ -131,7 +132,7 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
               <span className="text-sm whitespace-pre-line text-gray-500 dark:text-gray-400">
                 {t.rich("timeConfettiAfter", {
                   addDay: extraDays,
-                  time: formatDateTime(expiredTime),
+                  time: formatExpiry(format, expiredTime),
                 })}
                 <div className="mt-2 flex items-center justify-center gap-1 text-sm text-emerald-600 dark:text-emerald-400">
                   {t.rich("remainingDays", { originDay: relativeDays })}
@@ -144,7 +145,7 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
             ) : (
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 {t.rich("timeConfettiBefore", {
-                  time: formatDateTime(expiredTime),
+                  time: formatExpiry(format, expiredTime),
                   days: relativeDays,
                 })}
               </span>

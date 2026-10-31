@@ -9,7 +9,7 @@ import QQGroupLink from "@/components/QQGroupLink";
 import { Link } from "@/i18n/routing";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { addToast } from "@heroui/toast";
-import { isPast } from "@/lib/utils/date";
+import { formatExpiry, isPast } from "@/lib/utils/date";
 
 interface OrderInfoModalProps {
   orderId: string;
@@ -51,13 +51,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
 
   const formattedTime = useMemo(() => {
     if (!expiredAt) return null;
-    return format.dateTime(new Date(expiredAt), {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-    });
+    return formatExpiry(format, expiredAt);
   }, [expiredAt, format]);
 
   // 由 next-intl 按当前语言格式化，如"3个月后" / "in 3 months"

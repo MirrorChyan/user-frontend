@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 import { useRouter } from "@/i18n/routing";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
-import { DAY_MS, isPast } from "@/lib/utils/date";
+import { DAY_MS, formatExpiry, isPast } from "@/lib/utils/date";
 import HomeButton from "@/components/HomeButton";
 import { BackgroundBeamsWithCollision } from "@/components/BackgroundBeamsWithCollision";
 
@@ -93,7 +93,7 @@ export default function Transmission() {
         return;
       }
       const relativeTime = format.relativeTime(expiredAt, { unit: "day" });
-      setFromCdkDescription(`${relativeTime} (${timeFormat(expiredAt)})`);
+      setFromCdkDescription(`${relativeTime} (${formatExpiry(format, expiredAt)})`);
       setFromCdkValid(true);
     } else {
       setFromCdkDescription(msg);
@@ -123,7 +123,7 @@ export default function Transmission() {
         setToCdkDescription(t("cdkExpired"));
       } else {
         const relativeTime = format.relativeTime(expiredAt, { unit: "day" });
-        setToCdkDescription(`${relativeTime} (${timeFormat(expiredAt)})`);
+        setToCdkDescription(`${relativeTime} (${formatExpiry(format, expiredAt)})`);
       }
       setToCdkValid(true);
       setShowOrderId(data.custom_order_id);
@@ -189,16 +189,6 @@ export default function Transmission() {
       alert(msg);
     }
     setTransfering(false);
-  }
-
-  function timeFormat(time: Date) {
-    return format.dateTime(time, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-    });
   }
 
   return (

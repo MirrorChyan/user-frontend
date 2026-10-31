@@ -176,6 +176,10 @@ export default function ProjectCard(props: ProjectCardProps) {
   const lockedValue = (items: { value: string }[]) =>
     items.length === 1 && items[0].value !== "any" ? items[0].value : null;
 
+  // 空字符串即 any：下拉里有 any 时，未选择视为选中 any
+  const orAny = (value: string, items: { value: string }[]) =>
+    value === "" && items.some(item => item.value === "any") ? "any" : value;
+
   const lockedChannel = availableChannel.length === 1 ? availableChannel[0] : null;
   const selectedChannel = lockedChannel ?? channel;
 
@@ -192,7 +196,7 @@ export default function ProjectCard(props: ProjectCardProps) {
   }, [selectedChannel, supportOptions]);
 
   const lockedOs = lockedValue(availableOS);
-  const selectedOs = lockedOs ?? os;
+  const selectedOs = orAny(lockedOs ?? os, availableOS);
 
   const renderFixedSelect = (value: any[]) => {
     return !(value.length === 0 || (value.length === 1 && value[0].value === "any"));
@@ -216,7 +220,7 @@ export default function ProjectCard(props: ProjectCardProps) {
   }, [selectedChannel, supportOptions, selectedOs, availableOS]);
 
   const lockedArch = lockedValue(availableArch);
-  const selectedArch = lockedArch ?? arch;
+  const selectedArch = orAny(lockedArch ?? arch, availableArch);
 
   const updateUrlParams = (newChannel: string, newOs: string, newArch: string) => {
     if (typeof window === "undefined") return;

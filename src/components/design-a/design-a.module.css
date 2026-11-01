@@ -151,9 +151,9 @@
 .projectBanner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 24px;
-  width: 100%;
+  width: fit-content;
   max-width: 100%;
   min-height: 88px;
   margin: 40px auto 0;
@@ -170,35 +170,20 @@
   border-color: var(--a-accent);
   box-shadow: 0 4px 16px rgb(88 75 217 / 6%);
 }
-.bannerLead {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  min-width: 0;
-}
 .bannerCopy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   font-size: 18px;
   font-weight: 600;
   line-height: 1.6;
   text-wrap: balance;
 }
-.bannerCta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  min-height: 42px;
-  padding: 10px 16px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  background: #584bd9;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 550;
-}
-.bannerCta svg {
-  width: 17px;
-  height: 17px;
+.bannerCopy svg {
+  width: 18px;
+  height: 18px;
+  color: var(--a-accent);
 }
 .avatars {
   display: flex;
@@ -911,9 +896,6 @@
     padding-left: 25px;
     padding-right: 25px;
   }
-  .bannerLead {
-    gap: 18px;
-  }
   .avatars img:nth-child(n + 5) {
     display: none;
   }
@@ -1018,35 +1000,18 @@
     margin-top: 24px;
   }
   .projectBanner {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 18px 12px;
+    flex-direction: column;
+    gap: 16px;
     padding: 18px 16px;
     margin-top: 32px;
     min-height: 0;
     border-radius: 14px;
   }
-  .bannerLead {
-    display: contents;
-  }
   .bannerCopy {
-    grid-column: 1;
-    grid-row: 1;
     font-size: 17px;
   }
   .avatars {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    gap: 6px;
-  }
-  .bannerCta {
-    grid-row: 1;
-    padding: 0;
-    width: 36px;
-    min-height: 36px;
-  }
-  .bannerCta > span {
-    display: none;
+    gap: 4px;
   }
   .avatars img {
     display: block;

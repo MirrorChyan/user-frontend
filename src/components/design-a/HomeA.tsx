@@ -20,7 +20,6 @@ export default async function HomeA({
   children?: React.ReactNode;
 }) {
   const t = await getTranslations("GetStart");
-  const p = await getTranslations("ShowKey");
   const projects = await getProjects();
   const appCount = projects.length - (projects.length % 5);
   const featuredProjects = projects.filter(project => project.image).slice(0, 6);
@@ -31,17 +30,14 @@ export default async function HomeA({
         <HeroA />
         {children}
         <Link href="/projects" className={styles.projectBanner}>
-          <span className={styles.bannerLead}>
-            <span className={styles.avatars}>
-              {featuredProjects.map(project => (
-                <img key={project.resource} src={project.image} alt="" width="40" height="40" />
-              ))}
-            </span>
-            <span className={styles.bannerCopy}>{t("viewProjects", { appCount })}</span>
-          </span>
-          <span className={styles.bannerCta}>
-            <span>{p("viewProjects")}</span>
+          <span className={styles.bannerCopy}>
+            {t("viewProjects", { appCount })}
             <ArrowRightIcon aria-hidden="true" />
+          </span>
+          <span className={styles.avatars}>
+            {featuredProjects.map(project => (
+              <img key={project.resource} src={project.image} alt="" width="40" height="40" />
+            ))}
           </span>
         </Link>
         <PlansA homePlans={homePlans} morePlans={morePlans} C2URate={C2URate} />

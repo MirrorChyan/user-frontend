@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Mirror酱 · 布局试验室</title>
+    <link rel="icon" href="assets/mirrorchyan.ico" />
+    <link rel="stylesheet" href="lab.css" />
+    <script src="lab.js" defer></script>
+  </head>
+  <body>
+    <header class="lab-header">
+      <a class="lab-brand" href="index.html"
+        ><span class="lab-mark">M<span>↗</span></span
+        ><span>Mirror酱 <strong>布局试验室</strong><small>LOCAL CONCEPTS / 2026.11</small></span></a
+      >
+      <nav class="layout-tabs" aria-label="设计方案">
+        <button data-layout="a" type="button"><span>A</span> 套餐直达</button>
+        <button data-layout="b" type="button"><span>B</span> 应用优先</button>
+        <button data-layout="c" type="button"><span>C</span> 极简品牌</button>
+        <button data-layout="d" type="button"><span>D</span> 分步引导</button>
+      </nav>
+      <div class="lab-tools">
+        <div class="device-switch" aria-label="预览尺寸">
+          <button type="button" data-device="desktop" aria-label="桌面预览" title="桌面预览">
+            ▰</button
+          ><button type="button" data-device="mobile" aria-label="手机预览" title="手机预览">
+            ▯
+          </button>
+        </div>
+        <button class="compare-button" type="button" id="compare-toggle" aria-pressed="false">
+          ◫ <span>并排对比</span>
+        </button>
+      </div>
+    </header>
+    <section class="lab-context" aria-label="方案说明">
+      <div>
+        <span class="context-dot"></span><strong id="concept-title"></strong
+        ><span class="context-divider">/</span><span id="concept-description"></span>
+      </div>
+      <div class="context-actions">
+        <a href="projects.html">Projects 原型 ↗</a
+        ><button id="shortlist" type="button" aria-pressed="false">☆ 加入候选</button>
+      </div>
+    </section>
+    <main id="preview-area" class="preview-area">
+      <section class="preview-slot">
+        <div class="frame-label">
+          <span id="primary-label"></span><span class="frame-hint">独立 HTML · 可交互</span
+          ><a id="standalone" href="a.html" target="_blank" rel="noopener">单独打开 ↗</a>
+        </div>
+        <div class="frame-shell">
+          <iframe id="primary-frame" title="方案 A 套餐直达预览" src="a.html?embed=1"></iframe>
+        </div>
+      </section>
+      <section class="preview-slot secondary" hidden>
+        <div class="frame-label">
+          <label for="compare-select">对比方案</label
+          ><select id="compare-select">
+            <option value="a">A · 套餐直达</option>
+            <option value="b" selected>B · 应用优先</option>
+            <option value="c">C · 极简品牌</option>
+            <option value="d">D · 分步引导</option>
+          </select>
+        </div>
+        <div class="frame-shell">
+          <iframe
+            id="secondary-frame"
+            title="并排对比预览"
+            src="b.html?embed=1"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </section>
+    </main>
+    <footer class="lab-footer">
+      <span>Phase 1 采用 A · B / C / D 保留备选，暂不上线 · 仅本地演示</span
+      ><span id="saved-note">候选保存在当前浏览器</span>
+    </footer>
+  </body>
+</html>

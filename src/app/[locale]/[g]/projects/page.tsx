@@ -10,14 +10,20 @@ import DownloadModalWrapper from "@/components/DownloadModalWrapper";
 import { Suspense } from "react";
 import { Divider } from "@heroui/divider";
 import HomeFooter from "@/components/home/HomeFooter";
+import Exposure from "@/components/Exposure";
+import { Slot } from "@/config/group";
+import { groupOf } from "@/lib/group";
+import ProjectsA from "@/components/design-a/ProjectsA";
 
 const GAME_TOOLS_TYPE_ID = "GameTools";
 const DEPENDENCIES_TYPE_ID = "Dependencies";
 
 export default async function ProjectsPage({
   searchParams,
+  params,
 }: {
   searchParams: Promise<{ source?: string }>;
+  params: Promise<{ g: string }>;
 }) {
   const t = await getTranslations("GetStart");
   const p = await getTranslations("Projects");
@@ -27,9 +33,24 @@ export default async function ProjectsPage({
   const mainProjects = projects.filter(project => project.type_id === GAME_TOOLS_TYPE_ID);
   const dependenciesProjects = projects.filter(project => project.type_id === DEPENDENCIES_TYPE_ID);
 
+  if (groupOf((await params).g, Slot.PageGroup) === "b") {
+    return (
+      <>
+        <SourceTracker source={source} />
+        <Exposure slot={Slot.PageGroup} />
+        <Suspense fallback={null}>
+          <OrderInfoModalWrapper />
+          <DownloadModalWrapper />
+        </Suspense>
+        <ProjectsA projects={[...mainProjects, ...dependenciesProjects]} />
+      </>
+    );
+  }
+
   return (
     <>
       <SourceTracker source={source} />
+      <Exposure slot={Slot.PageGroup} />
       <Suspense fallback={null}>
         <OrderInfoModalWrapper />
         <DownloadModalWrapper />

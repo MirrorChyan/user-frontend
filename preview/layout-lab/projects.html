@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Mirror酱 · Projects 布局评审</title>
+    <link rel="icon" href="assets/mirrorchyan.ico" />
+    <link rel="stylesheet" href="lab.css" />
+    <script src="projects-config.js" defer></script>
+    <script src="lab.js" defer></script>
+  </head>
+  <body>
+    <header class="lab-header">
+      <a class="lab-brand" href="index.html?layout=a"
+        ><span class="lab-mark">M<span>↗</span></span
+        ><span>Mirror酱 <strong>Projects 布局评审</strong><small>PHASE 1 / A STYLE</small></span></a
+      >
+      <nav class="layout-tabs" aria-label="Projects 设计方案">
+        <button data-layout="a1" type="button"><span>A1</span> 卡片网格</button>
+        <button data-layout="a2" type="button"><span>A2</span> 侧栏列表</button>
+        <button data-layout="a3" type="button"><span>A3</span> 列表详情</button>
+      </nav>
+      <div class="lab-tools">
+        <div class="device-switch" aria-label="预览尺寸">
+          <button type="button" data-device="desktop" aria-label="桌面预览" title="桌面预览">
+            ▰</button
+          ><button type="button" data-device="mobile" aria-label="手机预览" title="手机预览">
+            ▯
+          </button>
+        </div>
+        <button class="compare-button" type="button" id="compare-toggle" aria-pressed="false">
+          ◫ <span>并排对比</span>
+        </button>
+      </div>
+    </header>
+    <section class="lab-context" aria-label="方案说明">
+      <div>
+        <span class="context-dot"></span><strong id="concept-title"></strong
+        ><span class="context-divider">/</span><span id="concept-description"></span>
+      </div>
+      <div class="context-actions">
+        <a href="index.html?layout=a">首页 A ↗</a
+        ><button id="shortlist" type="button" aria-pressed="false">☆ 加入候选</button>
+      </div>
+    </section>
+    <main id="preview-area" class="preview-area">
+      <section class="preview-slot">
+        <div class="frame-label">
+          <span id="primary-label"></span><span class="frame-hint">独立 HTML · 可交互</span
+          ><a id="standalone" href="projects-a1.html" target="_blank" rel="noopener">单独打开 ↗</a>
+        </div>
+        <div class="frame-shell">
+          <iframe
+            id="primary-frame"
+            title="A1 卡片网格预览"
+            src="projects-a1.html?embed=1"
+          ></iframe>
+        </div>
+      </section>
+      <section class="preview-slot secondary" hidden>
+        <div class="frame-label">
+          <label for="compare-select">对比方案</label
+          ><select id="compare-select">
+            <option value="a1">A1 · 卡片网格</option>
+            <option value="a2" selected>A2 · 侧栏列表</option>
+            <option value="a3">A3 · 列表详情</option>
+          </select>
+        </div>
+        <div class="frame-shell">
+          <iframe
+            id="secondary-frame"
+            title="并排对比预览"
+            src="projects-a2.html?embed=1"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </section>
+    </main>
+    <footer class="lab-footer">
+      <span>Phase 1 仅采用 A 风格 · slogan 与原项目文案不变 · 下载为本地演示</span
+      ><span id="saved-note">候选保存在当前浏览器</span>
+    </footer>
+  </body>
+</html>

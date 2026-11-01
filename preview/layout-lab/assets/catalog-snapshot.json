@@ -1,0 +1,1277 @@
+[
+  {
+    "type_id": "GameTools",
+    "resource": "MAA",
+    "name": "MAA",
+    "desc": "《明日方舟》小助手，全日常一键长草！| A one-click tool for the daily tasks of Arknights, supporting all clients.",
+    "image": "/api/misc/static/project/maa-logo_512x512.png",
+    "url": "https://maa.plus/",
+    "support": [
+      "stable-windows-x64",
+      "stable-windows-arm64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "beta-windows-x64",
+      "beta-windows-arm64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "MAA-Meow/stable-android-any",
+      "MAA-Meow/beta-android-any"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaEnd",
+    "name": "MaaEnd",
+    "desc": "✨ MAA 终末地小助手 ✨\n\n绝赞开发中 🎉……",
+    "image": "/api/misc/static/project/MaaEnd-Tiny-256.png",
+    "url": "https://maaend.com/",
+    "support": [
+      "stable-windows-x64",
+      "stable-windows-arm64",
+      "MaaEnd_exec/stable-macos-arm64",
+      "MaaEnd_exec/stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-windows-arm64",
+      "MaaEnd_exec/beta-macos-arm64",
+      "MaaEnd_exec/beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64",
+      "MaaEnd_exec/beta-android-any",
+      "MaaEnd_exec/stable-android-any"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "March7thAssistant",
+    "name": "三月七小助手",
+    "desc": "崩坏：星穹铁道全自动 三月七小助手",
+    "image": "/api/misc/static/project/March7th.png",
+    "url": "https://m7a.top/",
+    "support": ["stable-any-any@windows-any"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaYuan",
+    "name": "MaaYuan",
+    "desc": "代号鸢 / 如鸢 一键长草小助手",
+    "image": "/api/misc/static/project/MaaYuan.png",
+    "url": "https://maayuan.com/",
+    "support": [
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64",
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "AALC",
+    "name": "AALC",
+    "desc": "AALC，PC端Limbus Company小助手。AALC，Limbus Company Assistant on PC",
+    "image": "/api/misc/static/project/AALC.png",
+    "url": "https://github.com/KIYI671/AhabAssistantLimbusCompany",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "okww",
+    "name": "鸣潮 ok-ww",
+    "desc": "鸣潮 后台自动战斗 自动刷声骸 一键日常 Automation for Wuthering Waves",
+    "image": "/api/misc/static/project/okww.png",
+    "url": "https://ok-script.com/ok-ww/",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "ZZZ-OneDragon",
+    "name": "绝区零 一条龙",
+    "desc": "绝区零 一条龙 | 全自动 | 自动闪避 | 自动每日 | 自动空洞 | 支持手柄",
+    "image": "/api/misc/static/project/ZZZ-OD.png",
+    "url": "https://one-dragon.com/zzz/zh/home.html",
+    "support": ["stable-any-x64", "stable-any-arm64", "beta-any-x64", "beta-any-arm64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaNTE",
+    "name": "MaaNTE",
+    "desc": "😊MAA异环小助手😊",
+    "image": "/api/misc/static/project/MaaNTE.png",
+    "url": "https://github.com/1bananachicken/MaaNTE",
+    "support": ["stable-win-x64", "beta-win-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "BGI",
+    "name": "BetterGI",
+    "desc": "BetterGI · 更好的原神， 一个基于计算机视觉技术，意图让原神变的更好的项目。",
+    "image": "/api/misc/static/project/BGIv2.png",
+    "url": "https://bettergi.com/",
+    "support": ["stable-any-any@windows-x64", "alpha-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "LLC_MOD_Toolbox",
+    "name": "LocalizeLC",
+    "desc": "由 都市零协会汉化组 提供的边狱公司中文本地化自定义语言包 | Limbus Company Chinese L10N custom language pack",
+    "image": "/api/misc/static/project/LLC.png",
+    "url": "https://www.zeroasso.top/",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "M9A",
+    "name": "M9A",
+    "desc": "重返未来：1999 小助手",
+    "image": "/api/misc/static/project/M9A.png",
+    "url": "https://1999.fan/",
+    "support": [
+      "stable-windows-x64",
+      "stable-windows-arm64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-windows-arm64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64",
+      "M9A_exec/stable-android-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "AUTO_MAS",
+    "name": "AUTO-MAS",
+    "desc": "多脚本多配置统一管理与自动化工具 | 轻松管理大量脚本并存储多个用户配置、设计自动化任务流、监看脚本日志，大幅提高自动化代理效率与稳定性！",
+    "image": "/api/misc/static/project/AUTO-MAS.png",
+    "url": "https://auto-mas.top/",
+    "support": ["stable-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaYYs",
+    "name": "MaaYYs",
+    "desc": "基于 MaaFramework 的痒痒鼠自动化应用，帮助玩家完成日常任务",
+    "image": "/api/misc/static/project/MaaYYs.png",
+    "url": "https://github.com/TanyaShue/MaaYYs",
+    "support": [
+      "stable-windows-x64",
+      "MaaYYs_exec/stable-macos-arm64",
+      "MaaYYs_exec/stable-macos-x64",
+      "stable-linux-x64",
+      "beta-windows-x64",
+      "MaaYYs_exec/beta-macos-arm64",
+      "MaaYYs_exec/beta-macos-x64",
+      "beta-linux-x64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "PCL2-CE",
+    "name": "PCL-CE",
+    "desc": "PCL 社区版 由社区开发者维护与管理",
+    "image": "/api/misc/static/project/PCL2-CE.png",
+    "url": "https://www.pclc.cc/projects/pcl-ce/",
+    "support": [
+      "stable-windows-x64",
+      "stable-windows-arm64",
+      "beta-windows-x64",
+      "beta-windows-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MFABD2",
+    "name": "MaaBD2",
+    "desc": "棕色尘埃2MFA框架自动化脚本。自动领取日常，拒绝给游戏打工！",
+    "image": "/api/misc/static/project/MFABD2.png",
+    "url": "https://github.com/sunyink/MFABD2",
+    "support": ["stable-windows-x64", "beta-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "ok-nte-zip",
+    "name": "异环 ok-nte",
+    "desc": "一款基于图像识别的《异环》自动化工具，支持后台运行。",
+    "image": "/api/misc/static/project/ok-nte.png",
+    "url": "https://ok-script.com/ok-nte/",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "okgi",
+    "name": "原神 ok-gi",
+    "desc": "原神 OKGI 自动拾取 | 后台自动剧情 | 后台一条龙 | UI Automation Genshin Impact",
+    "image": "/api/misc/static/project/okgi.png",
+    "url": "https://github.com/ok-oldking/ok-genshin-impact",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "LALC",
+    "name": "LALC",
+    "desc": "LALC，PC 端 LimbusCompany 小助手，为美好的游戏体验献上祝福！| A one-click tool for the daily tasks of Limbus Company. Avoid Boredom and Enjoy the Game!!!",
+    "image": "/api/misc/static/project/LALC.png",
+    "url": "https://github.com/HSLix/LixAssistantLimbusCompany",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaFgo",
+    "name": "MaaFgo",
+    "desc": "基于全新架构的 FGO 自动战斗助手。图像技术 + 模拟控制，解放双手！",
+    "image": "/api/misc/static/project/MaaFgo.webp",
+    "url": "https://github.com/xlxyvergil/MaaFgo",
+    "support": [
+      "stable-win-x64",
+      "MaaFgo_exec/stable-android-arm64",
+      "MaaFgo_exec/stable-android-x64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "IMAO",
+    "name": "IMAO",
+    "desc": "IMao · 鸣潮地图工具。把库街区大地图直接叠在游戏窗口上。",
+    "image": "/api/misc/static/project/IMAO.webp",
+    "url": "https://github.com/kahvia-d/IMAO",
+    "support": ["stable-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "StarRailAssistant",
+    "name": "SRA",
+    "desc": "崩坏星穹铁道自动化助手，帮你完成从启动到退出的崩铁日常",
+    "image": "/api/misc/static/project/StarRailAssistant.png",
+    "url": "https://starrailassistant.top/",
+    "support": ["stable-any-any@windows-any", "beta-any-any@windows-any"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaAutoNaruto",
+    "name": "火影忍者手游MAA",
+    "desc": "基于图像识别技术的火影忍者手游自动化工具。",
+    "image": "/api/misc/static/project/MaaAutoNaruto.png",
+    "url": "https://github.com/duorua/narutomobile",
+    "support": [
+      "stable-windows-x64",
+      "beta-windows-x64",
+      "stable-windows-arm64",
+      "beta-windows-arm64",
+      "stable-macos-arm64",
+      "beta-macos-arm64",
+      "stable-macos-x64",
+      "beta-macos-x64",
+      "stable-linux-x64",
+      "beta-linux-x64",
+      "stable-linux-arm64",
+      "beta-linux-arm64",
+      "MaaAutoNaruto-MaaFwApp/stable-android-arm64",
+      "MaaAutoNaruto-MaaFwApp/beta-android-x64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "ArkPetsApp",
+    "name": "Ark-Pets",
+    "desc": "Arknights Desktop Pets | 明日方舟桌宠 (ArkPets)",
+    "image": "/api/misc/static/project/ArkPets.png",
+    "url": "https://arkpets.harryh.cn/?from=mc",
+    "support": ["stable-windows-any"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "SnapHutaoRemastered",
+    "name": "胡桃重制版",
+    "desc": "🎮 开源的原神工具箱，专为 Windows 平台设计，改善桌面端玩家的游戏体验",
+    "image": "/api/misc/static/project/SnapHutaoRemastered-2.webp",
+    "url": "https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered",
+    "support": ["stable-win-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MAA_Punish",
+    "name": "MAA_Punish",
+    "desc": "战双帕弥什每日任务自动化 | Assistant For Punishing Gray Raven",
+    "image": "/api/misc/static/project/MAA_Punish.png",
+    "url": "https://github.com/overflow65537/MAA_Punish",
+    "support": ["stable-windows-x64", "beta-windows-x64", "MAA_Punish_MaaFwApp/stable-android-any"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "ok-kes",
+    "name": "ok-kes",
+    "desc": "ok框架卡厄思梦境自动化工具，包含自动出击模式和自动卡厄思模式功能",
+    "image": "/api/misc/static/project/ok-kes.webp",
+    "url": "https://ok-script.com/ok-kes/",
+    "support": ["stable-win-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "ArkLights",
+    "name": "明日方舟速通",
+    "desc": "明日方舟速通 —— 安卓端 7×24h 明日方舟全自动托管 APP！",
+    "image": "/api/misc/static/project/ArkLights.png",
+    "url": "https://github.com/AegirTech/ArkLights",
+    "support": ["stable-any-any@android-any"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "OEA",
+    "name": "OEA",
+    "desc": "一键识别终末地档案库，并同步到 OEM（终末地地图集），助力每一个全收集梦想！",
+    "image": "/api/misc/static/project/OEA.png",
+    "url": "https://oea.biohazard.top/",
+    "support": ["stable-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "ReveriePaint",
+    "name": "ReveriePaint",
+    "desc": "基于 Krita 核心引擎的 Android 原生数字绘画应用，专为平板与手写笔优化的专业创作工作流",
+    "image": "/api/misc/static/project/ReveriePaint.webp",
+    "url": "https://reveriepaint.lanrhyme.top/",
+    "support": ["stable-android-any"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "Maa-Assistant-Browndust2",
+    "name": "Maa-Assistant-Browndust2",
+    "desc": "Browndust2 日常自动化小助手",
+    "image": "/api/misc/static/project/Maa-Assistant-Browndust2.webp",
+    "url": "https://github.com/alkaidjin/Maa-Assistant-Browndust2",
+    "support": ["stable-win-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "SSAH",
+    "name": "MaaStellaSora",
+    "desc": "星塔助手（MaaStellaSora），提供《星塔旅人》的自动签到、日常清理等功能，由 MaaFramework 强力驱动。",
+    "image": "/api/misc/static/project/SSAH.png",
+    "url": "https://github.com/MaaStellaSora/MaaStellaSora",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaPVZ",
+    "name": "MaaPVZ",
+    "desc": "MaaPVZ-基于图像识别技术的植物大战僵尸2自动化工具，带给你妙趣横生的游戏体验！",
+    "image": "/api/misc/static/project/MaaPVZ-3.webp",
+    "url": "https://github.com/Maa-Assistant-PVZ-The-best/MAAPVZ",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-linux-x64",
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-linux-x64",
+      "MaaPVZ_exec/stable-android-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaJR",
+    "name": "MRA",
+    "desc": "《战舰少女R》小助手",
+    "image": "/api/misc/static/project/MaaJR.png",
+    "url": "https://github.com/Saratoga-Official/MRA",
+    "support": ["stable-windows-x64", "beta-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MATR",
+    "name": "MATR",
+    "desc": "基于Maaframework的刀剑乱舞自动化助手",
+    "image": "/api/misc/static/project/MATR.webp",
+    "url": "https://github.com/NotZoruak/MATR",
+    "support": ["stable-win-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "Maa_bbb",
+    "name": "识宝小助手",
+    "desc": "崩坏三自动化小助手，基于MAA黑盒测试框架制作",
+    "image": "/api/misc/static/project/Maa_bbb.png",
+    "url": "https://github.com/miaojiuqing/Maa_bbb",
+    "support": ["stable-windows-x64", "beta-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaLYSK",
+    "name": "MaaLYSK",
+    "desc": "恋与深空 日常/肝活小助手",
+    "image": "/api/misc/static/project/MaaLYSK.png",
+    "url": "https://maalysk.top/",
+    "support": [
+      "stable-windows-x64",
+      "stable-windows-arm64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-windows-arm64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "OnmyojiDesktopAssistant",
+    "name": "OnmyojiDesktopAssistant",
+    "desc": "适配网易阴阳师桌面版的辅助程序",
+    "image": "/api/misc/static/project/OnmyojiDesktopAssistant.jpg",
+    "url": "https://github.com/AquamarineCyan/OnmyojiDesktopAssistant",
+    "support": ["stable-win-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "floral",
+    "name": "花笺 Floral Notepaper",
+    "desc": "花笺，轻量优雅的跨平台桌面便签工具，支持 Markdown 编辑与预览",
+    "image": "/api/misc/static/project/floral.webp",
+    "url": "https://github.com/Achilng/floral-notepaper",
+    "support": ["stable-windows-x64", "stable-macos-arm64", "stable-macos-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "BAAH",
+    "name": "BAAH 爱丽丝助手",
+    "desc": "碧蓝档案日常任务自动化助手，支持国际服、日服、Steam、国服及 B 服。",
+    "image": "/api/misc/static/project/BAAH.png",
+    "url": "https://github.com/BlueArchiveArisHelper/BAAH",
+    "support": ["stable-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "NTE-Drive-Calc",
+    "name": "异环驱动计算器",
+    "desc": "《异环》驱动计算器，实现全角色空幕轻松养成 Drive Calculater for Neverness to Everness (NTE).",
+    "image": "/api/misc/static/project/NTE-Drive-Calc.webp",
+    "url": "https://github.com/hxwd94666/NTE-Drive-Calculator",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "BAAS",
+    "name": "BAAS",
+    "desc": "支持按轴凹总力战, 无缝制造三解, 蔚蓝档案24小时挂机摸头 / 自动凹总力战脚本",
+    "image": "/api/misc/static/project/BAAS2.png",
+    "url": "https://baas.wiki/",
+    "support": ["stable-win-x64", "stable-linux-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MR3A",
+    "name": "MR3A",
+    "desc": "《忍者必须死3》小助手，基于MaaFramework的开发（忍者必须死三 | 忍3 | 忍三脚本）",
+    "image": "/api/misc/static/project/MR3A.webp",
+    "url": "https://github.com/originalsage/MR3A",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "ok-end-field",
+    "name": "终末地 ok-ef",
+    "desc": "终末地 End Field Automation 基于ok-script开发的自动化",
+    "image": "/api/misc/static/project/okef.png",
+    "url": "https://ok-script.com/ok-end-field/",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "okgf2",
+    "name": "少前2 ok-gf2",
+    "desc": "Girls' Frontline 2: Exilium Automation Tool 少前2 少女前线2 追放 PC版 一键收菜 自动化脚本",
+    "image": "/api/misc/static/project/okgf2.png",
+    "url": "https://github.com/AliceJump/ok-gf2",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaGF2Exilium",
+    "name": "MaaGF2Exilium",
+    "desc": "少女前线2：追放自动化助手 少前2脚本",
+    "image": "/api/misc/static/project/MaaGF2Exilium.png",
+    "url": "https://github.com/DarkLingYun/MaaGF2Exilium",
+    "support": ["stable-windows-x64", "beta-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaGakumasu",
+    "name": "MaaGakumasu",
+    "desc": "学園アイドルマスター（学マス）（学园偶像大师）小助手",
+    "image": "/api/misc/static/project/MaaGakumasu.png",
+    "url": "https://github.com/SuperWaterGod/MaaGakumasu",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "Better-HSR-Currency-Wars",
+    "name": "Better HSR-Currency Wars",
+    "desc": "用于《崩坏：星穹铁道》“货币战争”玩法的 OCR 自动化辅助工具。",
+    "image": "/api/misc/static/project/Better-HSR-Currency-Wars.webp",
+    "url": "https://github.com/439awsl-hue/Better-HSR-Currency-Wars",
+    "support": ["stable-win-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "Maa_MHXY_MG",
+    "name": "Maa_MHXY_MG",
+    "desc": "梦幻西游手游小助手",
+    "image": "/api/misc/static/project/Maa_MHXY_MG.webp",
+    "url": "https://github.com/gitlihang/Maa_MHXY_MG",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaKes",
+    "name": "Maa_KES",
+    "desc": "卡厄思梦境小助手，基于 MaaFramework开发",
+    "image": "/api/misc/static/project/MaaKes.webp",
+    "url": "https://github.com/miaojiuqing/Maa_Kes",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-linux-x64",
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-linux-x64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "ok-Onmyoji",
+    "name": "ok-Onmyoji",
+    "desc": "阴阳师(Onmyoji)自动化战斗基于ok-script开发",
+    "image": "/api/misc/static/project/ok-Onmyoji.webp",
+    "url": "https://github.com/YunLiuZ/ok-Onmyoji",
+    "support": ["stable-win-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaADr",
+    "name": "MaaADr",
+    "desc": "基于全新架构的 龙脉R(AnaDos) 自动清体/兑换小助手。图像技术+模拟控制，解放双手！",
+    "image": "/api/misc/static/project/MaaADr.webp",
+    "url": "https://github.com/Azureetude/MaaADr",
+    "support": ["stable-win-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "BetterNTE",
+    "name": "BetterNTE",
+    "desc": "BetterNTE 更好的异环 Neverness to Everness",
+    "image": "/api/misc/static/project/BetterNTE.webp",
+    "url": "https://github.com/BetterAutoFramework/BetterNTE",
+    "support": ["stable-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaDuDuL",
+    "name": "MaaDuDuL",
+    "desc": "嘟嘟脸恶作剧（Trickcal）自动化小助手，由 MaaFramework 强力驱动！",
+    "image": "/api/misc/static/project/MaaDuDuL.png",
+    "url": "https://mddl.codax.site/docs/",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaGB",
+    "name": "MaaGumballs",
+    "desc": "基于全新架构的 不思议迷宫 小助手。图像技术 + 模拟控制，解放双手！ 由 MaaFramework 强力驱动！",
+    "image": "/api/misc/static/project/MaaGB-re.png",
+    "url": "https://maagb.xyz/",
+    "support": ["stable-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MAAGC",
+    "name": "MaaGC",
+    "desc": "诸神皇冠小助手，一键解放双手，享受推年提升的乐趣，而不是因此被束缚",
+    "image": "/api/misc/static/project/MAAGC.webp",
+    "url": "https://github.com/KhazixW2/MAAGC",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MBCCtools",
+    "name": "MBCCtools",
+    "desc": "无期迷途(MBCCtools),基于MaaFramework的 无期迷途 小助手。",
+    "image": "/api/misc/static/project/MBCCtools.webp",
+    "url": "https://github.com/quietlysnow/MBCCtools",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-macos-x64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MicYou",
+    "name": "MicYou",
+    "desc": "将手机变为电脑麦克风，支持 Android、iOS 和网页连接，适用于 Windows、macOS、Linux。",
+    "image": "/api/misc/static/project/micyou-2.png",
+    "url": "https://micyou.top/",
+    "support": [
+      "stable-win-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-android-any"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MAA_SnowBreak",
+    "name": "MAA_SnowBreak",
+    "desc": "尘白禁区每日任务自动化 | Assistant For Snowbreak: Containment Zone",
+    "image": "/api/misc/static/project/MAA_SnowBreak.png",
+    "url": "https://github.com/overflow65537/MAA_SnowBreak",
+    "support": ["stable-windows-x64", "beta-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "SLIMEIM_Maa",
+    "name": "SLIMEIM_Maa",
+    "desc": "基于MAA框架制作的魔王与龙的建国谭小助手。图像技术 + 模拟控制，解放双手！ 由 MaaFramework 强力驱动！",
+    "image": "/api/misc/static/project/SLIMEIM_Maa.png",
+    "url": "https://github.com/miaojiuqing/SLIMEIM_Maa",
+    "support": ["stable-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaKEDR",
+    "name": "MaaKEDR",
+    "desc": "MaaKEDR 雪松小助手：基于视觉 AI 的「雪松」自动化工具，由 MaaFramework 强力驱动！",
+    "image": "/api/misc/static/project/MaaKEDR.webp",
+    "url": "https://github.com/APPLe-DF/MaaKEDR",
+    "support": [
+      "stable-windows-x64",
+      "stable-windows-arm64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-windows-arm64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64",
+      "MaaKEDR_exec/stable-android-any",
+      "MaaKEDR_exec/beta-android-any"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "ASU",
+    "name": "模拟宇宙自动化",
+    "desc": "崩坏：星穹铁道 模拟宇宙自动化 （Honkai Star Rail - Auto Simulated Universe）",
+    "image": "/api/misc/static/project/ASU.png",
+    "url": "https://github.com/CHNZYX/Auto_Simulated_Universe",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "Auto_Resonance",
+    "name": "Auto_Resonance",
+    "desc": "雷索纳斯自动跑图 - 一键长草 | 自动跑图",
+    "image": "/api/misc/static/project/Auto_Resonance.png",
+    "url": "https://github.com/Night-stars-1/Auto_Resonance",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "ok-script-app",
+    "name": "ok-script 按键精灵",
+    "desc": "Python的按键精灵，基于ok-script开发，可用于快速开发并运行各种自动化脚本和项目。",
+    "image": "/api/misc/static/project/ok-py.png",
+    "url": "https://ok-script.com/app/",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "Maa-HBR",
+    "name": "Maa-HBR",
+    "desc": "heaven burns red 炽焰天穹 自动化脚本",
+    "image": "/api/misc/static/project/Maa-HBR.png",
+    "url": "https://github.com/KarylDAZE/Maa-HBR",
+    "support": ["stable-windows-x64", "beta-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "SkiHide",
+    "name": "SkiHide",
+    "desc": "SkiHide 是一款专为 Windows 设计的桌面窗口管理工具，通过快捷键或鼠标侧键，一键隐藏 / 恢复指定窗口，适合 双屏用户、游戏玩家、演示场景、摸鱼（划掉）高效办公 等使用场景。",
+    "image": "/api/misc/static/project/SkiHide.png",
+    "url": "https://skihide.xyz/",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MMleo",
+    "name": "MMleo",
+    "desc": "基于全新架构的偶像梦幻祭2小助手。图像技术 + 模拟控制，解放双手！ 由 MaaFramework 强力驱动！",
+    "image": "/api/misc/static/project/MMleo.png",
+    "url": "https://github.com/fictionalflaw/MMleo",
+    "support": ["stable-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "OneDragon-ScriptChainer",
+    "name": "千机链",
+    "desc": "一条龙 千机链 (简易的脚本链式调用工具)",
+    "image": "/api/misc/static/project/OneDragon-ScriptChainer.ico",
+    "url": "https://one-dragon.com/tools/zh/script_chainer.html",
+    "support": ["stable-any-any", "beta-any-any"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MCCA",
+    "name": "MCCA",
+    "desc": "交错战线 小助手",
+    "image": "",
+    "url": "https://github.com/MaaXYZ/MCCA",
+    "support": ["stable-windows-x64", "beta-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "FFmpegFreeUI",
+    "name": "FFmpegFreeUI",
+    "desc": "3FUI 是 ffmpeg 在 Windows 上的轻度专业交互外壳，收录大量参数，界面美观，交互友好。此项目面向国内使用环境，让普通人也能够轻松压制视频和转换格式。",
+    "image": "/api/misc/static/project/FFFUI.png",
+    "url": "https://ffmpegfreeui.top/",
+    "support": [
+      "stable-windows-x64",
+      "stable-windows-arm64",
+      "beta-windows-x64",
+      "beta-windows-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "Haiyu",
+    "name": "Haiyu",
+    "desc": "库洛游戏第三方启动器，支持鸣潮、战双的下载、更新与管理，并集成库街区功能。",
+    "image": "/api/misc/static/project/Haiyu.png",
+    "url": "https://github.com/HaiyuGame/Haiyu",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "Polymerium",
+    "name": "Polymerium",
+    "desc": "下一代 Minecraft 实例管理器，以全新思维重新定义游戏管理。",
+    "image": "/api/misc/static/project/Polymerium.png",
+    "url": "https://github.com/d3ara1n/Polymerium",
+    "support": [
+      "Polymerium_setup/stable-windows-x64",
+      "Polymerium_setup/stable-linux-x64",
+      "Polymerium_setup/stable-macos-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaAshEchoes",
+    "name": "MaaAshEchoes",
+    "desc": "基于 MaaFramework 的 白荆回廊 小助手。图像技术 + 模拟控制，解放双手！",
+    "image": "/api/misc/static/project/MaaAshEchoes.png",
+    "url": "https://github.com/moulai/MaaAshEchoes",
+    "support": ["stable-windows-x64", "beta-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "UndertaleModTool-Genouka",
+    "name": "UndertaleModTool（Genouka 分支）",
+    "desc": "Undertale 等 GameMaker 游戏的修改、反编译与资源解包工具。Genouka 非官方分支，支持跨平台图形界面与多语言。",
+    "image": "/api/misc/static/project/UndertaleModTool-Genouka.webp",
+    "url": "https://github.com/Genouka/UndertaleModTool",
+    "support": [
+      "stable-win-x64",
+      "UndertaleModToolAvalonia-Genouka/stable-macos-arm64",
+      "UndertaleModToolAvalonia-Genouka/stable-macos-x64",
+      "UndertaleModToolAvalonia-Genouka/stable-linux-x64",
+      "UndertaleModToolAndroid-Genouka/stable-android-arm64",
+      "UndertaleModToolAndroid-Genouka/stable-android-x64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MAATree",
+    "name": "MAATree",
+    "desc": "悠久之树小助手 | Assistant For Eternal Tree",
+    "image": "/api/misc/static/project/MaaTree.png",
+    "url": "https://github.com/caicai00001/MAATree",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaStarResonance",
+    "name": "MaaStarResonance",
+    "desc": "基于图像识别的星痕共鸣自动化工具",
+    "image": "/api/misc/static/project/MaaStarResonance.png",
+    "url": "https://github.com/AsterleedsGuild0/MaaStarResonance",
+    "support": [
+      "stable-windows-x64",
+      "stable-windows-arm64",
+      "beta-windows-x64",
+      "beta-windows-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MCC_Framework",
+    "name": "MCC_Framework",
+    "desc": "本项目基于 MaaFramework 提供的项目模板进行开发，面向游戏 《交错战线》 的自动化助手（开发中）。",
+    "image": "/api/misc/static/project/MCC_Framework.webp",
+    "url": "https://github.com/MAACrossCore/MCC_Framework",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaResonance",
+    "name": "MaaResonance",
+    "desc": "基于 MaaFramework 全新架构的 雷索纳斯 小助手。图像识别 + 模拟控制，解放双手！",
+    "image": "",
+    "url": "https://github.com/DaiMao204/MaaResonance",
+    "support": ["stable-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "ModAVD",
+    "name": "ModAVD（魔改 AVD）",
+    "desc": "给 Windows 上的挂机脚本用的安卓模拟器，基于 AOSP Android Emulator 37.2.10",
+    "image": "/api/misc/static/project/ModAVD.webp",
+    "url": "https://github.com/ModAVD/ModAVD",
+    "support": ["stable-win-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaShiningNikki",
+    "name": "MaaShiningNikki",
+    "desc": "闪现吧暖暖，一个基于 MaaFramework 的 闪耀暖暖小助手。 通过图像识别、OCR 与模拟控制，把日常重复操作交给自动化流程处理。",
+    "image": "/api/misc/static/project/MaaShiningNikki.webp",
+    "url": "https://github.com/7iko-07/MaaShiningNikki",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaNikki",
+    "name": "MaaNikki",
+    "desc": "《无限暖暖》自动化助手，基于 MaaFramework 与 MXU",
+    "image": "/api/misc/static/project/MaaNikki.webp",
+    "url": "https://github.com/architect9331/MaaNikki",
+    "support": ["stable-win-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "ok-etheria",
+    "name": "ok-er - 伊瑟",
+    "desc": "Etheria: Restart Automation 伊瑟一键收菜",
+    "image": "/api/misc/static/project/ok-er.png",
+    "url": "https://github.com/ok-oldking/ok-etheria",
+    "support": ["stable-any-any@windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaQNZL",
+    "name": "MaaQNZL",
+    "desc": "千年之旅小助手",
+    "image": "/api/misc/static/project/MaaQNZL.png",
+    "url": "https://github.com/chenxing-ye/MaaQNZL",
+    "support": ["stable-windows-x64", "beta-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaSH",
+    "name": "MaaSH",
+    "desc": "基于 MaaFramework 的「时空中的绘旅人」日常小助手。",
+    "image": "/api/misc/static/project/MaaSH.webp",
+    "url": "https://github.com/LiliiPop/MaaSH",
+    "support": ["stable-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MangaProof",
+    "name": "MangaProof",
+    "desc": "漫画翻译后期的高速 QA / 监制工作台",
+    "image": "/api/misc/static/project/MangaProof.webp",
+    "url": "https://github.com/gunfub/MangaProof",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "MangaProof_exec/stable-android-arm64",
+      "MangaProof_exec/stable-android-x64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaWoA",
+    "name": "MaaWoA",
+    "desc": "MaaWoA 机场世界小助手：基于图像识别的「World of Airports」自动化工具",
+    "image": "/api/misc/static/project/MaaWoA.webp",
+    "url": "https://github.com/huzesama/MaaWoA",
+    "support": [
+      "stable-windows-x64",
+      "stable-windows-arm64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-windows-arm64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64",
+      "MaaWoA_exec/stable-android-any"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "maa-verge",
+    "name": "Maa Verge",
+    "desc": "基于 MaaCore 的跨平台明日方舟助手，提供独立核心与资源更新及 Agent 开发基础。",
+    "image": "/api/misc/static/project/maa-verge.webp",
+    "url": "https://github.com/DeathofBrain/maa-verge",
+    "support": [
+      "stable-win-x86_64",
+      "stable-macos-aarch64",
+      "stable-macos-x86_64",
+      "stable-linux-x86_64",
+      "alpha-win-x86_64",
+      "alpha-macos-aarch64",
+      "alpha-macos-x86_64",
+      "alpha-linux-x86_64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaVillageConquest",
+    "name": "MaaVillageConquest",
+    "desc": "《村长征战团》页游小助手，由MaaFramework强力驱动！",
+    "image": "",
+    "url": "https://github.com/kpAjun/MaaVillageConquest",
+    "support": ["stable-windows-x64", "beta-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "GameTools",
+    "resource": "MaaDxcb3",
+    "name": "MaaDxcb3",
+    "desc": "✨ 基于图像识别的地下城堡3自动化小助手 ✨",
+    "image": "/api/misc/static/project/MaaDxcb3.webp",
+    "url": "https://github.com/Halo629/MaaDxcb3",
+    "support": ["stable-windows-x64"],
+    "download": true
+  },
+  {
+    "type_id": "Dependencies",
+    "resource": "dotnet10",
+    "name": ".NET Desktop Runtime 10",
+    "desc": ".NET 桌面运行时使用户能够运行现有 Windows 桌面应用程序。",
+    "image": "/api/misc/static/project/dotnet.png",
+    "url": "https://dotnet.microsoft.com/en-us/download/dotnet/10.0",
+    "support": ["stable-windows-x64", "stable-windows-arm64"],
+    "download": true
+  },
+  {
+    "type_id": "Dependencies",
+    "resource": "MaaFramework",
+    "name": "MaaFramework",
+    "desc": "基于图像识别的自动化黑盒测试框架 | An automation black-box testing framework based on image recognition",
+    "image": "/api/misc/static/project/maa-logo_512x512.png",
+    "url": "https://github.com/MaaXYZ/MaaFramework",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64",
+      "alpha-windows-x64",
+      "alpha-macos-arm64",
+      "alpha-macos-x64",
+      "alpha-linux-x64",
+      "alpha-linux-arm64"
+    ],
+    "download": true
+  },
+  {
+    "type_id": "Dependencies",
+    "resource": "MaaCommonAssets",
+    "name": "MaaCommonAssets",
+    "desc": "MaaFramework 通用资源",
+    "image": "/api/misc/static/project/maa-logo_512x512.png",
+    "url": "https://github.com/MaaXYZ/MaaCommonAssets",
+    "support": ["stable-any-any"],
+    "download": true
+  },
+  {
+    "type_id": "Dependencies",
+    "resource": "MFAAvalonia",
+    "name": "MFAAvalonia",
+    "desc": "基于 Avalonia 的 MAAFramework 通用 GUI 项目 | A universal GUI project for MAAFramework based on Avalonia",
+    "image": "/api/misc/static/project/MFAAvalonia.png",
+    "url": "https://github.com/MaaXYZ/MFAAvalonia",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64"
+    ],
+    "download": false
+  },
+  {
+    "type_id": "Dependencies",
+    "resource": "MFAWPF",
+    "name": "MFAWPF",
+    "desc": "旧版基于 WPF 的 MaaFramework 通用 GUI，已基本迁移至 MFAAvalonia。",
+    "image": "/api/misc/static/project/MFAWPF.png",
+    "url": "https://github.com/SweetSmellFox/MFAWPF",
+    "support": ["stable-windows-x64"],
+    "download": false
+  },
+  {
+    "type_id": "Dependencies",
+    "resource": "MFW-PyQt6",
+    "name": "MFW-PyQt6",
+    "desc": "一个基于PyQt6的MAAFramework图形化操作界面",
+    "image": "/api/misc/static/project/MFW-PyQt6.png",
+    "url": "https://github.com/overflow65537/MFW-PyQt6",
+    "support": [
+      "stable-windows-x64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64",
+      "stable-linux-arm64",
+      "beta-windows-x64",
+      "beta-macos-arm64",
+      "beta-macos-x64",
+      "beta-linux-x64",
+      "beta-linux-arm64"
+    ],
+    "download": false
+  },
+  {
+    "type_id": "Dependencies",
+    "resource": "MXU",
+    "name": "MXU",
+    "desc": "MaaFramework Next UI. 基于 Tauri 2 + React 的轻量级跨平台通用 GUI",
+    "image": "/api/misc/static/project/MaaEnd-Tiny-256.png",
+    "url": "https://github.com/MaaXYZ/MXU",
+    "support": [
+      "stable-windows-x64",
+      "stable-windows-arm64",
+      "stable-macos-arm64",
+      "stable-macos-x64",
+      "stable-linux-x64"
+    ],
+    "download": false
+  }
+]

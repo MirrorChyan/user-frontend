@@ -8,6 +8,8 @@ export enum ExposureScope {
 }
 
 // 取值是单个小写字母，第一个是默认组
+// page_group: a = 原版对照；b = 首页设计 A + projects 设计 A1。
+// B / C / D 仅保留 HTML 备选，不参与 Phase 1 分流。
 export const SLOTS = [
   { name: Slot.PageGroup, values: ["a", "b"], exposure: ExposureScope.Page },
 ] as const;

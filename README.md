@@ -53,3 +53,28 @@ To learn more about Next.js, take a look at the following resources:
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Phase 1 页面布局 AB
+
+沿用现有 `page_group` 槽位，取值和远程分流协议不变：
+
+| 技术分组    | 首页         | Projects 页      |
+| ----------- | ------------ | ---------------- |
+| `a`（默认） | 原版，对照组 | 原版，对照组     |
+| `b`         | 设计 A       | 设计 A1 卡片网格 |
+
+这里的技术分组 `b` 对应选定的设计 A / A1，并非备选设计 B。备选 B / C / D 和 Projects A2 / A3 继续保存在 `preview/layout-lab/`，没有加入运行时分流。
+
+正式页面共用现有套餐和项目 API，不使用 demo 的固定价格或目录快照。slogan、产品介绍、项目名称 / 简介及原有中英文翻译保持不变；`LayoutA` 仅增加搜索、分类、筛选、分页等操作标签。新版下载卡片复用 `ProjectCard` 的真实下载 / 分享 / CDK 弹窗及 `rid / os / arch / channel` 深链接。
+
+本地开发预览：
+
+- 对照组：`/zh/get-start?_g=a`、`/zh/projects?_g=a`。
+- 实验组：`/zh/get-start?_g=b`、`/zh/projects?_g=b`。
+- 英文页面使用 `/en/` 前缀。
+
+`_g` 沿用现有预览机制，通过会话 cookie 保持跨页分组；预览曝光标记为 `pre`。真实流量继续由 `SPLIT_SOURCE` 配置分配，本次没有修改远程权重或发布配置。两页都记录页面曝光，按槽位、页面路径和实验标记去重；套餐点击继续上报原有 `plan_click` 和 `plan_id`。
+
+新版页头 logo 来自用户提供的原始 PNG，等比例导出为 `public/brand/mirrorchyan-logo.webp`：128×128、9,160 字节，保留透明背景。原始大图不进入前端包，现有 favicon 保持不变。
+
+验证包括类型检查、生产构建、两组服务端页面与跨页预览 cookie、中英文及手机布局、项目搜索 / 筛选 / 分页、下载深链接与上报载荷。验收仅打开原有收银台和下载弹窗，没有发起支付或使用真实 CDK 下载。本地没有接入生产 `/m/e` 接收服务，已核对浏览器发出的曝光和套餐点击载荷，未验证服务端入库。

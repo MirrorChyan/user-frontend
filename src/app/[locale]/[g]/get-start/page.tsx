@@ -12,11 +12,15 @@ import Announcement from "@/components/home/Announcement";
 import Plans from "@/components/home/Plans";
 import HomeFooter from "@/components/home/HomeFooter";
 import { Slot } from "@/config/group";
+import { groupOf } from "@/lib/group";
+import HomeA from "@/components/design-a/HomeA";
 
 export default async function GetStart({
   searchParams,
+  params,
 }: {
   searchParams: Promise<{ type_id?: string; source?: string }>;
+  params: Promise<{ g: string }>;
 }) {
   const t = await getTranslations("GetStart");
 
@@ -31,6 +35,23 @@ export default async function GetStart({
     locale === "zh" ? 1 : getUSDRate(),
   ]);
   const { homePlans, morePlans } = plans;
+
+  if (groupOf((await params).g, Slot.PageGroup) === "b") {
+    return (
+      <>
+        <SourceTracker source={source} />
+        <Exposure slot={Slot.PageGroup} />
+        <HomeA homePlans={homePlans} morePlans={morePlans} C2URate={C2URate}>
+          {announcement.ec === 200 && (
+            <Announcement
+              summary={announcement.data.summary}
+              content={<ReactMarkdown>{announcement.data.details}</ReactMarkdown>}
+            />
+          )}
+        </HomeA>
+      </>
+    );
+  }
 
   return (
     <div className="relative" suppressHydrationWarning>

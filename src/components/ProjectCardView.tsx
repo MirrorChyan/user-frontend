@@ -3,7 +3,13 @@
 import ProjectCard, { ProjectCardProps } from "@/components/ProjectCard";
 import { useSearchParams } from "next/navigation";
 
-export default function ProjectCardView({ projects }: { projects: Array<ProjectCardProps> }) {
+export default function ProjectCardView({
+  projects,
+  appearance = "classic",
+}: {
+  projects: Array<ProjectCardProps>;
+  appearance?: "classic" | "a";
+}) {
   const searchParams = useSearchParams();
   const rid = searchParams.get("rid");
 
@@ -17,6 +23,7 @@ export default function ProjectCardView({ projects }: { projects: Array<ProjectC
           archParam={searchParams.get("arch")}
           channelParam={searchParams.get("channel")}
           {...project}
+          appearance={appearance}
         />
       ))}
     </>

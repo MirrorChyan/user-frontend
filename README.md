@@ -86,7 +86,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 - `/get-key`：CDK / 订单查询表单。
 - `/transfer`：时长转换表单，保留原有验证和转移操作。
 - `/checkout/[[...planId]]`：收银台、无效订单状态、续期输入及支付弹窗。
-- `/dashboard`：登录与统计页。桌面端左侧切换销售统计 / 请求统计，窄屏改为横向切换；筛选状态、CSV 导出及统计计算沿用原实现。
+- `/dashboard`：独立的开发者工作台，页头保留品牌和语言切换，不展示官网订阅 / 项目 / CDK 查询导航，页脚仅保留备案信息。桌面端左侧切换销售统计 / 请求统计，窄屏改为横向切换；筛选状态、CSV 导出及统计计算沿用原实现。
 - 订单查询结果、支付成功、项目下载与分享下载弹窗共用统一的边框、配色和间距。
 - `/disclaimer.html`：协议阅读页，正文及日期未改。
 

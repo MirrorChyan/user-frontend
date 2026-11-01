@@ -1,4 +1,4 @@
-import { PageFrameA } from "@/components/design-a/Shell";
+import { DashboardFrameA } from "@/components/design-a/Shell";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
@@ -15,5 +15,5 @@ export async function generateMetadata({
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <PageFrameA wide>{children}</PageFrameA>;
+  return <DashboardFrameA>{children}</DashboardFrameA>;
 }

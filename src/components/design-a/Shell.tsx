@@ -46,18 +46,42 @@ export async function HeaderA({ current }: { current?: "home" | "projects" }) {
 }
 
 /** Shared frame for user flows that are outside the homepage/catalog experiment. */
-export function PageFrameA({
-  children,
-  wide = false,
-}: {
-  children: React.ReactNode;
-  wide?: boolean;
-}) {
+export function PageFrameA({ children }: { children: React.ReactNode }) {
   return (
     <div className={`${styles.page} ${flow.frame}`}>
       <HeaderA />
-      <main className={wide ? flow.wideMain : flow.main}>{children}</main>
+      <main className={flow.main}>{children}</main>
       <FooterA />
+    </div>
+  );
+}
+
+/** Developer workspace: keep its navigation separate from the public website. */
+export async function DashboardFrameA({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
+  const t = await getTranslations("Metadata");
+  return (
+    <div className={`${styles.page} ${flow.frame}`}>
+      <header className={flow.dashboardHeader}>
+        <Link href="/dashboard" className={styles.brand} aria-label={t("dashboard")}>
+          <img
+            className={styles.brandIcon}
+            src="/brand/mirrorchyan-logo.webp"
+            alt=""
+            width="40"
+            height="40"
+          />
+          <span>
+            {locale === "zh" ? "Mirror酱" : "MirrorChyan"}
+            <small>MIRRORCHYAN</small>
+          </span>
+        </Link>
+        <span className={flow.dashboardLabel}>DASHBOARD</span>
+      </header>
+      <main className={flow.wideMain}>{children}</main>
+      <footer className={flow.dashboardFooter}>
+        <IcpInfo />
+      </footer>
     </div>
   );
 }

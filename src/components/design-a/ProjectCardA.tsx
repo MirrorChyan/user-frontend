@@ -53,7 +53,11 @@ export default function ProjectCardA({
           </a>
         )}
       </div>
-      <p className={styles.projectDescription}>{project.desc}</p>
+      <p
+        className={`${styles.projectDescription} ${!project.download ? styles.fullDescription : ""}`}
+      >
+        {project.desc}
+      </p>
       <div className={styles.platforms}>
         {platforms.map(system => (
           <span key={system}>{systemLabel(system, a("genericResource"))}</span>

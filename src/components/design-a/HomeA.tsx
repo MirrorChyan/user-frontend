@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 
 import type { Plan } from "@/app/requests/plan";
 import { getProjects } from "@/app/requests/project";
+import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { Link } from "@/i18n/routing";
 import { FooterA, HeaderA, HeroA, ShortcutsA } from "./Shell";
 import PlansA from "./PlansA";
@@ -36,7 +37,13 @@ export default async function HomeA({
           </span>
           <span className={styles.avatars}>
             {featuredProjects.map(project => (
-              <img key={project.resource} src={project.image} alt="" width="40" height="40" />
+              <img
+                key={project.resource}
+                src={CLIENT_BACKEND + project.image}
+                alt=""
+                width="40"
+                height="40"
+              />
             ))}
           </span>
         </Link>

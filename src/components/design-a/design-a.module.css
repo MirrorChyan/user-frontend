@@ -2,7 +2,7 @@
   --a-bg: #fff;
   --a-soft: #f8f9fc;
   --a-ink: #30364a;
-  --a-muted: #858da0;
+  --a-muted: #606b80;
   --a-border: #e5e8f0;
   --a-accent: #584bd9;
   --a-tint: #f2efff;
@@ -464,7 +464,6 @@
 }
 .categories button > span {
   font-size: 10px;
-  opacity: 0.7;
   margin-left: 3px;
 }
 .categories button[aria-pressed="true"] {
@@ -595,7 +594,7 @@
   display: grid;
   place-content: center;
   font-size: 24px;
-  color: #a494c8;
+  color: var(--a-accent);
   background: var(--a-tint);
 }
 .cardHeading > div {
@@ -638,6 +637,11 @@
   overflow: hidden;
   margin-top: 18px;
   min-height: 44px;
+}
+.fullDescription {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
 }
 .platforms {
   display: flex;
@@ -698,8 +702,8 @@
   height: 14px;
 }
 .projectCard:hover .downloadAction {
-  background: var(--a-accent);
-  border-color: var(--a-accent);
+  background: #584bd9;
+  border-color: #584bd9;
   color: #fff;
 }
 .pagination {
@@ -847,7 +851,7 @@
   align-items: center;
   gap: 18px;
   font-size: 11px;
-  color: #9b87bb;
+  color: var(--a-accent);
   margin-left: auto;
   white-space: nowrap;
 }

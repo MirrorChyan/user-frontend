@@ -26,7 +26,7 @@
 .switcher > span {
   padding: 4px 7px;
   border-radius: 5px;
-  color: var(--a-muted, #858da0);
+  color: var(--a-muted, #606b80);
   font-size: 11px;
   font-weight: 600;
   line-height: 16px;
@@ -52,6 +52,10 @@
 :global(.dark) .switcher {
   border-color: var(--a-border, #2b334a);
   background: var(--a-soft, #191f30);
+}
+
+:global(.dark) .switcher > span {
+  color: var(--a-muted, #969fb4);
 }
 
 :global(.dark) .switcher > span[data-active="true"] {

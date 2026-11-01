@@ -3,6 +3,7 @@ import { ArrowUpRightIcon, KeyIcon } from "@heroicons/react/24/outline";
 
 import { Link } from "@/i18n/routing";
 import IcpInfo from "@/components/home/IcpInfo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import styles from "./design-a.module.css";
 import flow from "./flow.module.css";
 
@@ -36,11 +37,14 @@ export async function HeaderA({ current }: { current?: "home" | "projects" }) {
           {t("apiDoc")} <ArrowUpRightIcon />
         </a>
       </nav>
-      <Link href="/get-key" className={styles.lookup}>
-        <KeyIcon />
-        {t("getKey")}
-        <ArrowUpRightIcon />
-      </Link>
+      <div className={styles.headerTools}>
+        <Link href="/get-key" className={styles.lookup} aria-label={t("getKey")}>
+          <KeyIcon />
+          <span>{t("getKey")}</span>
+          <ArrowUpRightIcon />
+        </Link>
+        <LanguageSwitcher />
+      </div>
     </header>
   );
 }
@@ -77,6 +81,7 @@ export async function DashboardFrameA({ children }: { children: React.ReactNode 
           </span>
         </Link>
         <span className={flow.dashboardLabel}>DASHBOARD</span>
+        <LanguageSwitcher className={flow.dashboardLanguage} />
       </header>
       <main className={flow.wideMain}>{children}</main>
       <footer className={flow.dashboardFooter}>
@@ -94,12 +99,6 @@ export async function HeroA({ compact = false }: { compact?: boolean }) {
   const split = locale === "zh" ? title.indexOf(brand) + brand.length : -1;
   return (
     <div className={compact ? styles.compactHero : styles.hero}>
-      {compact && (
-        <span className={styles.eyebrow}>
-          <i />
-          MIRRORCHYAN / PROJECTS
-        </span>
-      )}
       <h1>
         {split > 0 ? (
           <>

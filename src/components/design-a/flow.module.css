@@ -35,10 +35,14 @@
   display: flex;
   align-items: center;
   gap: 24px;
-  min-height: 108px;
+  min-height: 96px;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 24px 36px 0;
+  padding: 20px 36px;
+}
+
+.dashboardLanguage {
+  margin-left: auto;
 }
 
 .dashboardLabel {
@@ -471,12 +475,11 @@
 @media (max-width: 600px) {
   .dashboardHeader {
     gap: 12px;
-    padding: 25px 20px 0;
+    padding: 18px 20px;
   }
 
   .dashboardLabel {
-    padding-left: 12px;
-    font-size: 12px;
+    display: none;
   }
 
   .frame > footer {

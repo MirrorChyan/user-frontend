@@ -14,6 +14,7 @@ import Exposure from "@/components/Exposure";
 import { Slot } from "@/config/group";
 import { groupOf } from "@/lib/group";
 import ProjectsA from "@/components/design-a/ProjectsA";
+import { LanguageToolbar } from "@/components/LanguageSwitcher";
 
 const GAME_TOOLS_TYPE_ID = "GameTools";
 const DEPENDENCIES_TYPE_ID = "Dependencies";
@@ -55,6 +56,7 @@ export default async function ProjectsPage({
         <OrderInfoModalWrapper />
         <DownloadModalWrapper />
       </Suspense>
+      <LanguageToolbar />
       <BackgroundLines className="min-h-screen">
         <div className="container mx-auto px-3 py-10">
           <HomeButton className="absolute" />

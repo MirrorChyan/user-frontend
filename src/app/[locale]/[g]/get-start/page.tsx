@@ -14,6 +14,7 @@ import HomeFooter from "@/components/home/HomeFooter";
 import { Slot } from "@/config/group";
 import { groupOf } from "@/lib/group";
 import HomeA from "@/components/design-a/HomeA";
+import { LanguageToolbar } from "@/components/LanguageSwitcher";
 
 export default async function GetStart({
   searchParams,
@@ -57,7 +58,8 @@ export default async function GetStart({
     <div className="relative" suppressHydrationWarning>
       <SourceTracker source={source} />
       <Exposure slot={Slot.PageGroup} />
-      <BackgroundBeamsWithCollision className="min-h-screen">
+      <LanguageToolbar />
+      <BackgroundBeamsWithCollision className="min-h-[calc(100svh-66px)]">
         <div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="px-6 py-12 sm:px-6 sm:py-8 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">

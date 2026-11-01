@@ -200,6 +200,10 @@ export default function ProjectsCatalogA({ projects }: { projects: ProjectCardPr
                 </Fragment>
               ))}
             </div>
+            <span className={styles.mobilePage} aria-live="polite">
+              {activePage}
+              <small> / {pages}</small>
+            </span>
             <button
               type="button"
               className={`${styles.pageStep} ${styles.nextPage}`}

@@ -10,7 +10,6 @@ import { routing } from "@/i18n/routing";
 import { Providers } from "./provider";
 
 import "@/app/globals.css";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 import OutdatedBrowserScript from "@/components/OutdatedBrowserScript";
 import PageviewTracker from "@/components/PageviewTracker";
 
@@ -67,10 +66,7 @@ var _hmt = _hmt || [];
       <body>
         <PageviewTracker />
         <Providers>
-          <NextIntlClientProvider messages={messages}>
-            <LanguageSwitcher />
-            {children}
-          </NextIntlClientProvider>
+          <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
         </Providers>
       </body>
     </html>

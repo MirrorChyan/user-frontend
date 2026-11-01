@@ -25,14 +25,43 @@
 .page a {
   -webkit-tap-highlight-color: transparent;
 }
+.homePage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+.homePage > header {
+  width: 100%;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+.homePage .homeMain {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 100%;
+  margin: 0 auto;
+}
+.homePage > footer {
+  width: calc(100% - 72px);
+  margin: 0 auto;
+  flex-shrink: 0;
+}
 .header {
   max-width: 1140px;
   margin: auto;
-  min-height: 108px;
-  padding: 24px 36px 0;
+  min-height: 96px;
+  padding: 20px 36px;
   display: flex;
   align-items: center;
   gap: 24px;
+}
+.headerTools {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 12px;
 }
 .brand {
   display: flex;
@@ -102,21 +131,6 @@
 .hero {
   text-align: center;
   padding-top: 36px;
-}
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #8a80c4;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-}
-.eyebrow i {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: currentColor;
 }
 .hero h1 {
   font-size: clamp(20px, 6.3vw, 48px);
@@ -379,15 +393,9 @@
   margin: auto;
   padding: 14px 36px 32px;
 }
-.breadcrumb {
-  display: flex;
-  gap: 10px;
-  font-size: 10px;
-  color: var(--a-muted);
-  margin: 5px 0 27px;
-}
 .projectsIntro {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 28px;
@@ -413,11 +421,22 @@
   margin-top: 15px;
 }
 .catalogTotal {
+  display: inline-flex;
+  align-items: baseline;
+  align-self: flex-start;
   flex-shrink: 0;
-  color: #958bbf;
-  font-size: 12px;
-  max-width: 180px;
-  text-align: right;
+  gap: 6px;
+  margin-top: 16px;
+  color: var(--a-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.catalogTotal strong {
+  color: var(--a-accent);
+  font-size: 36px;
+  font-weight: 650;
+  letter-spacing: -1px;
+  line-height: 1.1;
 }
 .categories {
   display: flex;
@@ -749,6 +768,9 @@
   padding-inline: 2px;
   color: var(--a-muted);
 }
+.mobilePage {
+  display: none;
+}
 .empty {
   padding: 50px 20px;
   text-align: center;
@@ -796,7 +818,11 @@
   padding: 19px 22px;
   margin-top: 30px;
 }
-.integration > span {
+.integration:hover {
+  border-color: var(--a-accent);
+  background: var(--a-soft);
+}
+.integration > span:first-child {
   width: 36px;
   height: 36px;
   background: var(--a-tint);
@@ -815,7 +841,7 @@
   color: var(--a-muted);
   margin-top: 5px;
 }
-.integration > a {
+.integrationAction {
   display: flex;
   align-items: center;
   gap: 18px;
@@ -824,7 +850,7 @@
   margin-left: auto;
   white-space: nowrap;
 }
-.integration > a svg {
+.integrationAction svg {
   width: 15px;
   height: 15px;
 }
@@ -859,10 +885,6 @@
   .header nav {
     gap: 20px;
     margin-right: 8px;
-  }
-  .catalogTotal {
-    max-width: 145px;
-    font-size: 11px;
   }
 }
 @media (max-width: 900px) {
@@ -931,9 +953,6 @@
   .compactHero p {
     font-size: 10px;
   }
-  .catalogTotal {
-    display: none;
-  }
   .projectGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
@@ -954,13 +973,23 @@
   }
 }
 @media (max-width: 600px) {
+  .homePage > footer {
+    width: calc(100% - 44px);
+  }
   .header {
-    min-height: 100px;
-    padding: 25px 22px 0;
+    min-height: 88px;
+    padding: 18px 22px;
     gap: 12px;
   }
   .brand {
     font-size: 20px;
+  }
+  .header .brand {
+    font-size: 18px;
+  }
+  .headerTools {
+    margin-left: auto;
+    gap: 8px;
   }
   .brandIcon {
     width: 35px;
@@ -971,16 +1000,21 @@
     display: none;
   }
   .lookup {
-    margin-left: auto;
+    justify-content: center;
+    min-width: 34px;
+    min-height: 34px;
     font-size: 10px;
-    padding: 9px 10px;
+    padding: 8px;
+  }
+  .lookup > span {
+    display: none;
   }
   .lookup svg:last-child {
     display: none;
   }
   .lookup svg {
-    width: 13px;
-    height: 13px;
+    width: 16px;
+    height: 16px;
   }
   .homeMain {
     padding: 0 22px 29px;
@@ -1035,9 +1069,6 @@
     grid-template-columns: 1fr auto;
     align-items: center;
     gap: 17px 10px;
-  }
-  .popularPlan {
-    order: -1;
   }
   .planSymbol {
     margin: 0;
@@ -1116,14 +1147,6 @@
   .projectsMain {
     padding: 8px 22px 28px;
   }
-  .breadcrumb {
-    font-size: 9px;
-    margin: 5px 0 24px;
-  }
-  .compactHero .eyebrow {
-    font-size: 7px;
-    letter-spacing: 1.2px;
-  }
   .compactHero h1 {
     font-size: clamp(20px, 6.3vw, 32px);
     letter-spacing: -1px;
@@ -1138,7 +1161,15 @@
     margin-top: 16px;
   }
   .projectsIntro {
+    gap: 18px;
     margin-bottom: 28px;
+  }
+  .catalogTotal {
+    margin-top: 0;
+    font-size: 13px;
+  }
+  .catalogTotal strong {
+    font-size: 28px;
   }
   .categories {
     gap: 3px;
@@ -1233,23 +1264,38 @@
   }
   .pagination {
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
     font-size: 11px;
     margin-top: 24px;
-    padding: 18px 14px;
+    padding: 18px 0 0;
+    border: 0;
+    border-top: 1px solid var(--a-border);
+    border-radius: 0;
+    background: none;
   }
   .paginationControls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     width: 100%;
-    flex-wrap: wrap;
+    gap: 10px;
   }
   .pageNumbers {
-    order: -1;
-    flex-basis: 100%;
-    gap: 4px;
-    margin-bottom: 4px;
+    display: none;
   }
-  .pageGap {
-    padding-inline: 0;
+  .mobilePage {
+    display: inline-flex;
+    justify-content: center;
+    align-items: baseline;
+    min-width: 46px;
+    color: var(--a-ink);
+    font-size: 14px;
+    font-weight: 600;
+    white-space: pre;
+  }
+  .mobilePage small {
+    color: var(--a-muted);
+    font-size: 12px;
+    font-weight: 400;
   }
   .pagination button {
     min-width: 36px;
@@ -1257,15 +1303,16 @@
     font-size: 12px;
   }
   .pagination .pageStep {
-    flex: 1;
-    padding-inline: 12px;
+    gap: 6px;
+    min-height: 40px;
+    padding-inline: 8px;
   }
   .integration {
     padding: 17px;
     gap: 11px;
     margin-top: 27px;
   }
-  .integration > span {
+  .integration > span:first-child {
     width: 31px;
     height: 31px;
   }
@@ -1275,9 +1322,14 @@
   .integration p {
     font-size: 9px;
   }
-  .integration > a {
+  .integrationAction {
     font-size: 10px;
     gap: 7px;
+  }
+}
+@media (max-width: 360px) {
+  .pagination .pageStep svg {
+    display: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {

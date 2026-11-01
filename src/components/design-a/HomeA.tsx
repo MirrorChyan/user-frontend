@@ -24,7 +24,7 @@ export default async function HomeA({
   const appCount = projects.length - (projects.length % 5);
   const featuredProjects = projects.filter(project => project.image).slice(0, 6);
   return (
-    <div className={styles.page} data-page-design="a">
+    <div className={`${styles.page} ${styles.homePage}`} data-page-design="a">
       <HeaderA current="home" />
       <main className={styles.homeMain}>
         <HeroA />

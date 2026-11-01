@@ -109,7 +109,16 @@ export async function HeroA({ compact = false }: { compact?: boolean }) {
           title
         )}
       </h1>
-      <p>{t.rich("description", { br: () => <br /> })}</p>
+      <p>
+        {t.rich("description", {
+          br: () => (
+            <>
+              {locale === "en" && " "}
+              <br className={styles.descriptionBreak} />
+            </>
+          ),
+        })}
+      </p>
     </div>
   );
 }

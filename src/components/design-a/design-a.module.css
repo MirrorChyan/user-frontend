@@ -17,7 +17,8 @@
   height: 18px;
   flex-shrink: 0;
 }
-.page :is(a, button, input, select):focus-visible {
+/* HeroUI inputs draw focus on their wrapper, not the inner native input. */
+.page :is(a, button, input, select):where(:not(input[data-slot="input"])):focus-visible {
   outline: 2px solid #9d8ee9;
   outline-offset: 4px;
 }
@@ -1032,6 +1033,13 @@
     font-size: 13px;
     line-height: 1.9;
     margin-top: 24px;
+  }
+  .hero p,
+  .compactHero p {
+    text-wrap: balance;
+  }
+  .descriptionBreak {
+    display: none;
   }
   .projectBanner {
     flex-direction: column;

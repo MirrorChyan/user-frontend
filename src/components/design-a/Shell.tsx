@@ -4,8 +4,9 @@ import { ArrowUpRightIcon, KeyIcon } from "@heroicons/react/24/outline";
 import { Link } from "@/i18n/routing";
 import IcpInfo from "@/components/home/IcpInfo";
 import styles from "./design-a.module.css";
+import flow from "./flow.module.css";
 
-export async function HeaderA({ current }: { current: "home" | "projects" }) {
+export async function HeaderA({ current }: { current?: "home" | "projects" }) {
   const t = await getTranslations("GetStart");
   const a = await getTranslations("LayoutA");
   const locale = await getLocale();
@@ -41,6 +42,23 @@ export async function HeaderA({ current }: { current: "home" | "projects" }) {
         <ArrowUpRightIcon />
       </Link>
     </header>
+  );
+}
+
+/** Shared frame for user flows that are outside the homepage/catalog experiment. */
+export function PageFrameA({
+  children,
+  wide = false,
+}: {
+  children: React.ReactNode;
+  wide?: boolean;
+}) {
+  return (
+    <div className={`${styles.page} ${flow.frame}`}>
+      <HeaderA />
+      <main className={wide ? flow.wideMain : flow.main}>{children}</main>
+      <FooterA />
+    </div>
   );
 }
 

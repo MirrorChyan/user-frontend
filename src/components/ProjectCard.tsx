@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "@/components/design-a/flow.module.css";
+
 import { useMemo, useState } from "react";
 import {
   Button,
@@ -532,7 +534,9 @@ export default function ProjectCard(props: ProjectCardProps & { appearance?: "cl
         scrollBehavior="inside"
         classNames={{
           wrapper: "sm:items-center",
-          base: "max-sm:my-2 max-sm:mx-2 max-sm:max-h-[calc(100vh-1rem)] max-sm:h-[calc(100vh-1rem)]",
+          base: `${styles.dialog} max-sm:my-2 max-sm:mx-2 max-sm:max-h-[calc(100vh-1rem)] max-sm:h-[calc(100vh-1rem)]`,
+          header: styles.dialogHeader,
+          body: styles.dialogBody,
         }}
       >
         <ModalContent>
@@ -895,11 +899,10 @@ export default function ProjectCard(props: ProjectCardProps & { appearance?: "cl
             <ModalFooter>
               {downloadStarted ? (
                 <Button
-                  color="primary"
+                  className={`${styles.primary} w-full`}
                   onPress={() => {
                     setDownloadStarted(false);
                   }}
-                  className="w-full"
                 >
                   {common("close")}
                 </Button>
@@ -909,14 +912,14 @@ export default function ProjectCard(props: ProjectCardProps & { appearance?: "cl
                     {common("cancel")}
                   </Button>
                   <Button
-                    color="secondary"
+                    className={styles.secondary}
                     onPress={handleShare}
                     isLoading={loading.loading && loading.type === "Share"}
                   >
                     {t("shareLink")}
                   </Button>
                   <Button
-                    color="primary"
+                    className={styles.primary}
                     onPress={handleDownload}
                     isLoading={loading.loading && loading.type === "Download"}
                   >

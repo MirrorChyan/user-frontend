@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "@/components/design-a/flow.module.css";
+
 import {
   Accordion,
   AccordionItem,
@@ -112,7 +114,7 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
     }, []);
 
     return (
-      <div className="border-b border-gray-100 px-6 py-4 dark:border-gray-700">
+      <div className="px-6 py-4">
         <Accordion className="px-0">
           <AccordionItem
             key="renewal"
@@ -142,7 +144,15 @@ const RenewalCdkInput = forwardRef<RenewalCdkInputRef, RenewalCdkInputProps>(
         </Accordion>
 
         {errorModalOpen && (
-          <Modal isOpen={errorModalOpen} onClose={handleCloseErrorModal}>
+          <Modal
+            isOpen={errorModalOpen}
+            onClose={handleCloseErrorModal}
+            classNames={{
+              base: styles.dialog,
+              header: styles.dialogHeader,
+              body: styles.dialogBody,
+            }}
+          >
             <ModalContent>
               <ModalHeader className="flex flex-col gap-1">{t("cdkValidationError")}</ModalHeader>
               <ModalBody>

@@ -1,3 +1,4 @@
+import styles from "@/components/design-a/flow.module.css";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { CheckCircle, Gift, Layers, MessageCircle, TrendingUp } from "lucide-react";
 import { OrderInfoType } from "@/components/checkout/QRCodePayModal";
@@ -115,10 +116,7 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
           {info.is_renewal ? t("renewalSuccess") : t("thanksForBuying")}
         </h4>
         <p className="mb-2 text-base text-gray-600 dark:text-gray-300">{t("yourKey")}</p>
-        <div
-          className="mb-4 flex items-center justify-between rounded-lg bg-gray-50 p-4 dark:bg-gray-700"
-          onClick={copyToClipboard}
-        >
+        <div className={styles.keyBox} onClick={copyToClipboard}>
           <span className="cursor-pointer font-mono text-indigo-600 select-all dark:text-indigo-400">
             {info.cdk}
           </span>
@@ -176,18 +174,12 @@ export default function ShowKeyInfo(props: { info?: OrderInfoType }) {
           <span className="text-sm text-gray-500 dark:text-gray-400">{t("lostCDK")}</span>
         </div>
         <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-          <button
-            onClick={handleJoinQQGroup}
-            className="flex items-center justify-center rounded-lg bg-indigo-50 px-6 py-3 text-indigo-600 transition-colors hover:bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-800/50"
-          >
+          <button onClick={handleJoinQQGroup} className={styles.secondary}>
             <MessageCircle className="mr-2 h-5 w-5" />
             <span>{t("joinQQGroup")}</span>
           </button>
 
-          <button
-            onClick={handleViewProjects}
-            className="flex items-center justify-center rounded-lg bg-emerald-50 px-6 py-3 text-emerald-600 transition-colors hover:bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 dark:hover:bg-emerald-800/50"
-          >
+          <button onClick={handleViewProjects} className={styles.primary}>
             <Layers className="mr-2 h-5 w-5" />
             <span>{t("viewProjects")}</span>
           </button>

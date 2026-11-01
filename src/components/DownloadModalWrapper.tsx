@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "@/components/design-a/flow.module.css";
+
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
@@ -83,6 +85,7 @@ export default function DownloadModalWrapper() {
       size="2xl"
       placement="center"
       scrollBehavior="inside"
+      classNames={{ base: styles.dialog, body: styles.dialogBody }}
     >
       <ModalContent>
         <>
@@ -219,7 +222,7 @@ export default function DownloadModalWrapper() {
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onPress={handleCloseModal} className="w-full">
+            <Button onPress={handleCloseModal} className={`${styles.primary} w-full`}>
               {common("close")}
             </Button>
           </ModalFooter>

@@ -1,3 +1,4 @@
+import styles from "@/components/design-a/flow.module.css";
 import { CreditCard } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { PlanInfoDetail } from "@/app/[locale]/[g]/checkout/Checkout";
@@ -20,8 +21,8 @@ export default function PaymentMethodSelector({
   const t = useTranslations("Checkout");
   const locale = useLocale();
   return (
-    <div className="p-6">
-      <h3 className="mb-4 flex items-center text-xl font-semibold text-gray-900 dark:text-white">
+    <div className={styles.section}>
+      <h3 className={styles.sectionTitle}>
         <CreditCard className="mr-2 h-5 w-5 text-indigo-600" />
         {t("paymentMethod")}
       </h3>

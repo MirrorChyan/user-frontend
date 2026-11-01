@@ -1,3 +1,4 @@
+import styles from "@/components/design-a/flow.module.css";
 import { Button } from "@heroui/react";
 import { ArrowLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -7,8 +8,8 @@ export default function NoOrder() {
   const t = useTranslations("Checkout");
   const router = useRouter();
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-md rounded-xl bg-white p-8 text-center shadow-lg dark:bg-gray-800">
+    <div className={styles.center}>
+      <div className={`${styles.formCard} text-center`}>
         <div className="mb-4 text-red-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -27,10 +28,7 @@ export default function NoOrder() {
         </div>
         <h2 className="mb-4 text-2xl font-bold">{t("invalidOrder") || "无效订单"}</h2>
         <p className="mb-6 text-gray-600 dark:text-gray-300">{t("incompleteOrder")}</p>
-        <Button
-          onPress={() => router.push("/get-start")}
-          className="mx-auto flex items-center justify-center rounded-full bg-indigo-600 px-6 py-2 font-medium text-white hover:bg-indigo-700"
-        >
+        <Button onPress={() => router.push("/get-start")} className={styles.primary}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           {t("backToPlans")}
         </Button>

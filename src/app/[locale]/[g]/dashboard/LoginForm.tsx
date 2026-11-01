@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { ChartBarIcon } from "@heroicons/react/24/outline";
+import styles from "@/components/design-a/flow.module.css";
 import { useTranslations } from "next-intl";
 import { Button, Input, Tooltip } from "@heroui/react";
 import { ComputerDesktopIcon } from "@heroicons/react/16/solid";
@@ -83,23 +85,20 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <div className="min-w-[40vw] text-center">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-center text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
-            {t("title")}
-          </h2>
+    <div className={styles.center}>
+      <div className={styles.formCard}>
+        <div>
+          <div className={styles.formIcon}>
+            <ChartBarIcon />
+          </div>
+          <h1 className={styles.title}>{t("title")}</h1>
 
-          <form
-            className="mt-12 flex flex-col gap-5 text-lg leading-8 text-gray-600 dark:text-gray-400"
-            onSubmit={onSubmit}
-            autoComplete="off"
-          >
+          <form className={styles.form} onSubmit={onSubmit} autoComplete="off">
             <YearMonthPicker onChange={handleMonthChange} />
 
             <div className="flex h-14 items-center gap-2">
               <div className="flex-grow">
-                <Input label={t("rid")} name="rid" type="text" />
+                <Input variant="bordered" label={t("rid")} name="rid" type="text" />
               </div>
 
               <Tooltip content={t("tooltip")}>
@@ -107,6 +106,8 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
                   <button
                     type="button"
                     onClick={toggleUa}
+                    aria-label={t("tooltip")}
+                    aria-pressed={isUa}
                     className={`mr-1 flex h-full w-14 items-center justify-center rounded-md transition-colors ${isUa ? "bg-indigo-100 dark:bg-indigo-900" : "bg-gray-100 dark:bg-gray-800"} `}
                   >
                     <ComputerDesktopIcon
@@ -117,13 +118,15 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
               </Tooltip>
             </div>
 
-            <Input label={t("token")} name="token" type="password" autoComplete="off" />
+            <Input
+              variant="bordered"
+              label={t("token")}
+              name="token"
+              type="password"
+              autoComplete="off"
+            />
 
-            <Button
-              type="submit"
-              isLoading={isLoading}
-              className="mt-6 flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-            >
+            <Button type="submit" isLoading={isLoading} className={styles.primary}>
               {t("confirm")}
             </Button>
           </form>

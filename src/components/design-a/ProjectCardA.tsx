@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRightIcon, ArrowUpRightIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+import { ArrowUpRightIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 
 import type { ProjectCardProps } from "@/components/ProjectCard";
@@ -60,19 +60,6 @@ export default function ProjectCardA({
         ))}
       </div>
       <div className={styles.cardActions}>
-        {project.download ? (
-          <button type="button" className={styles.detailAction} onClick={onOpen}>
-            {a("viewDetails")}
-            <ArrowRightIcon />
-          </button>
-        ) : project.url ? (
-          <a className={styles.detailAction} href={project.url} target="_blank" rel="noreferrer">
-            {a("viewDetails")}
-            <ArrowUpRightIcon />
-          </a>
-        ) : (
-          <span />
-        )}
         <button
           type="button"
           className={styles.downloadAction}

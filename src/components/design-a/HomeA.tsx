@@ -20,8 +20,10 @@ export default async function HomeA({
   children?: React.ReactNode;
 }) {
   const t = await getTranslations("GetStart");
+  const p = await getTranslations("ShowKey");
   const projects = await getProjects();
   const appCount = projects.length - (projects.length % 5);
+  const featuredProjects = projects.filter(project => project.image).slice(0, 6);
   return (
     <div className={styles.page} data-page-design="a">
       <HeaderA current="home" />
@@ -29,24 +31,18 @@ export default async function HomeA({
         <HeroA />
         {children}
         <Link href="/projects" className={styles.projectBanner}>
-          <span className={styles.avatars}>
-            {projects
-              .slice(0, 5)
-              .map(
-                project =>
-                  project.image && (
-                    <img
-                      key={project.resource}
-                      src={project.image}
-                      alt={project.name}
-                      width="28"
-                      height="28"
-                    />
-                  )
-              )}
+          <span className={styles.bannerLead}>
+            <span className={styles.avatars}>
+              {featuredProjects.map(project => (
+                <img key={project.resource} src={project.image} alt="" width="40" height="40" />
+              ))}
+            </span>
+            <span className={styles.bannerCopy}>{t("viewProjects", { appCount })}</span>
           </span>
-          <span>{t("viewProjects", { appCount })}</span>
-          <ArrowRightIcon />
+          <span className={styles.bannerCta}>
+            <span>{p("viewProjects")}</span>
+            <ArrowRightIcon aria-hidden="true" />
+          </span>
         </Link>
         <PlansA homePlans={homePlans} morePlans={morePlans} C2URate={C2URate} />
         <ShortcutsA />

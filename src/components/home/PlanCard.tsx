@@ -27,10 +27,12 @@ export default function PlanCard({ plan, C2URate, appearance = "classic" }: Prop
   if (appearance === "a") {
     return (
       <article className={`${styles.planCard} ${plan.popular ? styles.popularPlan : ""}`}>
-        <div className={styles.planSymbol}>
-          <CalendarDaysIcon aria-hidden="true" />
+        <div className={styles.planHeading}>
+          <div className={styles.planSymbol}>
+            <CalendarDaysIcon aria-hidden="true" />
+          </div>
+          <h3 id={plan.plan_id}>{planName}</h3>
         </div>
-        <h3 id={plan.plan_id}>{planName}</h3>
         <p className={styles.planPrice}>
           <span>{t("priceSymbol")}</span>
           <strong>{price}</strong>

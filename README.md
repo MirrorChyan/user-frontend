@@ -67,6 +67,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 正式页面共用现有套餐和项目 API，不使用 demo 的固定价格或目录快照。slogan、产品介绍、项目名称 / 简介及原有中英文翻译保持不变；`LayoutA` 仅增加搜索、分类、筛选、分页等操作标签。新版下载卡片复用 `ProjectCard` 的真实下载 / 分享 / CDK 弹窗及 `rid / os / arch / channel` 深链接。
 
+实验组首页的中文主标题保持单行，两行产品介绍提高字号；应用入口与套餐区对齐，并扩大区块间距。Projects 卡片整体可点击，保留单个下载入口与独立官网链接；分页提供带文字的上一页 / 下一页按钮、当前页高亮及页码跳转。
+
 本地开发预览：
 
 - 对照组：`/zh/get-start?_g=a`、`/zh/projects?_g=a`。

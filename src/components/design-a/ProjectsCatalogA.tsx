@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import {
@@ -51,6 +51,9 @@ export default function ProjectsCatalogA({ projects }: { projects: ProjectCardPr
   }, [projects, query, category, system]);
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const activePage = Math.min(page, pages);
+  const pageNumbers = [...new Set([1, activePage - 1, activePage, activePage + 1, pages])]
+    .filter(value => value >= 1 && value <= pages)
+    .sort((left, right) => left - right);
   const visible = filtered.slice((activePage - 1) * PAGE_SIZE, activePage * PAGE_SIZE);
   const linkedProject = projects.find(
     project =>
@@ -160,31 +163,51 @@ export default function ProjectsCatalogA({ projects }: { projects: ProjectCardPr
       )}
       {filtered.length > 0 && (
         <nav className={styles.pagination} aria-label={a("pagination")}>
-          <span>
+          <span aria-live="polite">
             {a("showing", {
               start: (activePage - 1) * PAGE_SIZE + 1,
               end: Math.min(activePage * PAGE_SIZE, filtered.length),
               total: filtered.length,
             })}
           </span>
-          <div>
+          <div className={styles.paginationControls}>
             <button
               type="button"
+              className={styles.pageStep}
               aria-label={a("previousPage")}
               disabled={activePage <= 1}
               onClick={() => changePage(activePage - 1)}
             >
               <ArrowLeftIcon />
+              {a("previousPage")}
             </button>
-            <span>
-              {activePage} <small>/ {pages}</small>
-            </span>
+            <div className={styles.pageNumbers}>
+              {pageNumbers.map((number, index) => (
+                <Fragment key={number}>
+                  {index > 0 && number - pageNumbers[index - 1] > 1 && (
+                    <span className={styles.pageGap} aria-hidden="true">
+                      …
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    aria-label={a("pageNumber", { page: number })}
+                    aria-current={number === activePage ? "page" : undefined}
+                    onClick={() => changePage(number)}
+                  >
+                    {number}
+                  </button>
+                </Fragment>
+              ))}
+            </div>
             <button
               type="button"
+              className={`${styles.pageStep} ${styles.nextPage}`}
               aria-label={a("nextPage")}
               disabled={activePage >= pages}
               onClick={() => changePage(activePage + 1)}
             >
+              {a("nextPage")}
               <ArrowRightIcon />
             </button>
           </div>

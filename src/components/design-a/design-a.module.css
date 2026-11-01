@@ -101,7 +101,7 @@
 }
 .hero {
   text-align: center;
-  padding-top: 26px;
+  padding-top: 36px;
 }
 .eyebrow {
   display: inline-flex;
@@ -118,30 +118,29 @@
   border-radius: 50%;
   background: currentColor;
 }
-.hero > .eyebrow {
-  padding: 6px 13px;
-  border: 1px solid #eee9fc;
-  background: var(--a-tint);
-  border-radius: 30px;
-}
 .hero h1 {
-  font-size: 53px;
-  font-weight: 650;
-  letter-spacing: -1.8px;
-  line-height: 1.35;
+  font-size: clamp(20px, 6.3vw, 48px);
+  font-weight: 600;
+  letter-spacing: -1.2px;
+  line-height: 1.25;
   max-width: 690px;
-  margin: 22px auto 0;
+  margin: 0 auto;
   text-wrap: balance;
 }
+.hero h1:lang(zh) {
+  max-width: none;
+  white-space: nowrap;
+}
 .hero h1 > span {
-  display: block;
+  display: inline;
+  margin-left: 0.1em;
   color: var(--a-accent);
 }
 .hero p {
-  font-size: 13px;
-  line-height: 2;
+  font-size: 16px;
+  line-height: 1.9;
   color: var(--a-muted);
-  margin: 19px auto 0;
+  margin: 24px auto 0;
   max-width: 720px;
 }
 .homeMain {
@@ -152,45 +151,76 @@
 .projectBanner {
   display: flex;
   align-items: center;
-  gap: 12px;
-  width: fit-content;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
   max-width: 100%;
-  margin: 23px auto 0;
-  padding: 8px 13px 8px 10px;
+  min-height: 88px;
+  margin: 40px auto 0;
+  padding: 22px 24px;
   border: 1px solid var(--a-border);
-  border-radius: 30px;
-  font-size: 11px;
-  color: var(--a-muted);
+  border-radius: 14px;
+  color: var(--a-ink);
+  background: linear-gradient(110deg, var(--a-tint), var(--a-bg));
+  transition:
+    border-color 150ms,
+    box-shadow 150ms;
 }
 .projectBanner:hover {
-  background: var(--a-tint);
+  border-color: var(--a-accent);
+  box-shadow: 0 4px 16px rgb(88 75 217 / 6%);
 }
-.projectBanner > svg {
-  width: 14px;
-  height: 14px;
-  color: var(--a-accent);
+.bannerLead {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  min-width: 0;
+}
+.bannerCopy {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.6;
+  text-wrap: balance;
+}
+.bannerCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 42px;
+  padding: 10px 16px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #584bd9;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 550;
+}
+.bannerCta svg {
+  width: 17px;
+  height: 17px;
 }
 .avatars {
   display: flex;
-  padding-left: 6px;
+  gap: 6px;
   flex-shrink: 0;
 }
 .avatars img {
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   object-fit: cover;
+  flex-shrink: 0;
   border: 2px solid var(--a-bg);
-  border-radius: 50%;
-  margin-left: -6px;
+  border-radius: 10px;
   background: var(--a-soft);
 }
 .plans {
-  margin-top: 39px;
+  margin-top: 32px;
 }
 .planGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 24px;
 }
 .planCard {
   display: flex;
@@ -198,7 +228,7 @@
   min-width: 0;
   border: 1px solid var(--a-border);
   border-radius: 14px;
-  padding: 26px;
+  padding: 24px;
   background: var(--a-bg);
   box-shadow: 0 4px 18px #33395903;
 }
@@ -215,7 +245,11 @@
   color: #9c96b9;
   background: var(--a-soft);
   border-radius: 9px;
-  margin-bottom: 23px;
+}
+.planHeading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 .planSymbol svg {
   width: 21px;
@@ -226,12 +260,12 @@
   background: var(--a-tint);
 }
 .planCard h3 {
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 550;
   line-height: 1.7;
 }
 .planPrice {
-  margin: 26px 0 27px;
+  margin: 22px 0 26px;
   display: flex;
   align-items: baseline;
   gap: 6px;
@@ -241,9 +275,9 @@
   font-size: 19px;
 }
 .planPrice strong {
-  font-size: 43px;
-  font-weight: 600;
-  letter-spacing: -1.8px;
+  font-size: 40px;
+  font-weight: 550;
+  letter-spacing: -1.2px;
   line-height: 1.2;
 }
 .planPrice del {
@@ -287,7 +321,7 @@
   font-size: 12px;
 }
 .shortcuts {
-  margin-top: 35px;
+  margin-top: 40px;
   display: flex;
   align-items: center;
   gap: 23px;
@@ -375,11 +409,14 @@
   margin-bottom: 34px;
 }
 .compactHero h1 {
-  font-size: 35px;
+  font-size: clamp(20px, 6.3vw, 35px);
   font-weight: 650;
   letter-spacing: -1.2px;
   line-height: 1.4;
   margin-top: 13px;
+}
+.compactHero h1:lang(zh) {
+  white-space: nowrap;
 }
 .compactHero h1 > span {
   color: var(--a-accent);
@@ -515,6 +552,8 @@
   gap: 16px;
 }
 .projectCard {
+  position: relative;
+  isolation: isolate;
   border: 1px solid var(--a-border);
   background: var(--a-bg);
   border-radius: 12px;
@@ -570,6 +609,8 @@
   margin-top: 5px;
 }
 .projectWebsite {
+  position: relative;
+  z-index: 2;
   margin-left: auto;
   align-self: flex-start;
   color: var(--a-muted);
@@ -613,23 +654,11 @@
 .cardActions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 10px;
   margin-top: auto;
   padding: 13px 0;
   border-top: 1px solid var(--a-border);
-}
-.detailAction {
-  padding: 0;
-  color: var(--a-muted);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 10px;
-}
-.detailAction svg {
-  width: 13px;
-  height: 13px;
 }
 .downloadAction {
   display: inline-flex;
@@ -642,12 +671,28 @@
   border: 1px solid #e7e0fa;
   color: var(--a-accent);
   background: var(--a-tint);
+  cursor: pointer;
+}
+/* One native button covers the card; the project website remains a separate link. */
+.downloadAction::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 12px;
+}
+.downloadAction:focus-visible {
+  outline: none;
+}
+.downloadAction:focus-visible::after {
+  outline: 2px solid var(--a-accent);
+  outline-offset: 4px;
 }
 .downloadAction svg {
   width: 14px;
   height: 14px;
 }
-.downloadAction:hover {
+.projectCard:hover .downloadAction {
   background: var(--a-accent);
   border-color: var(--a-accent);
   color: #fff;
@@ -656,41 +701,68 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  font-size: 10px;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-size: 12px;
   color: var(--a-muted);
-  margin-top: 24px;
+  margin-top: 28px;
+  padding: 20px;
+  border: 1px solid var(--a-border);
+  border-radius: 12px;
+  background: var(--a-soft);
 }
-.pagination > div {
+.paginationControls,
+.pageNumbers {
   display: flex;
   align-items: center;
-  gap: 13px;
+  justify-content: center;
+  gap: 8px;
 }
 .pagination button {
   border: 1px solid var(--a-border);
-  border-radius: 5px;
-  width: 29px;
-  height: 27px;
-  display: grid;
-  place-content: center;
+  border-radius: 8px;
+  min-width: 42px;
+  min-height: 44px;
+  padding: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   background: var(--a-bg);
   color: var(--a-accent);
+  font-size: 13px;
+  font-weight: 550;
+  cursor: pointer;
 }
 .pagination button svg {
-  width: 13px;
-  height: 13px;
+  width: 16px;
+  height: 16px;
 }
 .pagination button:disabled {
-  opacity: 0.3;
-  cursor: default;
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 .pagination button:not(:disabled):hover {
   background: var(--a-tint);
+  border-color: var(--a-accent);
 }
-.pagination small {
-  font-size: 10px;
-  opacity: 0.7;
-  margin-left: 4px;
+.pagination .pageStep {
+  padding-inline: 15px;
+}
+.pagination button[aria-current="page"],
+.pagination .nextPage {
+  color: #fff;
+  background: #584bd9;
+  border-color: #584bd9;
+}
+.pagination button[aria-current="page"]:hover,
+.pagination .nextPage:not(:disabled):hover {
+  background: #493cc6;
+  border-color: #493cc6;
+}
+.pageGap {
+  padding-inline: 2px;
+  color: var(--a-muted);
 }
 .empty {
   padding: 50px 20px;
@@ -839,11 +911,17 @@
     padding-left: 25px;
     padding-right: 25px;
   }
-  .hero h1 {
-    font-size: 46px;
+  .bannerLead {
+    gap: 18px;
+  }
+  .avatars img:nth-child(n + 5) {
+    display: none;
+  }
+  .bannerCopy {
+    font-size: 16px;
   }
   .hero p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .planGrid {
     gap: 14px;
@@ -866,7 +944,7 @@
     padding-right: 25px;
   }
   .compactHero h1 {
-    font-size: 31px;
+    font-size: clamp(20px, 6.3vw, 31px);
   }
   .compactHero p {
     font-size: 10px;
@@ -928,37 +1006,63 @@
   .hero {
     padding-top: 25px;
   }
-  .hero > .eyebrow {
-    font-size: 8px;
-    padding: 5px 10px;
-  }
   .hero h1 {
-    font-size: 38px;
-    letter-spacing: -1.2px;
-    margin-top: 21px;
+    font-size: clamp(20px, 6.3vw, 34px);
+    letter-spacing: -0.7px;
+    margin-top: 0;
     line-height: 1.4;
   }
   .hero p {
-    font-size: 11px;
-    line-height: 2;
-    margin-top: 17px;
+    font-size: 13px;
+    line-height: 1.9;
+    margin-top: 24px;
   }
   .projectBanner {
-    gap: 8px;
-    font-size: 10px;
-    padding: 7px 11px;
-    margin-top: 21px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 18px 12px;
+    padding: 18px 16px;
+    margin-top: 32px;
+    min-height: 0;
+    border-radius: 14px;
+  }
+  .bannerLead {
+    display: contents;
+  }
+  .bannerCopy {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 17px;
+  }
+  .avatars {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    gap: 6px;
+  }
+  .bannerCta {
+    grid-row: 1;
+    padding: 0;
+    width: 36px;
+    min-height: 36px;
+  }
+  .bannerCta > span {
+    display: none;
   }
   .avatars img {
-    width: 24px;
-    height: 24px;
+    display: block;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+  }
+  .avatars img:nth-child(n + 5) {
+    display: block;
   }
   .plans {
-    margin-top: 29px;
+    margin-top: 24px;
   }
   .planGrid {
     grid-template-columns: 1fr;
-    gap: 13px;
+    gap: 16px;
   }
   .planCard {
     padding: 21px;
@@ -971,11 +1075,14 @@
     order: -1;
   }
   .planSymbol {
-    grid-column: 1 / -1;
     margin: 0;
     width: 29px;
     height: 29px;
     border-radius: 7px;
+  }
+  .planHeading {
+    grid-column: 1;
+    gap: 10px;
   }
   .planSymbol svg {
     width: 18px;
@@ -983,7 +1090,6 @@
   }
   .planCard h3 {
     font-size: 15px;
-    grid-column: 1;
   }
   .planPrice {
     grid-column: 2;
@@ -1006,7 +1112,7 @@
     padding: 11px 13px;
   }
   .shortcuts {
-    margin-top: 26px;
+    margin-top: 32px;
     padding: 17px;
     flex-wrap: wrap;
     gap: 17px;
@@ -1054,12 +1160,12 @@
     letter-spacing: 1.2px;
   }
   .compactHero h1 {
-    font-size: 32px;
+    font-size: clamp(20px, 6.3vw, 32px);
     letter-spacing: -1px;
     margin-top: 14px;
   }
   .compactHero h1 > span {
-    display: block;
+    display: inline;
   }
   .compactHero p {
     font-size: 10px;
@@ -1160,22 +1266,34 @@
     font-size: 11px;
     padding: 8px 12px;
   }
-  .detailAction {
-    font-size: 10px;
-  }
   .pagination {
-    font-size: 9px;
-    margin-top: 21px;
+    flex-direction: column;
+    gap: 16px;
+    font-size: 11px;
+    margin-top: 24px;
+    padding: 18px 14px;
   }
-  .pagination > div {
-    gap: 10px;
+  .paginationControls {
+    width: 100%;
+    flex-wrap: wrap;
   }
-  .pagination small {
-    font-size: 9px;
+  .pageNumbers {
+    order: -1;
+    flex-basis: 100%;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  .pageGap {
+    padding-inline: 0;
   }
   .pagination button {
-    width: 27px;
-    height: 26px;
+    min-width: 36px;
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+  .pagination .pageStep {
+    flex: 1;
+    padding-inline: 12px;
   }
   .integration {
     padding: 17px;
@@ -1198,7 +1316,8 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .projectCard {
+  .projectCard,
+  .projectBanner {
     transition: none;
   }
 }

@@ -94,10 +94,12 @@ export async function HeroA({ compact = false }: { compact?: boolean }) {
   const split = locale === "zh" ? title.indexOf(brand) + brand.length : -1;
   return (
     <div className={compact ? styles.compactHero : styles.hero}>
-      <span className={styles.eyebrow}>
-        <i />
-        MIRRORCHYAN{compact ? " / PROJECTS" : ""}
-      </span>
+      {compact && (
+        <span className={styles.eyebrow}>
+          <i />
+          MIRRORCHYAN / PROJECTS
+        </span>
+      )}
       <h1>
         {split > 0 ? (
           <>

@@ -337,6 +337,7 @@
     "noResultsHint": "Try another keyword, category, or system.",
     "clearFilters": "Clear filters",
     "pagination": "Project pagination",
+    "pageNumber": "Page {page}",
     "previousPage": "Previous page",
     "nextPage": "Next page",
     "showing": "Showing {start}–{end} of {total} projects"

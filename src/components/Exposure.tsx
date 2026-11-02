@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { usePathname } from "next/navigation";
-
 import { ExposureScope, GROUP_COOKIE, SLOTS, type Slot } from "@/config/group";
 import { track } from "@/lib/analytics";
 import { exposureOf } from "@/lib/group";
+import { usePathname } from "@/i18n/routing";
 
 const reported = new Set<string>();
 

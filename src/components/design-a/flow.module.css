@@ -11,11 +11,6 @@
   width: calc(100% - 72px);
 }
 
-.frame :global(.recharts-surface) {
-  width: 100%;
-  height: 100%;
-}
-
 .main,
 .wideMain {
   width: 100%;

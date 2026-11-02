@@ -15,9 +15,7 @@ import { Slot } from "@/config/group";
 import { groupOf } from "@/lib/group";
 import ProjectsA from "@/components/design-a/ProjectsA";
 import { LanguageToolbar } from "@/components/LanguageSwitcher";
-
-const GAME_TOOLS_TYPE_ID = "GameTools";
-const DEPENDENCIES_TYPE_ID = "Dependencies";
+import { DEPENDENCIES_TYPE_ID, GAME_TOOLS_TYPE_ID, listedProjects } from "@/lib/utils/project";
 
 export default async function ProjectsPage({
   searchParams,
@@ -43,7 +41,7 @@ export default async function ProjectsPage({
           <OrderInfoModalWrapper />
           <DownloadModalWrapper />
         </Suspense>
-        <ProjectsA projects={[...mainProjects, ...dependenciesProjects]} />
+        <ProjectsA projects={listedProjects(projects)} />
       </>
     );
   }

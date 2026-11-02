@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { PlusIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 
 import type { ProjectCardProps } from "@/components/ProjectCard";
+import { displayAppCount } from "@/lib/utils/project";
 import { FooterA, HeaderA, HeroA, ShortcutsA } from "./Shell";
 import ProjectsCatalogA from "./ProjectsCatalogA";
 import styles from "./design-a.module.css";
@@ -10,8 +11,9 @@ import styles from "./design-a.module.css";
 export default async function ProjectsA({ projects }: { projects: ProjectCardProps[] }) {
   const t = await getTranslations("GetStart");
   const p = await getTranslations("Projects");
-  const count = `${projects.length - (projects.length % 5)}+`;
-  const countLabel = t("viewProjects", { appCount: projects.length - (projects.length % 5) });
+  const appCount = displayAppCount(projects.length);
+  const count = `${appCount}+`;
+  const countLabel = t("viewProjects", { appCount });
   const countPosition = countLabel.indexOf(count);
   return (
     <div className={styles.page} data-page-design="a1">

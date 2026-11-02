@@ -3,6 +3,7 @@ import { ArrowUpRightIcon, KeyIcon } from "@heroicons/react/24/outline";
 
 import { Link } from "@/i18n/routing";
 import IcpInfo from "@/components/home/IcpInfo";
+import IcpInfoClient from "@/components/home/IcpInfoClient";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import styles from "./design-a.module.css";
 import flow from "./flow.module.css";
@@ -55,7 +56,8 @@ export function PageFrameA({ children }: { children: React.ReactNode }) {
     <div className={`${styles.page} ${flow.frame}`}>
       <HeaderA />
       <main className={flow.main}>{children}</main>
-      <FooterA />
+      {/* 结账、获取密钥、转移页需要静态生成，备案信息放到浏览器端获取 */}
+      <FooterA clientIcp />
     </div>
   );
 }
@@ -85,7 +87,7 @@ export async function DashboardFrameA({ children }: { children: React.ReactNode 
       </header>
       <main className={flow.wideMain}>{children}</main>
       <footer className={flow.dashboardFooter}>
-        <IcpInfo />
+        <IcpInfoClient />
       </footer>
     </div>
   );
@@ -96,7 +98,9 @@ export async function HeroA({ compact = false }: { compact?: boolean }) {
   const locale = await getLocale();
   const title = t("title");
   const brand = locale === "zh" ? "Mirror酱" : "MirrorChyan";
-  const split = locale === "zh" ? title.indexOf(brand) + brand.length : -1;
+  // 标题里找不到品牌名时整句正常显示，不做强调
+  const brandIndex = locale === "zh" ? title.indexOf(brand) : -1;
+  const split = brandIndex >= 0 ? brandIndex + brand.length : -1;
   return (
     <div className={compact ? styles.compactHero : styles.hero}>
       <h1>
@@ -152,7 +156,8 @@ export async function ShortcutsA({ showSubscribe = false }: { showSubscribe?: bo
   );
 }
 
-export async function FooterA() {
+/** clientIcp：在浏览器端获取备案信息，供需要静态生成的页面使用 */
+export async function FooterA({ clientIcp = false }: { clientIcp?: boolean }) {
   const t = await getTranslations("GetStart");
   return (
     <footer className={styles.footer}>
@@ -167,7 +172,7 @@ export async function FooterA() {
           {t("disclaimer")}
         </a>
       </div>
-      <IcpInfo />
+      {clientIcp ? <IcpInfoClient /> : <IcpInfo />}
     </footer>
   );
 }

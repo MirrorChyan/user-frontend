@@ -4,14 +4,17 @@ import { ArrowUpRightIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline
 import { useTranslations } from "next-intl";
 
 import type { ProjectCardProps } from "@/components/ProjectCard";
+import { DEPENDENCIES_TYPE_ID } from "@/lib/utils/project";
 import { supportedSystems, systemLabel } from "./platform";
 import styles from "./design-a.module.css";
 
 export default function ProjectCardA({
   project,
+  avatarText,
   onOpen,
 }: {
   project: ProjectCardProps;
+  avatarText: string;
   onOpen: () => void;
 }) {
   const t = useTranslations("Projects");
@@ -19,7 +22,7 @@ export default function ProjectCardA({
   const d = useTranslations("Download");
   const platforms = supportedSystems(project.support);
   return (
-    <>
+    <div className={styles.projectCard}>
       <div className={styles.cardHeading}>
         {project.image ? (
           <img
@@ -32,13 +35,15 @@ export default function ProjectCardA({
           />
         ) : (
           <span className={styles.projectInitial} aria-hidden="true">
-            {project.name.slice(0, 1)}
+            {avatarText}
           </span>
         )}
         <div>
           <h3>{project.name}</h3>
           <span>
-            {project.type_id === "Dependencies" ? t("dependencies") : a("applicationProjects")}
+            {project.type_id === DEPENDENCIES_TYPE_ID
+              ? t("dependencies")
+              : a("applicationProjects")}
           </span>
         </div>
         {project.url && (
@@ -74,6 +79,6 @@ export default function ProjectCardA({
           {project.download ? d("download") : a("internalUpdate")}
         </button>
       </div>
-    </>
+    </div>
   );
 }

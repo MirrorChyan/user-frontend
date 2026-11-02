@@ -2,7 +2,7 @@
 
 import styles from "@/components/design-a/flow.module.css";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ComponentType } from "react";
 import {
   Button,
   Input,
@@ -33,8 +33,6 @@ import {
 } from "@/lib/utils/support";
 import { copyText } from "@/lib/utils/clipboard";
 import InAppDownloadNotice from "@/components/InAppDownloadNotice";
-import ProjectCardA from "@/components/design-a/ProjectCardA";
-import designA from "@/components/design-a/design-a.module.css";
 
 export interface ProjectCardProps {
   type_id: string;
@@ -50,6 +48,16 @@ export interface ProjectCardProps {
   archParam?: string | null;
   channelParam?: string | null;
 }
+
+/**
+ * 替换默认卡片外观的组件，自行渲染卡片外框；下载弹窗等交互仍由 ProjectCard 负责。
+ * 由调用方传入，ProjectCard 本身不依赖任何实验外观的代码和样式
+ */
+export type ProjectCardAppearance = ComponentType<{
+  project: ProjectCardProps;
+  avatarText: string;
+  onOpen: () => void;
+}>;
 
 // 锁定选项的只读展示：禁用鼠标交互，键盘聚焦时也不显示输入光标
 const lockedInputClassNames = {
@@ -122,8 +130,10 @@ function getInitialSelection(
   return { channel, os, arch };
 }
 
-export default function ProjectCard(props: ProjectCardProps & { appearance?: "classic" | "a" }) {
-  const appearance = props.appearance ?? "classic";
+export default function ProjectCard({
+  appearance: Card,
+  ...props
+}: ProjectCardProps & { appearance?: ProjectCardAppearance }) {
   const {
     name,
     desc,
@@ -450,16 +460,17 @@ export default function ProjectCard(props: ProjectCardProps & { appearance?: "cl
   };
 
   return (
+    // 自定义外观自带卡片外框，这一层用 contents 不生成盒子，避免影响网格布局
     <div
       className={
-        appearance === "a"
-          ? designA.projectCard
+        Card
+          ? "contents"
           : "group dark:hover:shadow-primary-500/30 relative transform cursor-pointer overflow-hidden rounded-lg border border-gray-100 bg-gradient-to-br from-white to-gray-50 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-gray-600 dark:from-gray-800 dark:to-gray-900"
       }
-      onClick={appearance === "a" ? undefined : openModal}
+      onClick={Card ? undefined : openModal}
     >
-      {appearance === "a" ? (
-        <ProjectCardA project={props} onOpen={openModal} />
+      {Card ? (
+        <Card project={props} avatarText={avatarText} onOpen={openModal} />
       ) : (
         <>
           {url && (
@@ -541,9 +552,10 @@ export default function ProjectCard(props: ProjectCardProps & { appearance?: "cl
       >
         <ModalContent>
           <>
-            <ModalHeader className="flex flex-col gap-1">
-              {downloadStarted ? "" : `${t("download")} ${name}`}
-            </ModalHeader>
+            {/* 下载开始后没有标题，不渲染标题栏，避免留下带分隔线的空白区域 */}
+            {!downloadStarted && (
+              <ModalHeader className="flex flex-col gap-1">{`${t("download")} ${name}`}</ModalHeader>
+            )}
             <ModalBody>
               {downloadStarted ? (
                 <div className="space-y-6 py-8">

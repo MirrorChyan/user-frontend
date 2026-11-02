@@ -443,19 +443,20 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
   };
 
   return (
-    <div className={styles.dashboard}>
-      <aside className={styles.sidebar}>
-        <div className={styles.sidebarLabel}>DASHBOARD</div>
-        <nav aria-label={t("title")}>
-          <button
-            type="button"
-            aria-pressed={activeTab === "sales"}
-            onClick={() => handleTabChange("sales")}
-          >
-            <ChartBarIcon />
-            {t("lineChart.title")}
-          </button>
-          {hasStatData && (
+    // 没有统计数据时只有销售一项，和原来的 Tabs 一样整块隐藏侧栏，内容占满宽度
+    <div className={hasStatData ? styles.dashboard : undefined}>
+      {hasStatData && (
+        <aside className={styles.sidebar}>
+          <div className={styles.sidebarLabel}>DASHBOARD</div>
+          <nav aria-label={t("title")}>
+            <button
+              type="button"
+              aria-pressed={activeTab === "sales"}
+              onClick={() => handleTabChange("sales")}
+            >
+              <ChartBarIcon />
+              {t("lineChart.title")}
+            </button>
             <button
               type="button"
               aria-pressed={activeTab === "stat"}
@@ -464,9 +465,9 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
               <ServerStackIcon />
               {t("statChart.title")}
             </button>
-          )}
-        </nav>
-      </aside>
+          </nav>
+        </aside>
+      )}
       <div className={styles.dashboardContent}>
         {/* 标题区 */}
         <div className={styles.dashboardHeading}>

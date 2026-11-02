@@ -1,10 +1,10 @@
-import { parseSupportOptions } from "@/lib/utils/support";
+import { normalizeOs, parseSupportOptions } from "@/lib/utils/support";
 
 export function supportedSystems(support: string[]): string[] {
   return [
     ...new Set(
       parseSupportOptions(support)
-        .map(option => (option.os === "win" ? "windows" : option.os))
+        .map(option => normalizeOs(option.os))
         .filter(Boolean)
     ),
   ];

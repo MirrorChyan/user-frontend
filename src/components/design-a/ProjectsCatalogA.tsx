@@ -13,6 +13,8 @@ import {
 
 import type { ProjectCardProps } from "@/components/ProjectCard";
 import ProjectCardView from "@/components/ProjectCardView";
+import { DEPENDENCIES_TYPE_ID, GAME_TOOLS_TYPE_ID } from "@/lib/utils/project";
+import ProjectCardA from "./ProjectCardA";
 import { supportedSystems, systemLabel } from "./platform";
 import styles from "./design-a.module.css";
 
@@ -55,14 +57,10 @@ export default function ProjectsCatalogA({ projects }: { projects: ProjectCardPr
     .filter(value => value >= 1 && value <= pages)
     .sort((left, right) => left - right);
   const visible = filtered.slice((activePage - 1) * PAGE_SIZE, activePage * PAGE_SIZE);
-  const linkedProject = projects.find(
-    project =>
-      project.download && project.resource === rid && !visible.some(item => item.resource === rid)
-  );
   const categories = [
     { id: "all", label: a("allProjects") },
-    { id: "GameTools", label: a("applicationProjects") },
-    { id: "Dependencies", label: p("dependencies") },
+    { id: GAME_TOOLS_TYPE_ID, label: a("applicationProjects") },
+    { id: DEPENDENCIES_TYPE_ID, label: p("dependencies") },
   ];
   const heading = categories.find(item => item.id === category)?.label;
   const reset = () => {
@@ -88,7 +86,7 @@ export default function ProjectsCatalogA({ projects }: { projects: ProjectCardPr
               setPage(1);
             }}
           >
-            {item.id === "Dependencies" ? <CubeIcon /> : <Squares2X2Icon />}
+            {item.id === DEPENDENCIES_TYPE_ID ? <CubeIcon /> : <Squares2X2Icon />}
             {item.label}
             <span>
               {item.id === "all"
@@ -143,7 +141,7 @@ export default function ProjectsCatalogA({ projects }: { projects: ProjectCardPr
       </div>
       {filtered.length ? (
         <div className={styles.projectGrid}>
-          <ProjectCardView projects={visible} appearance="a" />
+          <ProjectCardView projects={visible} appearance={ProjectCardA} />
         </div>
       ) : (
         <div className={styles.empty}>
@@ -154,11 +152,6 @@ export default function ProjectsCatalogA({ projects }: { projects: ProjectCardPr
             {a("clearFilters")}
             <ArrowRightIcon />
           </button>
-        </div>
-      )}
-      {linkedProject && (
-        <div className="hidden">
-          <ProjectCardView projects={[linkedProject]} appearance="a" />
         </div>
       )}
       {filtered.length > 0 && (

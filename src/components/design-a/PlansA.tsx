@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 import type { Plan } from "@/app/requests/plan";
-import PlanCard from "@/components/home/PlanCard";
+import PlanCardA from "./PlanCardA";
 import styles from "./design-a.module.css";
 
 export default function PlansA({
@@ -22,7 +22,7 @@ export default function PlansA({
     <section className={styles.plans} aria-label={t("subscribeCdk")}>
       <div className={styles.planGrid}>
         {homePlans.map(plan => (
-          <PlanCard key={plan.plan_id} plan={plan} C2URate={C2URate} appearance="a" />
+          <PlanCardA key={plan.plan_id} plan={plan} C2URate={C2URate} />
         ))}
       </div>
       {morePlans.length > 0 && (
@@ -39,7 +39,7 @@ export default function PlansA({
           {expanded && (
             <div className={styles.planGrid} id="additional-plans">
               {morePlans.map(plan => (
-                <PlanCard key={plan.plan_id} plan={plan} C2URate={C2URate} appearance="a" />
+                <PlanCardA key={plan.plan_id} plan={plan} C2URate={C2URate} />
               ))}
             </div>
           )}

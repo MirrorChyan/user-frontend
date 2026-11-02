@@ -1,14 +1,15 @@
 "use client";
 
-import ProjectCard, { ProjectCardProps } from "@/components/ProjectCard";
+import ProjectCard, { ProjectCardAppearance, ProjectCardProps } from "@/components/ProjectCard";
 import { useSearchParams } from "next/navigation";
 
 export default function ProjectCardView({
   projects,
-  appearance = "classic",
+  appearance,
 }: {
   projects: Array<ProjectCardProps>;
-  appearance?: "classic" | "a";
+  /** 不传时使用原版卡片外观 */
+  appearance?: ProjectCardAppearance;
 }) {
   const searchParams = useSearchParams();
   const rid = searchParams.get("rid");

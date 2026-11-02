@@ -12,10 +12,16 @@
   color: var(--a-ink);
   padding-bottom: 20px;
 }
-.page svg {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
+/*
+ * 只给 heroicons 一个默认尺寸，其他 SVG（lucide、recharts、HeroUI 自带图标等）保持原样。
+ * 放进 layer 里，Tailwind 的 h-* / w-* 等工具类和下面各处的覆盖规则都能压过它
+ */
+@layer components {
+  .page svg[data-slot="icon"] {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
 }
 /* HeroUI inputs draw focus on their wrapper, not the inner native input. */
 .page :is(a, button, input, select):where(:not(input[data-slot="input"])):focus-visible {

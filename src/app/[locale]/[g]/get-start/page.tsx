@@ -5,6 +5,7 @@ import { BackgroundBeamsWithCollision } from "@/components/BackgroundBeamsWithCo
 import { getUSDRate } from "@/app/requests/rate";
 import { getAnnouncement } from "@/app/requests/announcement";
 import { getPlans } from "@/app/requests/plan";
+import { getProjects } from "@/app/requests/project";
 import SourceTracker from "@/components/SourceTracker";
 import Exposure from "@/components/Exposure";
 import ProjectBanner from "@/components/ProjectsBanner";
@@ -28,21 +29,24 @@ export default async function GetStart({
   const locale = await getLocale();
 
   const { type_id, source } = await searchParams;
+  const isDesignA = groupOf((await params).g, Slot.PageGroup) === "b";
 
-  const [plans, announcement, C2URate] = await Promise.all([
+  const [plans, announcement, C2URate, projects] = await Promise.all([
     getPlans(type_id),
     getAnnouncement(locale as "zh" | "en"),
     // 人民币->美元汇率
     locale === "zh" ? 1 : getUSDRate(),
+    // 设计 A 的项目横幅需要项目列表，和其他请求一起发出
+    isDesignA ? getProjects() : [],
   ]);
   const { homePlans, morePlans } = plans;
 
-  if (groupOf((await params).g, Slot.PageGroup) === "b") {
+  if (isDesignA) {
     return (
       <>
         <SourceTracker source={source} />
         <Exposure slot={Slot.PageGroup} />
-        <HomeA homePlans={homePlans} morePlans={morePlans} C2URate={C2URate}>
+        <HomeA homePlans={homePlans} morePlans={morePlans} C2URate={C2URate} projects={projects}>
           {announcement.ec === 200 && (
             <Announcement
               summary={announcement.data.summary}

@@ -5,56 +5,16 @@ import { useTranslations } from "next-intl";
 import { Plan } from "@/app/requests/plan";
 import { Link } from "@/i18n/routing";
 import { track } from "@/lib/analytics";
-import { ArrowRightIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
-import styles from "@/components/design-a/design-a.module.css";
+import { usePlanDisplay } from "@/hooks/usePlanDisplay";
 
 type PropsType = {
   plan: Plan;
   C2URate: number;
-  appearance?: "classic" | "a";
 };
 
-export default function PlanCard({ plan, C2URate, appearance = "classic" }: PropsType) {
+export default function PlanCard({ plan, C2URate }: PropsType) {
   const t = useTranslations("GetStart");
-  const planName = t.has(`planTitle.${plan.title}`) ? t(`planTitle.${plan.title}`) : plan.title;
-
-  const priceFixed: number = Number(t("priceFixed"));
-  const price: number = parseFloat((Number(plan.price) * C2URate).toFixed(priceFixed));
-  const originalPrice: string | null =
-    plan.original_price > plan.price
-      ? (Number(plan.original_price) * C2URate).toFixed(priceFixed)
-      : null;
-  if (appearance === "a") {
-    return (
-      <article className={`${styles.planCard} ${plan.popular ? styles.popularPlan : ""}`}>
-        <div className={styles.planHeading}>
-          <div className={styles.planSymbol}>
-            <CalendarDaysIcon aria-hidden="true" />
-          </div>
-          <h3 id={plan.plan_id}>{planName}</h3>
-        </div>
-        <p className={styles.planPrice}>
-          <span>{t("priceSymbol")}</span>
-          <strong>{price}</strong>
-          {originalPrice && (
-            <del>
-              {t("priceSymbol")}
-              {originalPrice}
-            </del>
-          )}
-        </p>
-        <Link
-          href={`/checkout/${plan.plan_id}`}
-          aria-describedby={plan.plan_id}
-          onClick={() => track("plan_click", { plan_id: plan.plan_id })}
-          className={styles.planAction}
-        >
-          {t("subscribeNow")}
-          <ArrowRightIcon aria-hidden="true" />
-        </Link>
-      </article>
-    );
-  }
+  const { planName, price, originalPrice } = usePlanDisplay(plan, C2URate);
   return (
     <div
       key={plan.plan_id}
@@ -72,7 +32,7 @@ export default function PlanCard({ plan, C2URate, appearance = "classic" }: Prop
       >
         {planName}
       </h3>
-      {originalPrice ? (
+      {originalPrice !== null ? (
         <p className="mt-6 flex basis-full items-baseline gap-x-1 text-nowrap">
           <span className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
             {`

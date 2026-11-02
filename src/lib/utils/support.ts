@@ -27,6 +27,11 @@ const OS_ALIASES: Record<string, string> = {
   win: "windows",
 };
 
+/** 把系统名别名换成标准名，用于匹配和展示 */
+export function normalizeOs(os: string): string {
+  return OS_ALIASES[os] ?? os;
+}
+
 export function parseSupportOptions(support: string[]): SupportOption[] {
   return (support ?? []).map(item => {
     let rid: string | null = null;
@@ -124,7 +129,7 @@ export function matchSupportSelection(
     if (option.channel !== channel) {
       continue;
     }
-    const osScore = score(OS_ALIASES[option.os] ?? option.os, platform.os);
+    const osScore = score(normalizeOs(option.os), platform.os);
     if (osScore === 0) {
       continue;
     }

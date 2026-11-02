@@ -140,6 +140,8 @@ export default function SalesList({ listData, date, activeDate, onDateClick }: P
   return (
     <>
       <Table
+        shadow="none"
+        classNames={{ wrapper: "p-0" }}
         isVirtualized
         isHeaderSticky
         aria-label={t("list.title")}

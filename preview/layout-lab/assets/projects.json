@@ -1,0 +1,41 @@
+{
+  "count": 95,
+  "projects": [
+    {
+      "name": "MAA",
+      "image": "assets/maa-logo_512x512.png"
+    },
+    {
+      "name": "MaaEnd",
+      "image": "assets/MaaEnd-Tiny-256.png"
+    },
+    {
+      "name": "三月七小助手",
+      "image": "assets/March7th.png"
+    },
+    {
+      "name": "MaaYuan",
+      "image": "assets/MaaYuan.png"
+    },
+    {
+      "name": "AALC",
+      "image": "assets/AALC.png"
+    },
+    {
+      "name": "鸣潮 ok-ww",
+      "image": "assets/okww.png"
+    },
+    {
+      "name": "绝区零 一条龙",
+      "image": "assets/ZZZ-OD.png"
+    },
+    {
+      "name": "MaaNTE",
+      "image": "assets/MaaNTE.png"
+    },
+    {
+      "name": "BetterGI",
+      "image": "assets/BGIv2.png"
+    }
+  ]
+}

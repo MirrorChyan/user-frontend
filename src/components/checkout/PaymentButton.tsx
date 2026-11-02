@@ -1,3 +1,4 @@
+import styles from "@/components/design-a/flow.module.css";
 import { Button } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import Spinner from "./Spinner";
@@ -14,7 +15,7 @@ export default function PaymentButton({ onClick, loading, disabled = false }: Pa
     <Button
       onPress={onClick}
       isDisabled={loading || disabled}
-      className="flex w-full items-center justify-center rounded-xl bg-indigo-600 p-4 text-base font-medium text-white transition-colors hover:bg-indigo-700"
+      className={`${styles.primary} w-full`}
     >
       {loading ? (
         <>

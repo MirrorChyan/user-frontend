@@ -1,3 +1,4 @@
+import styles from "@/components/design-a/flow.module.css";
 import { ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { PlanInfoDetail } from "@/app/[locale]/[g]/checkout/Checkout";
@@ -25,8 +26,8 @@ export default function OrderSummaryCard({
   const { finalPrice, originPrice, currentPrice, hasDiscount } = priceInfo;
 
   return (
-    <div className="border-b border-gray-100 p-6 dark:border-gray-700">
-      <h3 className="mb-4 flex items-center text-xl font-semibold text-gray-900 dark:text-white">
+    <div className={`${styles.section} border-b border-gray-100 dark:border-gray-700`}>
+      <h3 className={styles.sectionTitle}>
         <ShieldCheck className="mr-2 h-5 w-5 text-indigo-600" />
         {t("orderSummary")}
       </h3>

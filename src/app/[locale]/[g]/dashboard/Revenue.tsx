@@ -2,16 +2,9 @@
 
 import { Key, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import {
-  Button,
-  Card,
-  Chip,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Tab,
-  Tabs,
-} from "@heroui/react";
+import { ChartBarIcon, ServerStackIcon } from "@heroicons/react/24/outline";
+import styles from "@/components/design-a/flow.module.css";
+import { Button, Card, Chip, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
 import {
   Cell,
   DefaultLegendContentProps,
@@ -175,7 +168,7 @@ function SalesPieChart({
     const legendEntries = payload as unknown as LegendPayloadEntry[];
 
     return (
-      <ul className="text-xs">
+      <ul className="flex flex-wrap justify-center gap-x-3 text-xs">
         {legendEntries.map((entry, index) => {
           const isActive = activeValue === entry.value;
           return (
@@ -227,7 +220,7 @@ function SalesPieChart({
             cx="50%"
             cy="50%"
             labelLine={false}
-            outerRadius={80}
+            outerRadius={70}
             innerRadius={30}
             fill="#8884d8"
             dataKey="count"
@@ -239,17 +232,16 @@ function SalesPieChart({
             ))}
           </Pie>
           <Legend
-            layout="vertical"
-            align="left"
-            verticalAlign="top"
+            layout="horizontal"
+            align="center"
+            verticalAlign="bottom"
             content={legendContent}
             // recharts 3 的图例默认按名称字母序排序，这里保持 data 原有顺序（按份数、金额降序）
             itemSorter={item => data.findIndex(entry => entry.name === item.value)}
             wrapperStyle={{
-              maxHeight: "240px",
+              maxHeight: "88px",
               overflowY: "auto",
               direction: "ltr",
-              paddingRight: "10px",
               textAlign: "left",
               scrollbarWidth: "none" /* Firefox */,
               msOverflowStyle: "none" /* Internet Explorer 10+ */,
@@ -451,34 +443,40 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
   };
 
   return (
-    <div className="min-h-screen dark:bg-gray-900">
-      <div className="mx-auto max-w-7xl p-6">
+    // 没有统计数据时只有销售一项，和原来的 Tabs 一样整块隐藏侧栏，内容占满宽度
+    <div className={hasStatData ? styles.dashboard : undefined}>
+      {hasStatData && (
+        <aside className={styles.sidebar}>
+          <div className={styles.sidebarLabel}>DASHBOARD</div>
+          <nav aria-label={t("title")}>
+            <button
+              type="button"
+              aria-pressed={activeTab === "sales"}
+              onClick={() => handleTabChange("sales")}
+            >
+              <ChartBarIcon />
+              {t("lineChart.title")}
+            </button>
+            <button
+              type="button"
+              aria-pressed={activeTab === "stat"}
+              onClick={() => handleTabChange("stat")}
+            >
+              <ServerStackIcon />
+              {t("statChart.title")}
+            </button>
+          </nav>
+        </aside>
+      )}
+      <div className={styles.dashboardContent}>
         {/* 标题区 */}
-        <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <h1 className="flex-grow text-4xl font-bold dark:text-white">
-            {t("dashboardTitle", { rid, date })}
-          </h1>
-          <div className="flex w-full items-center gap-3 sm:mr-8 sm:w-auto">
+        <div className={styles.dashboardHeading}>
+          <h1 className="min-w-0">{t("dashboardTitle", { rid, date })}</h1>
+          <div className="flex items-center gap-3">
             {isSalesTab ? (
-              <Button
-                className="w-full sm:w-auto"
-                color="secondary"
-                variant="ghost"
-                onClick={handleExport}
-              >
+              <Button className={styles.secondary} onClick={handleExport}>
                 {t("export")}
               </Button>
-            ) : null}
-            {hasStatData ? (
-              <Tabs
-                selectedKey={activeTab}
-                onSelectionChange={handleTabChange}
-                size="sm"
-                variant="bordered"
-              >
-                <Tab key="sales" title={t("lineChart.title")} />
-                <Tab key="stat" title={t("statChart.title")} />
-              </Tabs>
             ) : null}
           </div>
         </div>
@@ -531,28 +529,28 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
         >
           {/* Stats cards */}
           <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <Card>
+            <Card className={styles.statCard}>
               <div className="p-4 sm:p-8">
                 <h3 className="text-gray-500">{t("monthlyCount")}</h3>
                 <p className="text-2xl font-bold sm:text-3xl">
                   {totalCount}
                   {t("unit.count")}
                   {refundedCount > 0 ? (
-                    <span className="ml-2 text-sm font-normal text-gray-500">
+                    <span className="mt-2 block text-xs font-normal text-gray-500">
                       {t("refundedCount", { count: refundedCount })}
                     </span>
                   ) : null}
                 </p>
               </div>
             </Card>
-            <Card>
+            <Card className={styles.statCard}>
               <div className="p-4 sm:p-8">
                 <h3 className="text-gray-500">{t("monthlyAmount")}</h3>
                 <p className="text-2xl font-bold sm:text-3xl">
                   {totalAmount.toFixed(2)}
                   {t("unit.amount")}
                   {refundedAmount > 0 ? (
-                    <span className="ml-2 text-sm font-normal text-gray-500">
+                    <span className="mt-2 block text-xs font-normal text-gray-500">
                       {t("refundedAmount", { amount: refundedAmount.toFixed(2) })}
                     </span>
                   ) : null}
@@ -561,13 +559,13 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
             </Card>
             <Popover placement="bottom" showArrow>
               <PopoverTrigger>
-                <Card isPressable className="text-left">
+                <Card isPressable className={cn(styles.statCard, "text-left")}>
                   <div className="p-4 sm:p-8">
                     <h3 className="!text-gray-500">{t("estimatedRevenue")}</h3>
                     <p className="!text-foreground text-2xl !font-bold sm:text-3xl">
                       {estimatedRevenue.total.toFixed(2)}
                       {t("unit.amount")}
-                      <span className="ml-2 text-sm font-normal text-gray-500">
+                      <span className="mt-2 block text-xs font-normal text-gray-500">
                         {t("clickToViewDetail")}
                       </span>
                     </p>
@@ -634,7 +632,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
           {/* Charts + Sales list */}
           <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:col-span-2">
-              <Card>
+              <Card className={styles.statCard}>
                 <div className="p-2">
                   <SalesPieChart
                     animationCycle={salesAnimationCycle}
@@ -646,7 +644,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
                   />
                 </div>
               </Card>
-              <Card>
+              <Card className={styles.statCard}>
                 <div className="p-2">
                   <SalesPieChart
                     animationCycle={salesAnimationCycle}
@@ -658,7 +656,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
                   />
                 </div>
               </Card>
-              <Card>
+              <Card className={styles.statCard}>
                 <div className="p-2">
                   <SalesPieChart
                     animationCycle={salesAnimationCycle}
@@ -670,7 +668,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
                   />
                 </div>
               </Card>
-              <Card>
+              <Card className={styles.statCard}>
                 <div className="p-2">
                   <SalesPieChart
                     animationCycle={salesAnimationCycle}
@@ -683,7 +681,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
                 </div>
               </Card>
             </div>
-            <Card className="lg:col-span-1">
+            <Card className={cn(styles.statCard, "lg:col-span-1")}>
               <div className="flex h-96 flex-col p-4 lg:h-full">
                 <h3>
                   {t("list.title")}
@@ -702,7 +700,7 @@ export default function Revenue({ revenueData, statData, onLogOut, rid, date }: 
               </div>
             </Card>
           </div>
-          <Card>
+          <Card className={styles.statCard}>
             <div className="h-96 w-full p-4 sm:h-80">
               <SalesLineChart revenueData={filteredData} date={date} />
             </div>

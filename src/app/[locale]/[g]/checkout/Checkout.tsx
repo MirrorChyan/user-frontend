@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "@/components/design-a/flow.module.css";
+
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
@@ -177,8 +179,8 @@ export default function Checkout(params: CheckoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white dark:from-gray-900 dark:to-gray-800">
-      <div className="mx-auto max-w-4xl px-4 pt-10 pb-16 sm:px-6 lg:px-8">
+    <div>
+      <div>
         {/* 返回按钮 */}
         <div className="mb-8">
           <button
@@ -191,12 +193,8 @@ export default function Checkout(params: CheckoutProps) {
         </div>
 
         {/* 标题 */}
-        <h1 className="mb-1 text-center text-3xl font-bold text-gray-900 dark:text-white">
-          {t("checkoutTitle")}
-        </h1>
-        <p className="mb-8 text-center text-gray-500 dark:text-gray-400">
-          {t("completeYourOrder")}
-        </p>
+        <h1 className={styles.title}>{t("checkoutTitle")}</h1>
+        <p className={`${styles.description} mb-8`}>{t("completeYourOrder")}</p>
 
         {/* 加载状态 */}
         {planInfoLoading ? (
@@ -207,9 +205,9 @@ export default function Checkout(params: CheckoutProps) {
             </div>
           </div>
         ) : (
-          <div className="mx-auto max-w-2xl">
+          <div className={styles.checkoutGrid}>
             {/* 主内容卡片 */}
-            <div className="mb-6 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <div className={styles.card}>
               {/* 订单摘要 */}
               {planInfo && (
                 <OrderSummaryCard
@@ -221,7 +219,10 @@ export default function Checkout(params: CheckoutProps) {
 
               {/* 续期CDK输入 */}
               <RenewalCdkInput ref={renewalCdkInputRef} value={renewCdk} onChange={setRenewCdk} />
+            </div>
 
+            {/* 支付按钮和安全提示,神秘小样式 */}
+            <div className={styles.card}>
               {/* 支付方式选择 */}
               {planInfo && (
                 <PaymentMethodSelector
@@ -230,12 +231,11 @@ export default function Checkout(params: CheckoutProps) {
                   onChange={setPaymentMethod}
                 />
               )}
-            </div>
 
-            {/* 支付按钮和安全提示,神秘小样式 */}
-            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-              <PaymentButton onClick={handlePayment} loading={paymentLoading} />
-              <SecurityFooter />
+              <div className={styles.paymentAction}>
+                <PaymentButton onClick={handlePayment} loading={paymentLoading} />
+                <SecurityFooter />
+              </div>
             </div>
           </div>
         )}

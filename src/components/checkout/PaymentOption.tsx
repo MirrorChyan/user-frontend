@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "@/components/design-a/flow.module.css";
 import { ThumbsUp } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -19,10 +20,7 @@ export default function PaymentOption({
 }) {
   const t = useTranslations("Checkout");
   return (
-    <label
-      className={`relative flex cursor-pointer items-center rounded-xl border p-4 transition-colors ${checked ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/30" : "border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50"}`}
-      onClick={onClick}
-    >
+    <label className={styles.paymentOption} data-selected={checked} onClick={onClick}>
       {recommend && (
         <div className="absolute -top-2 -right-2 flex items-center rounded-full bg-emerald-500 px-2 py-1 text-xs text-white shadow-sm">
           <ThumbsUp className="mr-1 h-3 w-3" />

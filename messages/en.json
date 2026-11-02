@@ -316,5 +316,30 @@
       "unpinHint": "Press Esc or click outside to unpin",
       "unpin": "Unpin"
     }
+  },
+  "LayoutA": {
+    "home": "Home",
+    "projects": "Projects",
+    "navigation": "Main navigation",
+    "breadcrumb": "Breadcrumb",
+    "allProjects": "All projects",
+    "applicationProjects": "Applications",
+    "categories": "Project categories",
+    "search": "Search project names or descriptions",
+    "filterSystem": "Filter by system",
+    "allSystems": "All systems",
+    "genericResource": "Universal",
+    "internalUpdate": "In-app update",
+    "viewDetails": "View details",
+    "defaultOrder": "Default project order",
+    "resultsCount": "{count} matching projects",
+    "noResults": "No matching projects",
+    "noResultsHint": "Try another keyword, category, or system.",
+    "clearFilters": "Clear filters",
+    "pagination": "Project pagination",
+    "pageNumber": "Page {page}",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "showing": "Showing {start}–{end} of {total} projects"
   }
 }

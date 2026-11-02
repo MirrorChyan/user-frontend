@@ -1,46 +1,15 @@
-import { SERVER_BACKEND } from "@/app/requests/misc";
 import { headers } from "next/headers";
 
-type ICP = {
-  icp_beian: string;
-  icp_url: string;
-  icp_entity: string;
-};
+import { getIcpInfo } from "@/app/requests/icp";
+import IcpLink from "@/components/home/IcpLink";
 
-async function getIcpInfo() {
-  try {
-    const head = await headers();
-    const query = new URLSearchParams({ domain: head.get("Host") ?? "" });
-    const res = await fetch(`${SERVER_BACKEND}/api/misc/icp?${query}`, {
-      // 备案信息几乎不变，按域名缓存 1 小时
-      next: { revalidate: 3600 },
-      signal: AbortSignal.timeout(10_000),
-    });
-    if (!res.ok) {
-      return null;
-    }
-    return (await res.json()) as Promise<ICP>;
-  } catch (error) {
-    console.error("Failed to query ICP", error);
-    return null;
-  }
-}
-
+/**
+ * 服务端渲染备案信息。读取请求头会让所在路由变成动态渲染，
+ * 需要静态生成的页面改用 IcpInfoClient
+ */
 export default async function IcpInfo() {
-  const icp = await getIcpInfo();
-
-  return icp ? (
-    <div>
-      <a
-        href={icp.icp_url}
-        target="_blank"
-        className="text-xs text-gray-500 dark:text-gray-400"
-        rel="noreferrer"
-      >
-        {icp.icp_beian}
-        <span aria-hidden="true">&nbsp;&nbsp;</span>
-        {icp.icp_entity}
-      </a>
-    </div>
-  ) : null;
+  // headers() 不能放进 try/catch，否则会吞掉 Next.js 用来切换动态渲染的内部异常
+  const head = await headers();
+  const icp = await getIcpInfo(head.get("Host") ?? "");
+  return icp ? <IcpLink icp={icp} /> : null;
 }

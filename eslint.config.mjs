@@ -31,6 +31,21 @@ export default tseslint.config(
     },
   },
   {
+    files: ["preview/layout-lab/*.js"],
+    languageOptions: {
+      globals: {
+        document: "readonly",
+        window: "readonly",
+        location: "readonly",
+        history: "readonly",
+        localStorage: "readonly",
+        URLSearchParams: "readonly",
+        Event: "readonly",
+        matchMedia: "readonly",
+      },
+    },
+  },
+  {
     ignores: [
       "node_modules/**",
       ".next/**",

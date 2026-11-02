@@ -1,9 +1,16 @@
 "use client";
 
-import ProjectCard, { ProjectCardProps } from "@/components/ProjectCard";
+import ProjectCard, { ProjectCardAppearance, ProjectCardProps } from "@/components/ProjectCard";
 import { useSearchParams } from "next/navigation";
 
-export default function ProjectCardView({ projects }: { projects: Array<ProjectCardProps> }) {
+export default function ProjectCardView({
+  projects,
+  appearance,
+}: {
+  projects: Array<ProjectCardProps>;
+  /** 不传时使用原版卡片外观 */
+  appearance?: ProjectCardAppearance;
+}) {
   const searchParams = useSearchParams();
   const rid = searchParams.get("rid");
 
@@ -17,6 +24,7 @@ export default function ProjectCardView({ projects }: { projects: Array<ProjectC
           archParam={searchParams.get("arch")}
           channelParam={searchParams.get("channel")}
           {...project}
+          appearance={appearance}
         />
       ))}
     </>

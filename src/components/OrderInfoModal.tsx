@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "@/components/design-a/flow.module.css";
+
 import { useTranslations, useFormatter } from "next-intl";
 import AppDialog from "@/components/AppDialog";
 import { useEffect, useMemo, useState } from "react";
@@ -9,7 +11,7 @@ import QQGroupLink from "@/components/QQGroupLink";
 import { Link } from "@/i18n/routing";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { addToast } from "@heroui/toast";
-import { isPast } from "@/lib/utils/date";
+import { formatExpiry, isPast } from "@/lib/utils/date";
 
 interface OrderInfoModalProps {
   orderId: string;
@@ -51,13 +53,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
 
   const formattedTime = useMemo(() => {
     if (!expiredAt) return null;
-    return format.dateTime(new Date(expiredAt), {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-    });
+    return formatExpiry(format, expiredAt);
   }, [expiredAt, format]);
 
   // 由 next-intl 按当前语言格式化，如"3个月后" / "in 3 months"
@@ -154,10 +150,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
             {isExpired ? t("orderExpired") : t("thanksForBuying")}
           </h4>
           <p className="mb-2 text-base text-gray-600 dark:text-gray-300">{t("yourKey")}</p>
-          <div
-            className="mb-4 flex cursor-pointer items-center justify-between rounded-lg bg-gray-50 p-4 dark:bg-gray-700"
-            onClick={copyToClipboard}
-          >
+          <div className={styles.keyBox} onClick={copyToClipboard}>
             <span className="font-mono text-indigo-600 select-all dark:text-indigo-400">
               {orderInfo.cdk}
             </span>

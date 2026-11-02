@@ -44,13 +44,15 @@ export default function YearMonthPicker({ onChange }: PropsType) {
   };
 
   return (
-    <div className="flex w-full overflow-hidden rounded-2xl">
+    <div className="flex w-full gap-3">
       <Select
+        id="dashboard-year"
         onSelectionChange={handleYearChange}
         value={selectedYear}
         fullWidth
         label={"Year"}
-        radius={"none"}
+        variant="bordered"
+        radius="sm"
         defaultSelectedKeys={[currentYear.toString()]} // 设置默认选中
       >
         {years.map(year => (
@@ -60,11 +62,13 @@ export default function YearMonthPicker({ onChange }: PropsType) {
         ))}
       </Select>
       <Select
+        id="dashboard-month"
         onSelectionChange={handleMonthChange}
         value={selectedMonth}
         fullWidth
         label={"Month"}
-        radius={"none"}
+        variant="bordered"
+        radius="sm"
         defaultSelectedKeys={[currentMonth]} // 设置默认选中
       >
         {months.map(month => (

@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import styles from "@/components/design-a/flow.module.css";
 import { Modal, ModalBody, ModalContent, ModalHeader, ModalProps } from "@heroui/react";
 
 type AppDialogProps = {
@@ -37,9 +38,9 @@ export default function AppDialog({
       placement="center"
       scrollBehavior="inside"
       classNames={{
-        base: "rounded-2xl max-sm:mx-2",
-        header: "px-6 pt-8 pb-0 text-xl leading-6 font-medium sm:px-8",
-        body: "px-6 pt-6 pb-8 sm:px-8",
+        base: `${styles.dialog} max-sm:mx-2`,
+        header: styles.dialogHeader,
+        body: styles.dialogBody,
         closeButton: "top-6 right-6",
       }}
     >

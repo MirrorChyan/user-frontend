@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import styles from "@/components/design-a/flow.module.css";
+
+import { useMemo, useState, type ComponentType } from "react";
 import {
   Button,
   Input,
@@ -46,6 +48,16 @@ export interface ProjectCardProps {
   archParam?: string | null;
   channelParam?: string | null;
 }
+
+/**
+ * 替换默认卡片外观的组件，自行渲染卡片外框；下载弹窗等交互仍由 ProjectCard 负责。
+ * 由调用方传入，ProjectCard 本身不依赖任何实验外观的代码和样式
+ */
+export type ProjectCardAppearance = ComponentType<{
+  project: ProjectCardProps;
+  avatarText: string;
+  onOpen: () => void;
+}>;
 
 // 锁定选项的只读展示：禁用鼠标交互，键盘聚焦时也不显示输入光标
 const lockedInputClassNames = {
@@ -118,7 +130,10 @@ function getInitialSelection(
   return { channel, os, arch };
 }
 
-export default function ProjectCard(props: ProjectCardProps) {
+export default function ProjectCard({
+  appearance: Card,
+  ...props
+}: ProjectCardProps & { appearance?: ProjectCardAppearance }) {
   const {
     name,
     desc,
@@ -445,67 +460,75 @@ export default function ProjectCard(props: ProjectCardProps) {
   };
 
   return (
+    // 自定义外观自带卡片外框，这一层用 contents 不生成盒子，避免影响网格布局
     <div
       className={
-        "group dark:hover:shadow-primary-500/30 relative transform cursor-pointer overflow-hidden rounded-lg border border-gray-100 bg-gradient-to-br from-white to-gray-50 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-gray-600 dark:from-gray-800 dark:to-gray-900"
+        Card
+          ? "contents"
+          : "group dark:hover:shadow-primary-500/30 relative transform cursor-pointer overflow-hidden rounded-lg border border-gray-100 bg-gradient-to-br from-white to-gray-50 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-gray-600 dark:from-gray-800 dark:to-gray-900"
       }
-      onClick={openModal}
+      onClick={Card ? undefined : openModal}
     >
-      {url && (
-        <div className="absolute top-2 right-2 z-10">
-          <Tooltip
-            content={<span className="px-1 py-2">{p("openProjectHomepage")}</span>}
-            showArrow={true}
-            placement="top"
-          >
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={e => e.stopPropagation()}
-              className="flex h-8 w-8 items-center justify-center transition-colors duration-200"
-            >
-              <ArrowTopRightOnSquareIcon className="group-hover:text-primary-600 dark:group-hover:text-primary-400 h-4 w-4 text-gray-600 dark:text-gray-300" />
-            </a>
-          </Tooltip>
-        </div>
+      {Card ? (
+        <Card project={props} avatarText={avatarText} onOpen={openModal} />
+      ) : (
+        <>
+          {url && (
+            <div className="absolute top-2 right-2 z-10">
+              <Tooltip
+                content={<span className="px-1 py-2">{p("openProjectHomepage")}</span>}
+                showArrow={true}
+                placement="top"
+              >
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
+                  className="flex h-8 w-8 items-center justify-center transition-colors duration-200"
+                >
+                  <ArrowTopRightOnSquareIcon className="group-hover:text-primary-600 dark:group-hover:text-primary-400 h-4 w-4 text-gray-600 dark:text-gray-300" />
+                </a>
+              </Tooltip>
+            </div>
+          )}
+          <div className="flex p-4">
+            {image ? (
+              <div
+                className="relative mr-4 flex-shrink-0 overflow-hidden rounded-md bg-gray-50 shadow-sm dark:bg-gray-700"
+                style={{ width: "80px", height: "80px" }}
+              >
+                <img
+                  src={image}
+                  alt={name}
+                  className="h-full w-full rounded-md object-cover opacity-90 transition-transform duration-500 ease-in-out group-hover:scale-105 group-hover:opacity-100"
+                />
+              </div>
+            ) : (
+              <div
+                className="relative mr-4 flex flex-shrink-0 items-center justify-center overflow-hidden rounded-md text-2xl font-bold text-white shadow-sm"
+                style={{
+                  width: "80px",
+                  height: "80px",
+                  backgroundColor: avatarBgColor,
+                }}
+              >
+                {avatarText}
+              </div>
+            )}
+            <div className="flex flex-col justify-center">
+              <h3 className="group-hover:text-primary-600 dark:group-hover:text-primary-400 text-lg font-semibold text-gray-900 transition-colors duration-300 dark:text-white">
+                {name}
+              </h3>
+            </div>
+          </div>
+          <div className="mt-3.5 px-4 pb-4">
+            <p className="text-sm text-gray-600 transition-colors duration-300 group-hover:text-gray-800 dark:text-gray-300 dark:group-hover:text-gray-200">
+              {desc}
+            </p>
+          </div>
+        </>
       )}
-      <div className="flex p-4">
-        {image ? (
-          <div
-            className="relative mr-4 flex-shrink-0 overflow-hidden rounded-md bg-gray-50 shadow-sm dark:bg-gray-700"
-            style={{ width: "80px", height: "80px" }}
-          >
-            <img
-              src={image}
-              alt={name}
-              className="h-full w-full rounded-md object-cover opacity-90 transition-transform duration-500 ease-in-out group-hover:scale-105 group-hover:opacity-100"
-            />
-          </div>
-        ) : (
-          <div
-            className="relative mr-4 flex flex-shrink-0 items-center justify-center overflow-hidden rounded-md text-2xl font-bold text-white shadow-sm"
-            style={{
-              width: "80px",
-              height: "80px",
-              backgroundColor: avatarBgColor,
-            }}
-          >
-            {avatarText}
-          </div>
-        )}
-        <div className="flex flex-col justify-center">
-          <h3 className="group-hover:text-primary-600 dark:group-hover:text-primary-400 text-lg font-semibold text-gray-900 transition-colors duration-300 dark:text-white">
-            {name}
-          </h3>
-        </div>
-      </div>
-      <div className="mt-3.5 px-4 pb-4">
-        <p className="text-sm text-gray-600 transition-colors duration-300 group-hover:text-gray-800 dark:text-gray-300 dark:group-hover:text-gray-200">
-          {desc}
-        </p>
-      </div>
-
       <Modal
         isDismissable={false}
         isOpen={isOpen}
@@ -522,14 +545,17 @@ export default function ProjectCard(props: ProjectCardProps) {
         scrollBehavior="inside"
         classNames={{
           wrapper: "sm:items-center",
-          base: "max-sm:my-2 max-sm:mx-2 max-sm:max-h-[calc(100vh-1rem)] max-sm:h-[calc(100vh-1rem)]",
+          base: `${styles.dialog} max-sm:my-2 max-sm:mx-2 max-sm:max-h-[calc(100vh-1rem)] max-sm:h-[calc(100vh-1rem)]`,
+          header: styles.dialogHeader,
+          body: styles.dialogBody,
         }}
       >
         <ModalContent>
           <>
-            <ModalHeader className="flex flex-col gap-1">
-              {downloadStarted ? "" : `${t("download")} ${name}`}
-            </ModalHeader>
+            {/* 下载开始后没有标题，不渲染标题栏，避免留下带分隔线的空白区域 */}
+            {!downloadStarted && (
+              <ModalHeader className="flex flex-col gap-1">{`${t("download")} ${name}`}</ModalHeader>
+            )}
             <ModalBody>
               {downloadStarted ? (
                 <div className="space-y-6 py-8">
@@ -885,11 +911,10 @@ export default function ProjectCard(props: ProjectCardProps) {
             <ModalFooter>
               {downloadStarted ? (
                 <Button
-                  color="primary"
+                  className={`${styles.primary} w-full`}
                   onPress={() => {
                     setDownloadStarted(false);
                   }}
-                  className="w-full"
                 >
                   {common("close")}
                 </Button>
@@ -899,14 +924,14 @@ export default function ProjectCard(props: ProjectCardProps) {
                     {common("cancel")}
                   </Button>
                   <Button
-                    color="secondary"
+                    className={styles.secondary}
                     onPress={handleShare}
                     isLoading={loading.loading && loading.type === "Share"}
                   >
                     {t("shareLink")}
                   </Button>
                   <Button
-                    color="primary"
+                    className={styles.primary}
                     onPress={handleDownload}
                     isLoading={loading.loading && loading.type === "Download"}
                   >

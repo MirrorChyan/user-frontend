@@ -1,18 +1,23 @@
 "use client";
 
 import { useTransition } from "react";
-import { createPortal } from "react-dom";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/routing";
-import { useIsClient } from "@/hooks/useIsClient";
+import styles from "./language-switcher.module.css";
 
-export default function LanguageSwitcher() {
+export function LanguageToolbar() {
+  return (
+    <header className={styles.toolbar}>
+      <LanguageSwitcher />
+    </header>
+  );
+}
+
+export default function LanguageSwitcher({ className = "" }: { className?: string }) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
-  // 按钮通过 portal 挂到 body 上，只能在客户端渲染
-  const mounted = useIsClient();
 
   const isZh = locale === "zh";
   const otherLocale = isZh ? "en" : "zh";
@@ -23,14 +28,14 @@ export default function LanguageSwitcher() {
     });
   };
 
-  if (!mounted) return null;
-
-  return createPortal(
+  return (
     <button
+      type="button"
       onClick={toggleLocale}
       disabled={isPending}
       aria-label="Switch language"
-      className="absolute top-4 right-4 z-50 flex h-8 items-center gap-1 rounded-full border border-gray-200/60 bg-white/70 px-1 backdrop-blur-md transition-all dark:border-gray-700/60 dark:bg-gray-900/70"
+      aria-busy={isPending}
+      className={`${styles.switcher} ${className}`}
     >
       {isPending ? (
         <span className="flex items-center px-2">
@@ -52,27 +57,10 @@ export default function LanguageSwitcher() {
         </span>
       ) : (
         <>
-          <span
-            className={`rounded-full px-2 py-0.5 text-xs font-semibold transition-all ${
-              isZh
-                ? "bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300"
-                : "text-gray-400 dark:text-gray-500"
-            }`}
-          >
-            中
-          </span>
-          <span
-            className={`rounded-full px-2 py-0.5 text-xs font-semibold transition-all ${
-              !isZh
-                ? "bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300"
-                : "text-gray-400 dark:text-gray-500"
-            }`}
-          >
-            EN
-          </span>
+          <span data-active={isZh}>中</span>
+          <span data-active={!isZh}>EN</span>
         </>
       )}
-    </button>,
-    document.body
+    </button>
   );
 }

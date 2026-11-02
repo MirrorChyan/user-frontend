@@ -160,6 +160,7 @@
     "rewardValidDays": "可兑换 {valid_days} 天",
     "fromNotFound": "未找到可转移目标，请检查！",
     "sameCdk": "目标CDK不能与来源CDK相同",
+    "networkError": "网络错误，请重试",
     "transferTip": "转移后原CDK时长将归零，请确认操作"
   },
   "Component": {
@@ -309,5 +310,30 @@
       "unpinHint": "按 Esc 或点击空白处取消固定",
       "unpin": "取消固定"
     }
+  },
+  "LayoutA": {
+    "home": "首页",
+    "projects": "接入应用",
+    "navigation": "主导航",
+    "breadcrumb": "面包屑导航",
+    "allProjects": "全部项目",
+    "applicationProjects": "应用项目",
+    "categories": "项目分类",
+    "search": "搜索项目名称或简介",
+    "filterSystem": "筛选系统",
+    "allSystems": "全部系统",
+    "genericResource": "通用资源",
+    "internalUpdate": "应用内更新",
+    "viewDetails": "查看详情",
+    "defaultOrder": "保持项目默认顺序",
+    "resultsCount": "找到 {count} 个项目",
+    "noResults": "没有找到匹配的项目",
+    "noResultsHint": "请调整关键词、项目分类或系统筛选。",
+    "clearFilters": "清除筛选",
+    "pagination": "项目分页",
+    "pageNumber": "第 {page} 页",
+    "previousPage": "上一页",
+    "nextPage": "下一页",
+    "showing": "显示 {start}–{end} / {total} 个项目"
   }
 }

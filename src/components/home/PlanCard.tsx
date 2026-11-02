@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Plan } from "@/app/requests/plan";
 import { Link } from "@/i18n/routing";
 import { track } from "@/lib/analytics";
+import { usePlanDisplay } from "@/hooks/usePlanDisplay";
 
 type PropsType = {
   plan: Plan;
@@ -13,14 +14,7 @@ type PropsType = {
 
 export default function PlanCard({ plan, C2URate }: PropsType) {
   const t = useTranslations("GetStart");
-  const planName = t.has(`planTitle.${plan.title}`) ? t(`planTitle.${plan.title}`) : plan.title;
-
-  const priceFixed: number = Number(t("priceFixed"));
-  const price: number = parseFloat((Number(plan.price) * C2URate).toFixed(priceFixed));
-  const originalPrice: string | null =
-    plan.original_price > plan.price
-      ? (Number(plan.original_price) * C2URate).toFixed(priceFixed)
-      : null;
+  const { planName, price, originalPrice } = usePlanDisplay(plan, C2URate);
   return (
     <div
       key={plan.plan_id}
@@ -38,7 +32,7 @@ export default function PlanCard({ plan, C2URate }: PropsType) {
       >
         {planName}
       </h3>
-      {originalPrice ? (
+      {originalPrice !== null ? (
         <p className="mt-6 flex basis-full items-baseline gap-x-1 text-nowrap">
           <span className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
             {`

@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { getProjects } from "@/app/requests/project";
+import { displayAppCount } from "@/lib/utils/project";
 
 export default async function ProjectBanner() {
   const t = await getTranslations("GetStart");
@@ -12,7 +13,7 @@ export default async function ProjectBanner() {
   const displayProjects = projects.slice(0, displayCount);
   const hasMore = projects.length > displayCount;
 
-  const appCount = projects.length - (projects.length % 5);
+  const appCount = displayAppCount(projects.length);
 
   return (
     <div className="mt-5 flex justify-center">

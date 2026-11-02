@@ -1,5 +1,6 @@
+import { DashboardFrameA } from "@/components/design-a/Shell";
 import { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export async function generateMetadata({
   params,
@@ -13,6 +14,16 @@ export async function generateMetadata({
   };
 }
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return children;
+export default async function Layout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  // 布局之间可能并行渲染，框架里的服务端组件要用到语言，这里也要设置，
+  // 否则 next-intl 会改读请求头，页面无法静态生成
+  const { locale } = await params;
+  setRequestLocale(locale);
+  return <DashboardFrameA>{children}</DashboardFrameA>;
 }

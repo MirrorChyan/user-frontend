@@ -97,19 +97,28 @@ export default function ProjectsCatalogA({ projects }: { projects: ProjectCardPr
         ))}
       </div>
       <div className={styles.catalogToolbar}>
-        <label className={styles.search}>
-          <MagnifyingGlassIcon />
-          <input
-            type="search"
-            aria-label={a("search")}
-            placeholder={a("search")}
-            value={query}
-            onChange={event => {
-              setQuery(event.target.value);
-              setPage(1);
-            }}
-          />
-        </label>
+        {/* 独立 form：Chromium 会把页面上所有无 form 的输入框视为同一表单，
+            搜索框会被当成下载弹窗 CDK 密码框的用户名而被浏览器自动填充 */}
+        <form
+          role="search"
+          className={styles.searchForm}
+          onSubmit={event => event.preventDefault()}
+        >
+          <label className={styles.search}>
+            <MagnifyingGlassIcon />
+            <input
+              type="search"
+              autoComplete="off"
+              aria-label={a("search")}
+              placeholder={a("search")}
+              value={query}
+              onChange={event => {
+                setQuery(event.target.value);
+                setPage(1);
+              }}
+            />
+          </label>
+        </form>
         <label className={styles.systemFilter}>
           <span>{d("os")}</span>
           <select

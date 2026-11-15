@@ -3,9 +3,13 @@
 overrides:
   # GHSA: postcss <8.5.18 — next 16.2.11 pins 8.4.31
   postcss: ^8.5.23
-  # GHSA: sharp <0.35.0 — next optional dep
-  sharp: ^0.35.3
+  # GHSA-wq5f-xc86-pv6w: sharp <0.35.5 — next optional dep
+  sharp: ^0.35.5
   # GHSA-68fv-2mgg-jv7q: source-map-js <1.2.2 — via postcss / tailwind
   source-map-js: ^1.2.2
   # GHSA-q2hr-2g5m-vwhr: brace-expansion <1.1.21 — via eslint → minimatch@3
   brace-expansion@1: ^1.1.21
+  # GHSA-mrhx-c7xc-m3w5: zod <4.6.6 — via eslint-plugin-react-hooks（仅开发）
+  zod: ^4.6.6
+  # GHSA-g3hv-75wg-m249: minimatch >=7 <11.0.1 — typescript-estree 声明 ^10，无 10.x 修复版，跨大版本锁到 11（仅开发）
+  "@typescript-eslint/typescript-estree>minimatch": ^11.0.1

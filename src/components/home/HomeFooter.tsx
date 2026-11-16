@@ -8,6 +8,8 @@ const actionButtonClass =
   "rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600";
 
 type HomeFooterProps = {
+  /** 仅首页展示备案信息 */
+  showIcp?: boolean;
   /** 在「查询CDK」左侧显示跳转主页的订阅按钮 */
   showSubscribe?: boolean;
   /** 备案与用户协议固定在视口底部 */
@@ -17,6 +19,7 @@ type HomeFooterProps = {
 };
 
 export default async function HomeFooter({
+  showIcp = false,
   showSubscribe = false,
   pinLegal = false,
   compact = false,
@@ -73,7 +76,7 @@ export default async function HomeFooter({
             : "mt-10 mb-2 flex w-full items-center justify-center gap-1.5"
         }
       >
-        <IcpInfo />
+        {showIcp && <IcpInfo />}
         <div>
           <a
             href="/disclaimer.html"

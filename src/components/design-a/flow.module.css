@@ -48,14 +48,6 @@
   letter-spacing: 1.5px;
 }
 
-.dashboardFooter {
-  max-width: 1368px;
-  margin: 0 auto;
-  padding: 24px 0 6px;
-  border-top: 1px solid var(--a-border);
-  text-align: right;
-}
-
 .center {
   display: flex;
   justify-content: center;

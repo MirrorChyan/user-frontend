@@ -18,7 +18,7 @@ import ProjectCardA from "./ProjectCardA";
 import { supportedSystems, systemLabel } from "./platform";
 import styles from "./design-a.module.css";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 30;
 
 export default function ProjectsCatalogA({ projects }: { projects: ProjectCardProps[] }) {
   const a = useTranslations("LayoutA");

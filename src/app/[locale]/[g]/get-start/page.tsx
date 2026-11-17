@@ -87,7 +87,7 @@ export default async function GetStart({
           <ProjectBanner />
 
           <Plans morePlans={morePlans} homePlans={homePlans} C2URate={C2URate} />
-          <HomeFooter pinLegal />
+          <HomeFooter showIcp pinLegal />
         </div>
       </BackgroundBeamsWithCollision>
     </div>

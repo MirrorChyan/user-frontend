@@ -98,9 +98,12 @@ export default function ProjectsCatalogA({ projects }: { projects: ProjectCardPr
       </div>
       <div className={styles.catalogToolbar}>
         {/* 独立 form：Chromium 会把页面上所有无 form 的输入框视为同一表单，
-            搜索框会被当成下载弹窗 CDK 密码框的用户名而被浏览器自动填充 */}
+            搜索框会被当成下载弹窗 CDK 密码框的用户名而被浏览器自动填充。
+            method="dialog" 在没有 <dialog> 祖先时提交为空操作，防止 hydrate 前回车触发原生 GET
+            提交而丢失 URL 上的 rid / download 等参数 */}
         <form
           role="search"
+          method="dialog"
           className={styles.searchForm}
           onSubmit={event => event.preventDefault()}
         >

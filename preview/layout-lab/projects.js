@@ -1,7 +1,7 @@
 const projectLayout = document.body.dataset.projectLayout;
 const catalog = window.MC_PROJECTS;
 const text = window.MC_COPY;
-const pageSize = projectLayout === "a1" ? 12 : 10;
+const pageSize = projectLayout === "a1" ? 30 : 10;
 const state = { query: "", category: "all", os: "all", page: 1, selected: catalog[0].resource };
 let activeDownload = null;
 const escapeHtml = value =>

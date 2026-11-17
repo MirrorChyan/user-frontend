@@ -35,7 +35,7 @@ python -m http.server 4173 --bind 127.0.0.1 --directory preview/layout-lab
 - `assets/projects.json` 保留本次使用的应用名称与图标路径。图标来自项目现有公开目录。
 - 没有添加虚构用户评价、测速结果或使用量数据。C 中的图形是更新路径示意。
 - 付款、查询、时长转换均为本地演示；不连接支付或 CDK 接口，不发送埋点。请勿在原型中输入真实订单或 CDK。
-- 本目录继续作为静态评审原型；正式页面从真实 API 读取数据，分组接法见仓库根目录 README。
+- 本目录继续作为静态评审原型；正式页面从真实 API 读取数据。分组映射见 `src/config/group.ts`，分流与 `?_g=a|b` 预览见 `src/lib/split.ts`。
 
 ## 选定后的测试
 

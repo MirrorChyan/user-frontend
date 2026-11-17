@@ -1,8 +1,8 @@
 import type { ICP } from "@/app/requests/icp";
 
-export default function IcpLink({ icp }: { icp: ICP }) {
+export default function IcpLink({ icp, className }: { icp: ICP; className?: string }) {
   return (
-    <div>
+    <div className={className}>
       <a
         href={icp.icp_url}
         target="_blank"

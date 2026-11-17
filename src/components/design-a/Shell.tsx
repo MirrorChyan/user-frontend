@@ -167,7 +167,7 @@ export async function FooterA({ showIcp = false }: { showIcp?: boolean }) {
           {t("disclaimer")}
         </a>
       </div>
-      {showIcp && <IcpInfo />}
+      {showIcp && <IcpInfo className={styles.footerIcp} />}
     </footer>
   );
 }

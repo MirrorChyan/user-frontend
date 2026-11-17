@@ -9,7 +9,7 @@ overrides:
   sharp: ^0.35.5
   source-map-js: ^1.2.2
   brace-expansion@1: ^1.1.21
-  zod: ^4.6.6
+  eslint-plugin-react-hooks>zod: ^4.6.6
   '@typescript-eslint/typescript-estree>minimatch': ^11.0.1
 
 importers:
@@ -4316,7 +4316,7 @@ packages:
     resolution: {integrity: sha512-Q6/nZLe6jxuU80qb/4uJ4t5v2VEZ44lzQjPDhYJNztRQ4wyWc6VF3D3Kb/fAuPetZQnhS3hnajCf9CsWesghLQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      zod: ^4.6.6
+      zod: ^3.25.0 || ^4.0.0
 
   zod@4.6.7:
     resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}

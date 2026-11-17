@@ -15,7 +15,8 @@
     "code-quality": "pnpm lint && pnpm format:check && pnpm type-check",
     "fix": "pnpm lint:fix && pnpm format",
     "build:ts": "tsc next.config.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 
 import type { Plan } from "@/app/requests/plan";
 import type { ProjectCardProps } from "@/components/ProjectCard";
+import BatchPurchaseLink from "@/components/home/BatchPurchaseLink";
 import { displayAppCount, listedProjects } from "@/lib/utils/project";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { Link } from "@/i18n/routing";
@@ -53,6 +54,7 @@ export default async function HomeA({
           </span>
         </Link>
         <PlansA homePlans={homePlans} morePlans={morePlans} C2URate={C2URate} />
+        <BatchPurchaseLink />
         <ShortcutsA />
       </main>
       <FooterA showIcp />

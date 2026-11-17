@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { OrderInfoType } from "@/components/checkout/QRCodePayModal";
 import { AlertCircle, CheckCircle } from "lucide-react";
 import QQGroupLink from "@/components/QQGroupLink";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { CLIENT_BACKEND } from "@/app/requests/misc";
 import { addToast } from "@heroui/toast";
 import { formatExpiry, isPast } from "@/lib/utils/date";
@@ -22,6 +22,7 @@ type OrderQueryResult = {
   orderInfo: OrderInfoType | null;
   isExpired: boolean;
   error: string | null;
+  batchOrder?: boolean;
 };
 
 async function queryOrder(orderId: string): Promise<OrderQueryResult> {
@@ -30,7 +31,17 @@ async function queryOrder(orderId: string): Promise<OrderQueryResult> {
   const queryKey = queryValue.length === 24 ? "cdk" : "order_id";
   const query = new URLSearchParams({ [queryKey]: queryValue });
   const response = await fetch(`${CLIENT_BACKEND}/api/billing/order/query?${query}`);
-  const { ec, msg, data } = await response.json();
+  const { ec, code, msg, data } = await response.json();
+  // 单张卡仍展示单卡结果；整批订单及交付中的订单交给批量页面处理。
+  const isBatchOrder =
+    queryKey === "order_id" &&
+    ((ec === 200 && data?.delivered === true && data.buy_count > 1 && Array.isArray(data.cdks)) ||
+      ec === 202 ||
+      ec === 503 ||
+      (ec === 409 && code === 21006));
+  if (isBatchOrder) {
+    return { orderInfo: null, isExpired: false, error: null, batchOrder: true };
+  }
   if (ec !== 200) {
     return { orderInfo: null, isExpired: false, error: msg };
   }
@@ -39,6 +50,7 @@ async function queryOrder(orderId: string): Promise<OrderQueryResult> {
 
 export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps) {
   const t = useTranslations("ShowKey");
+  const router = useRouter();
   const format = useFormatter();
   // 按 orderId 记录查询结果，orderId 变化后旧结果自动失效，加载状态由此推导
   const [result, setResult] = useState<OrderQueryResult & { orderId: string }>();
@@ -98,6 +110,10 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
       .catch((): OrderQueryResult => ({ orderInfo: null, isExpired: false, error: "networkError" }))
       .then(queryResult => {
         if (!cancelled) {
+          if (queryResult.batchOrder) {
+            router.replace(`/batch-purchase?order_id=${encodeURIComponent(orderId.trim())}`);
+            return;
+          }
           setResult({ ...queryResult, orderId });
         }
       });
@@ -105,7 +121,7 @@ export default function OrderInfoModal({ orderId, onClose }: OrderInfoModalProps
     return () => {
       cancelled = true;
     };
-  }, [orderId]);
+  }, [orderId, router]);
 
   return (
     <AppDialog open title={t("orderInfo")} onClose={onClose} dismissable>

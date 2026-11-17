@@ -12,6 +12,7 @@ import ProjectBanner from "@/components/ProjectsBanner";
 import Announcement from "@/components/home/Announcement";
 import Plans from "@/components/home/Plans";
 import HomeFooter from "@/components/home/HomeFooter";
+import BatchPurchaseLink from "@/components/home/BatchPurchaseLink";
 import { Slot } from "@/config/group";
 import { groupOf } from "@/lib/group";
 import HomeA from "@/components/design-a/HomeA";
@@ -87,6 +88,7 @@ export default async function GetStart({
           <ProjectBanner />
 
           <Plans morePlans={morePlans} homePlans={homePlans} C2URate={C2URate} />
+          <BatchPurchaseLink />
           <HomeFooter showIcp pinLegal />
         </div>
       </BackgroundBeamsWithCollision>

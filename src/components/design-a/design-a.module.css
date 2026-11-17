@@ -392,7 +392,7 @@
   width: 12px;
   height: 12px;
 }
-.footer > div:last-child {
+.footerIcp {
   font-size: 10px;
 }
 .projectsMain {
@@ -484,6 +484,12 @@
   gap: 16px;
   margin-bottom: 24px;
 }
+/* 不用 display: contents：Safari 16 会把它移出无障碍树，丢失 search 地标 */
+.searchForm {
+  display: flex;
+  flex: 1;
+  max-width: 470px;
+}
 .search {
   display: flex;
   align-items: center;
@@ -492,7 +498,6 @@
   border-radius: 8px;
   padding: 12px 14px;
   flex: 1;
-  max-width: 470px;
   background: var(--a-soft);
   color: var(--a-muted);
 }
@@ -1159,7 +1164,7 @@
   .footerLinks a {
     font-size: 10px;
   }
-  .footer > div:last-child {
+  .footerIcp {
     flex-basis: 100%;
   }
   .projectsMain {
@@ -1214,9 +1219,11 @@
     gap: 12px;
     margin-bottom: 21px;
   }
-  .search {
+  .searchForm {
     flex-basis: 100%;
     max-width: none;
+  }
+  .search {
     padding: 11px 12px;
   }
   .search input {

@@ -55,7 +55,7 @@ export default async function HomeA({
         <PlansA homePlans={homePlans} morePlans={morePlans} C2URate={C2URate} />
         <ShortcutsA />
       </main>
-      <FooterA />
+      <FooterA showIcp />
     </div>
   );
 }

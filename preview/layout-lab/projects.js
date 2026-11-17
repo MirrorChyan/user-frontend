@@ -1,7 +1,7 @@
 const projectLayout = document.body.dataset.projectLayout;
 const catalog = window.MC_PROJECTS;
 const text = window.MC_COPY;
-const pageSize = projectLayout === "a1" ? 12 : 10;
+const pageSize = projectLayout === "a1" ? 30 : 10;
 const state = { query: "", category: "all", os: "all", page: 1, selected: catalog[0].resource };
 let activeDownload = null;
 const escapeHtml = value =>
@@ -107,7 +107,7 @@ function integrationBar() {
   return `<section class="project-join-bar"><span>${symbol("plus", 22)}</span><div><strong>${text.Projects.joinUs}</strong><p>${text.Projects.contactUs}</p></div><a href="https://github.com/MirrorChyan/docs" target="_blank" rel="noopener">${text.GetStart.apiDoc} ${symbol("arrow", 15)}</a></section>`;
 }
 function footer() {
-  return `<footer class="site-footer"><div><span class="footer-brand">Mirror酱</span><span>让开源应用的更新更简单。</span></div><div class="footer-links"><a href="https://github.com/MirrorChyan/docs" target="_blank" rel="noopener">${text.GetStart.apiDoc} ↗</a><a href="https://github.com/MirrorChyan/user-frontend" target="_blank" rel="noopener">${text.GetStart.openSource} ↗</a><a href="https://mirrorchyan.com/disclaimer.html" target="_blank" rel="noopener">${text.GetStart.disclaimer}</a></div><small>皖ICP备2025075166号-1</small></footer>`;
+  return `<footer class="site-footer"><div><span class="footer-brand">Mirror酱</span><span>让开源应用的更新更简单。</span></div><div class="footer-links"><a href="https://github.com/MirrorChyan/docs" target="_blank" rel="noopener">${text.GetStart.apiDoc} ↗</a><a href="https://github.com/MirrorChyan/user-frontend" target="_blank" rel="noopener">${text.GetStart.openSource} ↗</a><a href="https://mirrorchyan.com/disclaimer.html" target="_blank" rel="noopener">${text.GetStart.disclaimer}</a></div></footer>`;
 }
 function layout() {
   const toolbar = `<div class="project-toolbar">${searchControl()}${osSelect()}</div>`;

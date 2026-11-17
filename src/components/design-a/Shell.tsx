@@ -3,7 +3,6 @@ import { ArrowUpRightIcon, KeyIcon } from "@heroicons/react/24/outline";
 
 import { Link } from "@/i18n/routing";
 import IcpInfo from "@/components/home/IcpInfo";
-import IcpInfoClient from "@/components/home/IcpInfoClient";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import styles from "./design-a.module.css";
 import flow from "./flow.module.css";
@@ -56,8 +55,7 @@ export function PageFrameA({ children }: { children: React.ReactNode }) {
     <div className={`${styles.page} ${flow.frame}`}>
       <HeaderA />
       <main className={flow.main}>{children}</main>
-      {/* 结账、获取密钥、转移页需要静态生成，备案信息放到浏览器端获取 */}
-      <FooterA clientIcp />
+      <FooterA />
     </div>
   );
 }
@@ -86,9 +84,6 @@ export async function DashboardFrameA({ children }: { children: React.ReactNode 
         <LanguageSwitcher className={flow.dashboardLanguage} />
       </header>
       <main className={flow.wideMain}>{children}</main>
-      <footer className={flow.dashboardFooter}>
-        <IcpInfoClient />
-      </footer>
     </div>
   );
 }
@@ -156,8 +151,8 @@ export async function ShortcutsA({ showSubscribe = false }: { showSubscribe?: bo
   );
 }
 
-/** clientIcp：在浏览器端获取备案信息，供需要静态生成的页面使用 */
-export async function FooterA({ clientIcp = false }: { clientIcp?: boolean }) {
+/** 只有首页显式开启备案信息。 */
+export async function FooterA({ showIcp = false }: { showIcp?: boolean }) {
   const t = await getTranslations("GetStart");
   return (
     <footer className={styles.footer}>
@@ -172,7 +167,7 @@ export async function FooterA({ clientIcp = false }: { clientIcp?: boolean }) {
           {t("disclaimer")}
         </a>
       </div>
-      {clientIcp ? <IcpInfoClient /> : <IcpInfo />}
+      {showIcp && <IcpInfo className={styles.footerIcp} />}
     </footer>
   );
 }

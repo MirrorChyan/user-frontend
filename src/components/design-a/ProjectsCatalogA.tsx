@@ -18,7 +18,7 @@ import ProjectCardA from "./ProjectCardA";
 import { supportedSystems, systemLabel } from "./platform";
 import styles from "./design-a.module.css";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 30;
 
 export default function ProjectsCatalogA({ projects }: { projects: ProjectCardProps[] }) {
   const a = useTranslations("LayoutA");
@@ -97,19 +97,31 @@ export default function ProjectsCatalogA({ projects }: { projects: ProjectCardPr
         ))}
       </div>
       <div className={styles.catalogToolbar}>
-        <label className={styles.search}>
-          <MagnifyingGlassIcon />
-          <input
-            type="search"
-            aria-label={a("search")}
-            placeholder={a("search")}
-            value={query}
-            onChange={event => {
-              setQuery(event.target.value);
-              setPage(1);
-            }}
-          />
-        </label>
+        {/* 独立 form：Chromium 会把页面上所有无 form 的输入框视为同一表单，
+            搜索框会被当成下载弹窗 CDK 密码框的用户名而被浏览器自动填充。
+            method="dialog" 在没有 <dialog> 祖先时提交为空操作，防止 hydrate 前回车触发原生 GET
+            提交而丢失 URL 上的 rid / download 等参数 */}
+        <form
+          role="search"
+          method="dialog"
+          className={styles.searchForm}
+          onSubmit={event => event.preventDefault()}
+        >
+          <label className={styles.search}>
+            <MagnifyingGlassIcon />
+            <input
+              type="search"
+              autoComplete="off"
+              aria-label={a("search")}
+              placeholder={a("search")}
+              value={query}
+              onChange={event => {
+                setQuery(event.target.value);
+                setPage(1);
+              }}
+            />
+          </label>
+        </form>
         <label className={styles.systemFilter}>
           <span>{d("os")}</span>
           <select
